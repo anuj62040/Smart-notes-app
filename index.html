@@ -105,7 +105,7 @@
       align-items:center;
     }
 
-    .icon-btn,.action-btn,.mini-btn,.drawer-btn,.toolbar-btn,.seg-btn,.modal-btn,.eye-btn,.support-link{
+    .icon-btn,.action-btn,.mini-btn,.drawer-btn,.toolbar-btn,.seg-btn,.modal-btn,.eye-btn,.support-link,.auth-btn{
       border:none;
       outline:none;
       cursor:pointer;
@@ -118,7 +118,7 @@
       text-decoration:none;
     }
 
-    .icon-btn:active,.action-btn:active,.mini-btn:active,.drawer-btn:active,.toolbar-btn:active,.seg-btn:active,.modal-btn:active,.eye-btn:active,.support-link:active{
+    .icon-btn:active,.action-btn:active,.mini-btn:active,.drawer-btn:active,.toolbar-btn:active,.seg-btn:active,.modal-btn:active,.eye-btn:active,.support-link:active,.auth-btn:active{
       transform:scale(.98);
     }
 
@@ -477,11 +477,46 @@
       font-size:24px;
     }
 
-    .drawer-btn{
+    .drawer-btn,.auth-btn{
       width:100%;
       text-align:left;
       padding:14px 16px;
       margin-bottom:10px;
+    }
+
+    .user-box{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin:8px 0 18px;
+      padding:12px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:var(--panel-2);
+      box-shadow:var(--glow);
+    }
+
+    .user-photo{
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      object-fit:cover;
+      border:1px solid var(--border);
+      background:#111;
+      flex-shrink:0;
+    }
+
+    .user-name{
+      font-size:14px;
+      font-weight:700;
+      word-break:break-word;
+    }
+
+    .user-email{
+      font-size:11px;
+      color:var(--muted);
+      word-break:break-word;
+      margin-top:2px;
     }
 
     .context-bar{
@@ -825,6 +860,7 @@
         <p>• Text, image and drawing notes</p>
         <p>• Pin, rename, delete and restore</p>
         <p>• Local privacy</p>
+        <p>• Google login support</p>
       </div>
     </section>
 
@@ -873,6 +909,18 @@
     <div class="drawer-overlay" id="drawerOverlay"></div>
     <aside class="drawer" id="drawer">
       <h2>Menu</h2>
+
+      <div class="user-box" id="userBox">
+        <img class="user-photo" id="userPhoto" src="https://via.placeholder.com/48?text=U" alt="user" />
+        <div>
+          <div class="user-name" id="userName">Guest User</div>
+          <div class="user-email" id="userEmail">Not signed in</div>
+        </div>
+      </div>
+
+      <button class="auth-btn" id="googleLoginBtn">Continue with Google</button>
+      <button class="auth-btn" id="logoutBtn" style="display:none;">Logout</button>
+
       <button class="drawer-btn" id="themeBtn">Change Theme</button>
       <button class="drawer-btn" id="deletedBtn">Deleted Notes</button>
       <button class="drawer-btn" id="aboutBtn">About</button>
@@ -976,11 +1024,37 @@
     </div>
   </div>
 
-  <script>
-    const DB_KEY = "smart_notes_premium_v2";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDf7IOz_Pca9mp2voY0DYU2cHr0wq5CCu0",
+      authDomain: "smart-notes-app-4968b.firebaseapp.com",
+      projectId: "smart-notes-app-4968b",
+      storageBucket: "smart-notes-app-4968b.firebasestorage.app",
+      messagingSenderId: "908802996682",
+      appId: "1:908802996682:web:5c89a22084e64bf42f3733",
+      measurementId: "G-BECWM8DYPJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
     const THEME_KEY = "smart_notes_premium_theme_v2";
     const PASS_KEY = "smart_notes_premium_pass_v2";
     const LOCK_ENABLED_KEY = "smart_notes_premium_lock_enabled_v2";
+
+    let currentUser = null;
 
     const state = {
       notes: [],
@@ -996,6 +1070,10 @@
       recognition: null,
       listening: false
     };
+
+    function getDBKey() {
+      return currentUser ? `smart_notes_premium_user_${currentUser.uid}` : "smart_notes_premium_guest";
+    }
 
     const pages = {
       home: document.getElementById("homePage"),
@@ -1048,6 +1126,12 @@
     const lockError = document.getElementById("lockError");
     const toggleLockBtn = document.getElementById("toggleLockBtn");
 
+    const googleLoginBtn = document.getElementById("googleLoginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const userPhoto = document.getElementById("userPhoto");
+    const userName = document.getElementById("userName");
+    const userEmail = document.getElementById("userEmail");
+
     function escapeHtml(str){
       return String(str || "")
         .replaceAll("&","&amp;")
@@ -1057,13 +1141,13 @@
     }
 
     function loadDB(){
-      const data = JSON.parse(localStorage.getItem(DB_KEY) || "{}");
+      const data = JSON.parse(localStorage.getItem(getDBKey()) || "{}");
       state.notes = Array.isArray(data.notes) ? data.notes : [];
       state.deleted = Array.isArray(data.deleted) ? data.deleted : [];
     }
 
     function saveDB(){
-      localStorage.setItem(DB_KEY, JSON.stringify({
+      localStorage.setItem(getDBKey(), JSON.stringify({
         notes: state.notes,
         deleted: state.deleted
       }));
@@ -1091,6 +1175,22 @@
 
     function updateLockButtonText(){
       toggleLockBtn.textContent = isLockEnabled() ? "Disable Lock" : "Enable Lock";
+    }
+
+    function updateUserUI() {
+      if (currentUser) {
+        userName.textContent = currentUser.displayName || "Google User";
+        userEmail.textContent = currentUser.email || "";
+        userPhoto.src = currentUser.photoURL || "https://via.placeholder.com/48?text=U";
+        googleLoginBtn.style.display = "none";
+        logoutBtn.style.display = "block";
+      } else {
+        userName.textContent = "Guest User";
+        userEmail.textContent = "Not signed in";
+        userPhoto.src = "https://via.placeholder.com/48?text=U";
+        googleLoginBtn.style.display = "block";
+        logoutBtn.style.display = "none";
+      }
     }
 
     function showModal(modal){
@@ -1187,7 +1287,7 @@
       notesContainer.innerHTML = `
         <div class="notes-grid">
           ${list.map(note => `
-            <div class="note-card ${note.pinned ? "pinned" : ""}" data-id="${note.id}" onclick="openNoteById('${note.id}')">
+            <div class="note-card ${note.pinned ? "pinned" : ""}" data-id="${note.id}" onclick="window.openNoteById('${note.id}')">
               <div class="note-name">${escapeHtml(note.name)}</div>
               <div class="note-meta">${formatTime(note.updatedAt || note.createdAt)}</div>
               <div class="note-text">${escapeHtml((note.text || "").slice(0, 120))}</div>
@@ -1207,7 +1307,7 @@
             <div>
               <div class="empty-icon">🗑</div>
               <div>No deleted notes</div>
-              <button class="seg-btn" style="margin-top:14px;" onclick="goHome()">Back to Home</button>
+              <button class="seg-btn" style="margin-top:14px;" onclick="window.goHome()">Back to Home</button>
             </div>
           </div>
         `;
@@ -1216,15 +1316,15 @@
 
       deletedContainer.innerHTML = `
         <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
-          <button class="seg-btn" onclick="goHome()">Back to Home</button>
+          <button class="seg-btn" onclick="window.goHome()">Back to Home</button>
         </div>
         ${state.deleted.map(note => `
           <div class="trash-card">
             <div class="note-name">${escapeHtml(note.name)}</div>
             <div class="note-meta">Deleted: ${formatTime(note.deletedAt || Date.now())}</div>
             <div class="trash-actions">
-              <button class="seg-btn restore" onclick="restoreDeleted('${note.id}')">Restore</button>
-              <button class="seg-btn remove" onclick="removeDeleted('${note.id}')">Permanent Delete</button>
+              <button class="seg-btn restore" onclick="window.restoreDeleted('${note.id}')">Restore</button>
+              <button class="seg-btn remove" onclick="window.removeDeleted('${note.id}')">Permanent Delete</button>
             </div>
           </div>
         `).join("")}
@@ -1660,7 +1760,7 @@
     }
 
     function resetEverything(){
-      localStorage.removeItem(DB_KEY);
+      localStorage.removeItem(getDBKey());
       localStorage.removeItem(PASS_KEY);
       localStorage.removeItem(LOCK_ENABLED_KEY);
 
@@ -1688,6 +1788,37 @@
         lockScreen.style.display = "none";
       }
     }
+
+    async function doGoogleLogin() {
+      try {
+        await signInWithPopup(auth, provider);
+        closeDrawer();
+      } catch (e) {
+        alert("Google login failed.");
+        console.error(e);
+      }
+    }
+
+    async function doLogout() {
+      try {
+        await signOut(auth);
+        closeDrawer();
+      } catch (e) {
+        alert("Logout failed.");
+        console.error(e);
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user || null;
+      updateUserUI();
+      loadDB();
+      renderNotes();
+      renderDeleted();
+    });
+
+    document.getElementById("googleLoginBtn").addEventListener("click", doGoogleLogin);
+    document.getElementById("logoutBtn").addEventListener("click", doLogout);
 
     document.getElementById("enableLockEyeBtn").addEventListener("click", () => toggleEye("enableLockPasswordInput", document.getElementById("enableLockEyeBtn")));
     document.getElementById("oldPasswordEyeBtn").addEventListener("click", () => toggleEye("oldPasswordInput", document.getElementById("oldPasswordEyeBtn")));
@@ -1889,6 +2020,7 @@
     renderNotes();
     renderDeleted();
     updateLockButtonText();
+    updateUserUI();
     openLockScreenIfNeeded();
   </script>
 </body>
