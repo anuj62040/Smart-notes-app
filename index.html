@@ -2,10 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Smart Notes App Final</title>
   <style>
     :root{
@@ -19,7 +16,6 @@
       --accent-2:#2563eb;
       --danger:#ef4444;
       --success:#10b981;
-      --warning:#f59e0b;
       --border:rgba(255,255,255,0.08);
       --shadow:0 12px 30px rgba(0,0,0,.35);
     }
@@ -35,7 +31,6 @@
       --accent-2:#1d4ed8;
       --danger:#dc2626;
       --success:#059669;
-      --warning:#d97706;
       --border:rgba(0,0,0,0.08);
       --shadow:0 12px 24px rgba(0,0,0,.08);
     }
@@ -69,7 +64,7 @@
 
     .topbar{
       position:fixed;
-      top:0;left:0;right:0;
+      top:0; left:0; right:0;
       height:66px;
       display:flex;
       align-items:center;
@@ -92,13 +87,19 @@
       min-width:0;
     }
 
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
     .title{
       font-weight:700;
       font-size:18px;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width:45vw;
+      max-width:42vw;
     }
 
     .icon-btn,.save-btn,.mini-btn,.drawer-btn,.toolbar-btn,.seg-btn,.modal-btn{
@@ -118,11 +119,15 @@
     }
 
     .save-btn{
-      padding:11px 16px;
+      padding:11px 14px;
       font-weight:700;
+      min-width:82px;
+    }
+
+    .primary-btn{
       background:var(--accent);
       color:#fff;
-      min-width:82px;
+      border:none;
     }
 
     .page{
@@ -430,7 +435,7 @@
 
     .drawer{
       position:fixed;
-      top:0;left:0;
+      top:0; left:0;
       width:290px;
       max-width:86%;
       height:100%;
@@ -516,6 +521,24 @@
       opacity:1;
       pointer-events:auto;
       transform:translate(-50%,-50%) scale(1);
+      animation:popIn .22s ease;
+    }
+
+    @keyframes popIn{
+      0%{transform:translate(-50%,-50%) scale(.86); opacity:0;}
+      100%{transform:translate(-50%,-50%) scale(1); opacity:1;}
+    }
+
+    @keyframes shakeSoft{
+      0%,100%{transform:translate(-50%,-50%) translateX(0);}
+      20%{transform:translate(-50%,-50%) translateX(-6px);}
+      40%{transform:translate(-50%,-50%) translateX(6px);}
+      60%{transform:translate(-50%,-50%) translateX(-4px);}
+      80%{transform:translate(-50%,-50%) translateX(4px);}
+    }
+
+    .modal.reset-animate{
+      animation:shakeSoft .45s ease;
     }
 
     .modal h3{
@@ -594,96 +617,19 @@
       font-size:13px;
       color:var(--muted);
     }
-
-    .lock-screen{
-      position:fixed;
-      inset:0;
-      background:linear-gradient(160deg,#000,#0b1220);
-      z-index:200;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-    }
-
-    .lock-card{
-      width:min(92vw,420px);
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      backdrop-filter:blur(16px);
-      border-radius:24px;
-      padding:22px;
-      color:#fff;
-      box-shadow:0 18px 34px rgba(0,0,0,.38);
-      text-align:center;
-    }
-
-    .lock-card h2{
-      margin-top:0;
-      margin-bottom:10px;
-    }
-
-    .lock-card input{
-      width:100%;
-      margin:12px 0;
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.16);
-      outline:none;
-      background:rgba(255,255,255,.1);
-      color:#fff;
-      text-align:center;
-      letter-spacing:1px;
-    }
-
-    .lock-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .lock-actions button{
-      flex:1;
-      min-width:120px;
-      padding:13px;
-      border-radius:16px;
-      border:none;
-      cursor:pointer;
-      font-weight:700;
-    }
-
-    .lock-primary{
-      background:#22c1ff;
-      color:#fff;
-    }
-
-    .lock-secondary{
-      background:rgba(255,255,255,.12);
-      color:#fff;
-      border:1px solid rgba(255,255,255,.18);
-    }
   </style>
 </head>
 <body>
-  <div class="lock-screen" id="lockScreen" style="display:none;">
-    <div class="lock-card">
-      <h2>🔒 App Lock</h2>
-      <div class="small" id="lockText">Enter password</div>
-      <input type="password" id="lockInput" maxlength="20" placeholder="Password" />
-      <div class="lock-actions">
-        <button class="lock-secondary" id="forgetPasswordBtn">Forget Password</button>
-        <button class="lock-primary" id="lockActionBtn">OK</button>
-      </div>
-    </div>
-  </div>
-
   <div class="app">
     <header class="topbar">
       <div class="left-head">
         <button class="icon-btn" id="menuBtn">☰</button>
         <div class="title" id="pageTitle">Home</div>
       </div>
-      <button class="save-btn" id="saveBtn" style="display:none;">Save</button>
+      <div class="top-actions">
+        <button class="save-btn" id="backBtn" style="display:none;">Back to Home</button>
+        <button class="save-btn primary-btn" id="saveBtn" style="display:none;">Save</button>
+      </div>
     </header>
 
     <section class="page active" id="homePage">
@@ -743,13 +689,12 @@
       <div class="about-card">
         <h2>📝 Smart Notes App</h2>
         <p><strong>Smart Notes App</strong> helps students and developers manage text, image, and drawing notes in one place.</p>
-
         <h3>✨ Key Features</h3>
-        <p>• <strong>Smart Storage:</strong> Stores notes in a structured way for easy access.</p>
-        <p>• <strong>Auto Timestamp:</strong> Every note gets date and time automatically.</p>
-        <p>• <strong>Multi Note Types:</strong> Text, image, and drawing notes supported.</p>
-        <p>• <strong>Create, Edit, Delete:</strong> Full note management with restore option.</p>
-        <p>• <strong>Privacy First:</strong> Data stays locally on your device.</p>
+        <p>• Smart storage</p>
+        <p>• Auto timestamp</p>
+        <p>• Text, image and drawing notes</p>
+        <p>• Create, edit, delete and restore</p>
+        <p>• Privacy first: local device storage</p>
       </div>
     </section>
 
@@ -779,7 +724,6 @@
       <button class="drawer-btn" id="aboutBtn">About</button>
       <button class="drawer-btn" id="toggleLockBtn">Enable Lock</button>
       <button class="drawer-btn" id="changePassBtn">Set / Change Password</button>
-      <button class="drawer-btn" id="resetPassBtn">Reset Password</button>
     </aside>
 
     <div class="context-overlay" id="contextOverlay"></div>
@@ -814,13 +758,53 @@
         <button class="modal-btn primary" id="renameConfirmBtn">Rename</button>
       </div>
     </div>
+
+    <div class="modal" id="lockModal">
+      <h3 id="lockModalTitle">Set Password</h3>
+      <p id="lockModalDesc">Password must be at least 4 characters.</p>
+      <input id="lockPasswordInput" type="password" placeholder="Enter password" />
+      <div class="modal-actions">
+        <button class="modal-btn" id="lockCancelBtn">Cancel</button>
+        <button class="modal-btn primary" id="lockSaveBtn">Save</button>
+      </div>
+    </div>
+
+    <div class="modal" id="passwordPromptModal">
+      <h3>App Lock</h3>
+      <p>Enter your password</p>
+      <input id="passwordPromptInput" type="password" placeholder="Password" />
+      <div class="modal-actions">
+        <button class="modal-btn" id="forgotFromPromptBtn">Forget Password</button>
+        <button class="modal-btn primary" id="passwordPromptOkBtn">OK</button>
+      </div>
+    </div>
+
+    <div class="modal" id="changePasswordModal">
+      <h3>Set / Change Password</h3>
+      <p>Password must be at least 4 characters.</p>
+      <input id="changePasswordInput" type="password" placeholder="New password" />
+      <div class="modal-actions">
+        <button class="modal-btn" id="forgotPasswordBtn">Forget Password</button>
+        <button class="modal-btn" id="changePasswordCancelBtn">Cancel</button>
+        <button class="modal-btn primary" id="changePasswordSaveBtn">Save</button>
+      </div>
+    </div>
+
+    <div class="modal" id="forgotConfirmModal">
+      <h3>Reset Password</h3>
+      <p>All saved notes and deleted notes will be permanently deleted. Do you want to continue?</p>
+      <div class="modal-actions">
+        <button class="modal-btn" id="forgotConfirmCancelBtn">Cancel</button>
+        <button class="modal-btn primary" id="forgotConfirmOkBtn">Reset</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    const DB_KEY = "smart_notes_final_v1";
-    const THEME_KEY = "smart_notes_theme_final_v1";
-    const PASS_KEY = "smart_notes_pass_final_v1";
-    const LOCK_ENABLED_KEY = "smart_notes_lock_enabled_final_v1";
+    const DB_KEY = "smart_notes_final_v2";
+    const THEME_KEY = "smart_notes_theme_final_v2";
+    const PASS_KEY = "smart_notes_pass_final_v2";
+    const LOCK_ENABLED_KEY = "smart_notes_lock_enabled_final_v2";
 
     const state = {
       notes: [],
@@ -843,6 +827,7 @@
     const aboutPage = document.getElementById("aboutPage");
     const pageTitle = document.getElementById("pageTitle");
     const saveBtn = document.getElementById("saveBtn");
+    const backBtn = document.getElementById("backBtn");
     const fabWrap = document.getElementById("fabWrap");
     const notesContainer = document.getElementById("notesContainer");
     const deletedContainer = document.getElementById("deletedContainer");
@@ -856,6 +841,10 @@
     const modalOverlay = document.getElementById("modalOverlay");
     const saveModal = document.getElementById("saveModal");
     const renameModal = document.getElementById("renameModal");
+    const lockModal = document.getElementById("lockModal");
+    const passwordPromptModal = document.getElementById("passwordPromptModal");
+    const changePasswordModal = document.getElementById("changePasswordModal");
+    const forgotConfirmModal = document.getElementById("forgotConfirmModal");
 
     const modeBadge = document.getElementById("modeBadge");
     const noteNameField = document.getElementById("noteNameField");
@@ -873,11 +862,6 @@
     const canvas = document.getElementById("drawCanvas");
     const ctx = canvas.getContext("2d");
 
-    const lockScreen = document.getElementById("lockScreen");
-    const lockText = document.getElementById("lockText");
-    const lockInput = document.getElementById("lockInput");
-    const lockActionBtn = document.getElementById("lockActionBtn");
-    const forgetPasswordBtn = document.getElementById("forgetPasswordBtn");
     const toggleLockBtn = document.getElementById("toggleLockBtn");
 
     function escapeHtml(str){
@@ -917,8 +901,30 @@
       return localStorage.getItem(LOCK_ENABLED_KEY) === "true";
     }
 
+    function getSavedPassword(){
+      return localStorage.getItem(PASS_KEY) || "";
+    }
+
     function updateLockButtonText(){
       toggleLockBtn.textContent = isLockEnabled() ? "Disable Lock" : "Enable Lock";
+    }
+
+    function showModal(modal){
+      modal.classList.add("show");
+      modalOverlay.classList.add("show");
+    }
+
+    function hideModal(modal){
+      modal.classList.remove("show");
+      if (!document.querySelector(".modal.show")) {
+        modalOverlay.classList.remove("show");
+      }
+    }
+
+    function closeAllModals(){
+      [saveModal, renameModal, lockModal, passwordPromptModal, changePasswordModal, forgotConfirmModal]
+        .forEach(m => m.classList.remove("show"));
+      modalOverlay.classList.remove("show");
     }
 
     function showPage(page){
@@ -930,30 +936,22 @@
       if(page === homePage){
         pageTitle.textContent = "Home";
         saveBtn.style.display = "none";
-        saveBtn.textContent = "Save";
-        saveBtn.style.background = "var(--accent)";
-        saveBtn.style.color = "#fff";
+        backBtn.style.display = "none";
         fabWrap.style.display = "block";
       }else if(page === editorPage){
         pageTitle.textContent = state.editingId ? "Edit Note" : "New Note";
         saveBtn.style.display = "inline-block";
-        saveBtn.textContent = "Save";
-        saveBtn.style.background = "var(--accent)";
-        saveBtn.style.color = "#fff";
+        backBtn.style.display = "inline-block";
         fabWrap.style.display = "none";
       }else if(page === deletedPage){
         pageTitle.textContent = "Deleted Notes";
-        saveBtn.style.display = "inline-block";
-        saveBtn.textContent = "Back to Home";
-        saveBtn.style.background = "var(--panel-2)";
-        saveBtn.style.color = "var(--text)";
+        saveBtn.style.display = "none";
+        backBtn.style.display = "inline-block";
         fabWrap.style.display = "none";
       }else{
         pageTitle.textContent = "About";
-        saveBtn.style.display = "inline-block";
-        saveBtn.textContent = "Back to Home";
-        saveBtn.style.background = "var(--panel-2)";
-        saveBtn.style.color = "var(--text)";
+        saveBtn.style.display = "none";
+        backBtn.style.display = "inline-block";
         fabWrap.style.display = "none";
       }
     }
@@ -1100,21 +1098,6 @@
       contextBar.classList.remove("show");
       contextOverlay.classList.remove("show");
       state.selectedId = null;
-    }
-
-    function showModal(modal){
-      modal.classList.add("show");
-      modalOverlay.classList.add("show");
-    }
-
-    function hideModal(modal){
-      modal.classList.remove("show");
-      modalOverlay.classList.remove("show");
-    }
-
-    function closeAllModals(){
-      [saveModal, renameModal].forEach(m => m.classList.remove("show"));
-      modalOverlay.classList.remove("show");
     }
 
     function attachLongPress(){
@@ -1468,34 +1451,18 @@
       micBtn.textContent = "🎤 Voice";
     }
 
-    function openLockPrompt(mode = "unlock"){
-      lockScreen.style.display = "flex";
-      lockInput.value = "";
-
-      if(mode === "unlock"){
-        lockText.textContent = "Enter password";
-        lockActionBtn.textContent = "OK";
-        forgetPasswordBtn.style.display = "inline-block";
-      }else if(mode === "set"){
-        lockText.textContent = "Set a password";
-        lockActionBtn.textContent = "Save";
-        forgetPasswordBtn.style.display = "none";
-      }else if(mode === "change"){
-        lockText.textContent = "Set new password";
-        lockActionBtn.textContent = "Save";
-        forgetPasswordBtn.style.display = "none";
-      }
+    function validatePassword(pass){
+      return String(pass).trim().length >= 4;
     }
 
-    function closeLockPrompt(){
-      lockScreen.style.display = "none";
-      lockInput.value = "";
+    function startForgotResetAnimation(){
+      showModal(forgotConfirmModal);
+      forgotConfirmModal.classList.remove("reset-animate");
+      void forgotConfirmModal.offsetWidth;
+      forgotConfirmModal.classList.add("reset-animate");
     }
 
-    function resetAllDataAndPassword(){
-      const yes = confirm("Reset password? All saved notes and deleted notes will be permanently deleted.");
-      if(!yes) return;
-
+    function resetEverything(){
       localStorage.removeItem(DB_KEY);
       localStorage.removeItem(PASS_KEY);
       localStorage.removeItem(LOCK_ENABLED_KEY);
@@ -1505,27 +1472,18 @@
       saveDB();
       renderNotes();
       renderDeleted();
+      closeAllModals();
       updateLockButtonText();
-      closeLockPrompt();
       showPage(homePage);
       alert("Password reset complete. All notes have been deleted.");
     }
 
-    function checkLockOnStart(){
+    function openPasswordPromptIfNeeded(){
       const lockEnabled = isLockEnabled();
-      const savedPass = localStorage.getItem(PASS_KEY);
-
+      const savedPass = getSavedPassword();
       if(lockEnabled && savedPass){
-        openLockPrompt("unlock");
-        lockActionBtn.onclick = () => {
-          if(lockInput.value === savedPass){
-            closeLockPrompt();
-          }else{
-            alert("Wrong password");
-          }
-        };
-      } else {
-        closeLockPrompt();
+        document.getElementById("passwordPromptInput").value = "";
+        showModal(passwordPromptModal);
       }
     }
 
@@ -1550,66 +1508,85 @@
         closeDrawer();
         alert("Lock disabled");
       }else{
-        const existingPass = localStorage.getItem(PASS_KEY);
-        if(existingPass){
-          localStorage.setItem(LOCK_ENABLED_KEY, "true");
-          updateLockButtonText();
-          closeDrawer();
-          alert("Lock enabled");
-        }else{
-          closeDrawer();
-          openLockPrompt("set");
-          lockActionBtn.onclick = () => {
-            const val = lockInput.value.trim();
-            if(!val){
-              alert("Enter a password");
-              return;
-            }
-            localStorage.setItem(PASS_KEY, val);
-            localStorage.setItem(LOCK_ENABLED_KEY, "true");
-            updateLockButtonText();
-            closeLockPrompt();
-            alert("Lock enabled");
-          };
-        }
+        closeDrawer();
+        document.getElementById("lockModalTitle").textContent = "Enable Lock";
+        document.getElementById("lockModalDesc").textContent = "Enter a password with at least 4 characters.";
+        document.getElementById("lockPasswordInput").value = "";
+        showModal(lockModal);
       }
+    });
+
+    document.getElementById("lockCancelBtn").addEventListener("click", () => hideModal(lockModal));
+
+    document.getElementById("lockSaveBtn").addEventListener("click", () => {
+      const val = document.getElementById("lockPasswordInput").value.trim();
+      if(!validatePassword(val)){
+        alert("Password must be at least 4 characters");
+        return;
+      }
+      localStorage.setItem(PASS_KEY, val);
+      localStorage.setItem(LOCK_ENABLED_KEY, "true");
+      updateLockButtonText();
+      hideModal(lockModal);
+      alert("Lock enabled");
     });
 
     document.getElementById("changePassBtn").addEventListener("click", () => {
       closeDrawer();
-      openLockPrompt("change");
-      lockActionBtn.onclick = () => {
-        const val = lockInput.value.trim();
-        if(!val){
-          alert("Enter a password");
-          return;
-        }
-        localStorage.setItem(PASS_KEY, val);
-        updateLockButtonText();
-        closeLockPrompt();
-        alert("Password saved");
-      };
+      document.getElementById("changePasswordInput").value = "";
+      showModal(changePasswordModal);
     });
 
-    document.getElementById("resetPassBtn").addEventListener("click", () => {
-      closeDrawer();
-      resetAllDataAndPassword();
+    document.getElementById("changePasswordCancelBtn").addEventListener("click", () => {
+      hideModal(changePasswordModal);
     });
 
-    forgetPasswordBtn.addEventListener("click", resetAllDataAndPassword);
+    document.getElementById("changePasswordSaveBtn").addEventListener("click", () => {
+      const val = document.getElementById("changePasswordInput").value.trim();
+      if(!validatePassword(val)){
+        alert("Password must be at least 4 characters");
+        return;
+      }
+      localStorage.setItem(PASS_KEY, val);
+      alert("Password saved");
+      hideModal(changePasswordModal);
+    });
+
+    document.getElementById("forgotPasswordBtn").addEventListener("click", () => {
+      hideModal(changePasswordModal);
+      startForgotResetAnimation();
+    });
+
+    document.getElementById("forgotFromPromptBtn").addEventListener("click", () => {
+      hideModal(passwordPromptModal);
+      startForgotResetAnimation();
+    });
+
+    document.getElementById("forgotConfirmCancelBtn").addEventListener("click", () => {
+      hideModal(forgotConfirmModal);
+    });
+
+    document.getElementById("forgotConfirmOkBtn").addEventListener("click", () => {
+      resetEverything();
+    });
+
+    document.getElementById("passwordPromptOkBtn").addEventListener("click", () => {
+      const entered = document.getElementById("passwordPromptInput").value;
+      const savedPass = getSavedPassword();
+      if(entered === savedPass){
+        hideModal(passwordPromptModal);
+      }else{
+        alert("Wrong password");
+      }
+    });
 
     document.getElementById("fabMain").addEventListener("click", () => fabWrap.classList.toggle("open"));
     document.getElementById("addTextBtn").addEventListener("click", () => { fabWrap.classList.remove("open"); openNewEditor("text"); });
     document.getElementById("addImageBtn").addEventListener("click", () => { fabWrap.classList.remove("open"); openNewEditor("image"); });
     document.getElementById("addDrawingBtn").addEventListener("click", () => { fabWrap.classList.remove("open"); openNewEditor("drawing"); });
 
-    saveBtn.addEventListener("click", () => {
-      if (deletedPage.classList.contains("active") || aboutPage.classList.contains("active")) {
-        showPage(homePage);
-      } else {
-        openSaveModal();
-      }
-    });
+    saveBtn.addEventListener("click", openSaveModal);
+    backBtn.addEventListener("click", () => showPage(homePage));
 
     document.getElementById("saveCancelBtn").addEventListener("click", () => hideModal(saveModal));
     document.getElementById("saveConfirmBtn").addEventListener("click", saveCurrentNote);
@@ -1663,7 +1640,7 @@
     renderNotes();
     renderDeleted();
     updateLockButtonText();
-    checkLockOnStart();
+    openPasswordPromptIfNeeded();
   </script>
 </body>
 </html>
