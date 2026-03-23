@@ -6,7 +6,7 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   />
-  <title>Smart Notes App Advanced</title>
+  <title>Smart Notes App Final</title>
   <style>
     :root{
       --bg:#060606;
@@ -441,6 +441,7 @@
       z-index:90;
       padding:16px 14px;
       box-shadow:var(--shadow);
+      overflow-y:auto;
     }
 
     .drawer.show{
@@ -542,6 +543,7 @@
       display:flex;
       justify-content:flex-end;
       gap:10px;
+      flex-wrap:wrap;
     }
 
     .modal-btn{
@@ -631,16 +633,18 @@
       background:rgba(255,255,255,.1);
       color:#fff;
       text-align:center;
-      letter-spacing:2px;
+      letter-spacing:1px;
     }
 
     .lock-actions{
       display:flex;
       gap:10px;
+      flex-wrap:wrap;
     }
 
     .lock-actions button{
       flex:1;
+      min-width:120px;
       padding:13px;
       border-radius:16px;
       border:none;
@@ -656,18 +660,19 @@
     .lock-secondary{
       background:rgba(255,255,255,.12);
       color:#fff;
+      border:1px solid rgba(255,255,255,.18);
     }
   </style>
 </head>
 <body>
   <div class="lock-screen" id="lockScreen" style="display:none;">
     <div class="lock-card">
-      <h2>🔒 Smart Notes Lock</h2>
-      <div class="small" id="lockText">4 digit passcode set karo</div>
-      <input type="password" id="lockInput" maxlength="8" placeholder="Passcode" />
+      <h2>🔒 App Lock</h2>
+      <div class="small" id="lockText">Enter password</div>
+      <input type="password" id="lockInput" maxlength="20" placeholder="Password" />
       <div class="lock-actions">
-        <button class="lock-secondary" id="skipLockBtn">Skip</button>
-        <button class="lock-primary" id="lockActionBtn">Continue</button>
+        <button class="lock-secondary" id="forgetPasswordBtn">Forget Password</button>
+        <button class="lock-primary" id="lockActionBtn">OK</button>
       </div>
     </div>
   </div>
@@ -676,7 +681,7 @@
     <header class="topbar">
       <div class="left-head">
         <button class="icon-btn" id="menuBtn">☰</button>
-        <div class="title" id="pageTitle">Smart Notes</div>
+        <div class="title" id="pageTitle">Home</div>
       </div>
       <button class="save-btn" id="saveBtn" style="display:none;">Save</button>
     </header>
@@ -699,7 +704,7 @@
           <div class="toolbar">
             <button class="toolbar-btn" id="micBtn">🎤 Voice</button>
           </div>
-          <textarea class="editor-field editor-text" id="textInput" placeholder="Yahan likho..."></textarea>
+          <textarea class="editor-field editor-text" id="textInput" placeholder="Write here..."></textarea>
         </div>
 
         <div id="imageEditor" style="display:none;">
@@ -710,7 +715,7 @@
           <input type="file" id="galleryInput" accept="image/*" hidden />
           <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden />
           <img class="preview-img" id="imagePreview" alt="preview" />
-          <textarea class="editor-field editor-text" id="imageTextInput" placeholder="Photo ke baare me likho..."></textarea>
+          <textarea class="editor-field editor-text" id="imageTextInput" placeholder="Write about this photo..."></textarea>
         </div>
 
         <div id="drawingEditor" style="display:none;">
@@ -725,7 +730,7 @@
           <div class="canvas-wrap">
             <canvas id="drawCanvas"></canvas>
           </div>
-          <textarea class="editor-field editor-text" id="drawingTextInput" placeholder="Drawing ke baare me likho..."></textarea>
+          <textarea class="editor-field editor-text" id="drawingTextInput" placeholder="Write about this drawing..."></textarea>
         </div>
       </div>
     </section>
@@ -736,22 +741,15 @@
 
     <section class="page" id="aboutPage">
       <div class="about-card">
-        <h2>📝 Smart-Notes-App</h2>
-        <p><strong>Smart-Notes-App</strong> is a core module for the <strong>Nexa AI Voice Assistant</strong>. It transforms simple voice or text inputs into an organized digital database, specifically designed for students and developers to manage their daily tasks and academic assignments.</p>
+        <h2>📝 Smart Notes App</h2>
+        <p><strong>Smart Notes App</strong> helps students and developers manage text, image, and drawing notes in one place.</p>
 
         <h3>✨ Key Features</h3>
-        <p>• <strong>Smart Storage:</strong> Uses JSON to store notes as structured data, making them easy to search and sort.</p>
-        <p>• <strong>Auto-Timestamp:</strong> Every note is automatically tagged with the exact date and time.</p>
-        <p>• <strong>Nexa Integration:</strong> Optimized to work with Python voice recognition for hands-free note-taking.</p>
-        <p>• <strong>CRUD Operations:</strong> Full support to Create, Read, and Delete notes using unique IDs.</p>
-        <p>• <strong>Privacy First:</strong> All data is stored locally on your device.</p>
-
-        <h3>🛠️ Technical Implementation</h3>
-        <p>Built using HTML, CSS and JavaScript with localStorage, drawing canvas, and browser-based media and speech features.</p>
-
-        <h3>📖 Usage Example</h3>
-        <p><strong>Input:</strong> "Submit BA Sem 1 Assignment by Friday"</p>
-        <p><strong>App Action:</strong> Saves the note with timestamp for future retrieval.</p>
+        <p>• <strong>Smart Storage:</strong> Stores notes in a structured way for easy access.</p>
+        <p>• <strong>Auto Timestamp:</strong> Every note gets date and time automatically.</p>
+        <p>• <strong>Multi Note Types:</strong> Text, image, and drawing notes supported.</p>
+        <p>• <strong>Create, Edit, Delete:</strong> Full note management with restore option.</p>
+        <p>• <strong>Privacy First:</strong> Data stays locally on your device.</p>
       </div>
     </section>
 
@@ -779,7 +777,9 @@
       <button class="drawer-btn" id="themeBtn">Change Theme</button>
       <button class="drawer-btn" id="deletedBtn">Deleted Notes</button>
       <button class="drawer-btn" id="aboutBtn">About</button>
-      <button class="drawer-btn" id="lockBtn">Change Passcode</button>
+      <button class="drawer-btn" id="toggleLockBtn">Enable Lock</button>
+      <button class="drawer-btn" id="changePassBtn">Set / Change Password</button>
+      <button class="drawer-btn" id="resetPassBtn">Reset Password</button>
     </aside>
 
     <div class="context-overlay" id="contextOverlay"></div>
@@ -794,11 +794,11 @@
 
     <div class="modal" id="saveModal">
       <h3>Save Note</h3>
-      <input id="saveNameInput" placeholder="Note ka naam" />
+      <input id="saveNameInput" placeholder="Note name" />
       <select id="savePlaceSelect">
-        <option value="app">App me save</option>
-        <option value="phone">Phone me file save</option>
-        <option value="both">Dono jagah</option>
+        <option value="app">Save in app</option>
+        <option value="phone">Save file in phone</option>
+        <option value="both">Save in both</option>
       </select>
       <div class="modal-actions">
         <button class="modal-btn" id="saveCancelBtn">Cancel</button>
@@ -817,9 +817,10 @@
   </div>
 
   <script>
-    const DB_KEY = "smart_notes_advanced_v2";
-    const THEME_KEY = "smart_notes_theme_v2";
-    const PASS_KEY = "smart_notes_pass_v2";
+    const DB_KEY = "smart_notes_final_v1";
+    const THEME_KEY = "smart_notes_theme_final_v1";
+    const PASS_KEY = "smart_notes_pass_final_v1";
+    const LOCK_ENABLED_KEY = "smart_notes_lock_enabled_final_v1";
 
     const state = {
       notes: [],
@@ -876,6 +877,8 @@
     const lockText = document.getElementById("lockText");
     const lockInput = document.getElementById("lockInput");
     const lockActionBtn = document.getElementById("lockActionBtn");
+    const forgetPasswordBtn = document.getElementById("forgetPasswordBtn");
+    const toggleLockBtn = document.getElementById("toggleLockBtn");
 
     function escapeHtml(str){
       return String(str || "")
@@ -910,6 +913,14 @@
       closeDrawer();
     }
 
+    function isLockEnabled(){
+      return localStorage.getItem(LOCK_ENABLED_KEY) === "true";
+    }
+
+    function updateLockButtonText(){
+      toggleLockBtn.textContent = isLockEnabled() ? "Disable Lock" : "Enable Lock";
+    }
+
     function showPage(page){
       [homePage, editorPage, deletedPage, aboutPage].forEach(p => p.classList.remove("active"));
       page.classList.add("active");
@@ -917,16 +928,18 @@
       closeContext();
 
       if(page === homePage){
-        pageTitle.textContent = "Smart Notes";
+        pageTitle.textContent = "Home";
         saveBtn.style.display = "none";
         saveBtn.textContent = "Save";
         saveBtn.style.background = "var(--accent)";
+        saveBtn.style.color = "#fff";
         fabWrap.style.display = "block";
       }else if(page === editorPage){
         pageTitle.textContent = state.editingId ? "Edit Note" : "New Note";
         saveBtn.style.display = "inline-block";
         saveBtn.textContent = "Save";
         saveBtn.style.background = "var(--accent)";
+        saveBtn.style.color = "#fff";
         fabWrap.style.display = "none";
       }else if(page === deletedPage){
         pageTitle.textContent = "Deleted Notes";
@@ -952,8 +965,8 @@
     function filteredNotes(){
       const q = searchInput.value.trim().toLowerCase();
       let notes = [...state.notes].sort((a,b)=>{
-        if(a.pinned !== b.pinned) return b.pinned - a.pinned;
-        return b.updatedAt - a.updatedAt;
+        if((a.pinned ? 1 : 0) !== (b.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        return (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt);
       });
 
       if(!q) return notes;
@@ -975,8 +988,8 @@
           <div class="empty">
             <div>
               <div class="empty-icon">📝</div>
-              <div>${searchInput.value.trim() ? "Koi matching note nahi mila" : "Abhi koi note nahi hai"}</div>
-              <div class="small" style="margin-top:8px;">Niche + dabao aur note banao</div>
+              <div>${searchInput.value.trim() ? "No matching note found" : "No notes yet"}</div>
+              <div class="small" style="margin-top:8px;">Tap + to create a note</div>
             </div>
           </div>
         `;
@@ -990,7 +1003,7 @@
               <div class="note-name">${escapeHtml(note.name)}</div>
               <div class="note-meta">
                 Type: ${escapeHtml(note.type)}<br>
-                Updated: ${formatTime(note.updatedAt)}
+                Updated: ${formatTime(note.updatedAt || note.createdAt)}
               </div>
               <div class="note-text">${escapeHtml((note.text || "").slice(0, 220))}</div>
               ${note.image ? `<img class="note-preview-img" src="${note.image}" alt="img" />` : ""}
@@ -1008,7 +1021,7 @@
           <div class="empty">
             <div>
               <div class="empty-icon">🗑</div>
-              <div>Deleted notes empty hai</div>
+              <div>No deleted notes</div>
               <button class="seg-btn" style="margin-top:14px;" onclick="goHome()">Back to Home</button>
             </div>
           </div>
@@ -1068,6 +1081,7 @@
     }
 
     function openDrawer(){
+      updateLockButtonText();
       drawer.classList.add("show");
       drawerOverlay.classList.add("show");
     }
@@ -1183,7 +1197,7 @@
     function buildNoteObject(id){
       const name = noteNameField.value.trim() || document.getElementById("saveNameInput").value.trim();
       if(!name){
-        alert("Note ka naam likho");
+        alert("Enter note name");
         return null;
       }
 
@@ -1207,7 +1221,7 @@
       if(state.mode === "text"){
         const val = textInput.value.trim();
         if(!val){
-          alert("Kuchh likho phir save karo");
+          alert("Write something before saving");
           return null;
         }
         obj.text = val;
@@ -1215,7 +1229,7 @@
 
       if(state.mode === "image"){
         if(!state.imageData){
-          alert("Pehle image select karo");
+          alert("Please select an image first");
           return null;
         }
         obj.image = state.imageData;
@@ -1303,7 +1317,7 @@
     function renameSelected(){
       const newName = document.getElementById("renameInput").value.trim();
       if(!newName){
-        alert("Naya naam likho");
+        alert("Enter new name");
         return;
       }
       const note = state.notes.find(n => n.id === state.selectedId);
@@ -1454,57 +1468,66 @@
       micBtn.textContent = "🎤 Voice";
     }
 
-    function checkLock(){
-      const savedPass = localStorage.getItem(PASS_KEY);
+    function openLockPrompt(mode = "unlock"){
       lockScreen.style.display = "flex";
+      lockInput.value = "";
 
-      if(savedPass){
-        lockText.textContent = "Passcode enter karo";
-        lockActionBtn.textContent = "Unlock";
-        lockActionBtn.onclick = () => {
-          if(lockInput.value === savedPass){
-            lockScreen.style.display = "none";
-            lockInput.value = "";
-          }else{
-            alert("Wrong passcode");
-          }
-        };
-      }else{
-        lockText.textContent = "4 digit passcode set karo";
-        lockActionBtn.textContent = "Set Passcode";
-        lockActionBtn.onclick = () => {
-          const val = lockInput.value.trim();
-          if(!val){
-            alert("Passcode likho");
-            return;
-          }
-          localStorage.setItem(PASS_KEY, val);
-          lockScreen.style.display = "none";
-          lockInput.value = "";
-        };
+      if(mode === "unlock"){
+        lockText.textContent = "Enter password";
+        lockActionBtn.textContent = "OK";
+        forgetPasswordBtn.style.display = "inline-block";
+      }else if(mode === "set"){
+        lockText.textContent = "Set a password";
+        lockActionBtn.textContent = "Save";
+        forgetPasswordBtn.style.display = "none";
+      }else if(mode === "change"){
+        lockText.textContent = "Set new password";
+        lockActionBtn.textContent = "Save";
+        forgetPasswordBtn.style.display = "none";
       }
     }
 
-    function changePasscode(){
-      closeDrawer();
-      lockScreen.style.display = "flex";
-      lockText.textContent = "Naya passcode set karo";
-      lockActionBtn.textContent = "Save";
+    function closeLockPrompt(){
+      lockScreen.style.display = "none";
       lockInput.value = "";
-      lockActionBtn.onclick = () => {
-        const val = lockInput.value.trim();
-        if(!val){
-          alert("Passcode likho");
-          return;
-        }
-        localStorage.setItem(PASS_KEY, val);
-        lockScreen.style.display = "none";
-      };
     }
 
-    document.getElementById("skipLockBtn").addEventListener("click", () => {
-      lockScreen.style.display = "none";
-    });
+    function resetAllDataAndPassword(){
+      const yes = confirm("Reset password? All saved notes and deleted notes will be permanently deleted.");
+      if(!yes) return;
+
+      localStorage.removeItem(DB_KEY);
+      localStorage.removeItem(PASS_KEY);
+      localStorage.removeItem(LOCK_ENABLED_KEY);
+
+      state.notes = [];
+      state.deleted = [];
+      saveDB();
+      renderNotes();
+      renderDeleted();
+      updateLockButtonText();
+      closeLockPrompt();
+      showPage(homePage);
+      alert("Password reset complete. All notes have been deleted.");
+    }
+
+    function checkLockOnStart(){
+      const lockEnabled = isLockEnabled();
+      const savedPass = localStorage.getItem(PASS_KEY);
+
+      if(lockEnabled && savedPass){
+        openLockPrompt("unlock");
+        lockActionBtn.onclick = () => {
+          if(lockInput.value === savedPass){
+            closeLockPrompt();
+          }else{
+            alert("Wrong password");
+          }
+        };
+      } else {
+        closeLockPrompt();
+      }
+    }
 
     document.getElementById("menuBtn").addEventListener("click", openDrawer);
     drawerOverlay.addEventListener("click", closeDrawer);
@@ -1512,12 +1535,68 @@
     modalOverlay.addEventListener("click", closeAllModals);
 
     document.getElementById("themeBtn").addEventListener("click", toggleTheme);
+
     document.getElementById("deletedBtn").addEventListener("click", () => {
       renderDeleted();
       showPage(deletedPage);
     });
+
     document.getElementById("aboutBtn").addEventListener("click", () => showPage(aboutPage));
-    document.getElementById("lockBtn").addEventListener("click", changePasscode);
+
+    toggleLockBtn.addEventListener("click", () => {
+      if(isLockEnabled()){
+        localStorage.setItem(LOCK_ENABLED_KEY, "false");
+        updateLockButtonText();
+        closeDrawer();
+        alert("Lock disabled");
+      }else{
+        const existingPass = localStorage.getItem(PASS_KEY);
+        if(existingPass){
+          localStorage.setItem(LOCK_ENABLED_KEY, "true");
+          updateLockButtonText();
+          closeDrawer();
+          alert("Lock enabled");
+        }else{
+          closeDrawer();
+          openLockPrompt("set");
+          lockActionBtn.onclick = () => {
+            const val = lockInput.value.trim();
+            if(!val){
+              alert("Enter a password");
+              return;
+            }
+            localStorage.setItem(PASS_KEY, val);
+            localStorage.setItem(LOCK_ENABLED_KEY, "true");
+            updateLockButtonText();
+            closeLockPrompt();
+            alert("Lock enabled");
+          };
+        }
+      }
+    });
+
+    document.getElementById("changePassBtn").addEventListener("click", () => {
+      closeDrawer();
+      openLockPrompt("change");
+      lockActionBtn.onclick = () => {
+        const val = lockInput.value.trim();
+        if(!val){
+          alert("Enter a password");
+          return;
+        }
+        localStorage.setItem(PASS_KEY, val);
+        updateLockButtonText();
+        closeLockPrompt();
+        alert("Password saved");
+      };
+    });
+
+    document.getElementById("resetPassBtn").addEventListener("click", () => {
+      closeDrawer();
+      resetAllDataAndPassword();
+    });
+
+    forgetPasswordBtn.addEventListener("click", resetAllDataAndPassword);
 
     document.getElementById("fabMain").addEventListener("click", () => fabWrap.classList.toggle("open"));
     document.getElementById("addTextBtn").addEventListener("click", () => { fabWrap.classList.remove("open"); openNewEditor("text"); });
@@ -1583,7 +1662,8 @@
     applyTheme();
     renderNotes();
     renderDeleted();
-    checkLock();
+    updateLockButtonText();
+    checkLockOnStart();
   </script>
 </body>
 </html>
