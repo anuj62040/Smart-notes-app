@@ -1,1561 +1,294 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
-  <title>Smart Notes App Advanced</title>
-  <style>
-    :root{
-      --bg:#060606;
-      --panel:#111111;
-      --panel-2:#1a1a1a;
-      --card:#101010;
-      --text:#ffffff;
-      --muted:#9ca3af;
-      --accent:#22c1ff;
-      --accent-2:#2563eb;
-      --danger:#ef4444;
-      --success:#10b981;
-      --warning:#f59e0b;
-      --border:rgba(255,255,255,0.08);
-      --shadow:0 12px 30px rgba(0,0,0,.35);
-    }
-
-    body.light{
-      --bg:#f5f7fb;
-      --panel:#ffffff;
-      --panel-2:#edf2f7;
-      --card:#ffffff;
-      --text:#111827;
-      --muted:#6b7280;
-      --accent:#2563eb;
-      --accent-2:#1d4ed8;
-      --danger:#dc2626;
-      --success:#059669;
-      --warning:#d97706;
-      --border:rgba(0,0,0,0.08);
-      --shadow:0 12px 24px rgba(0,0,0,.08);
-    }
-
-    *{
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-    }
-
-    html,body{
-      margin:0;
-      width:100%;
-      height:100%;
-      overflow:hidden;
-      background:var(--bg);
-      color:var(--text);
-      font-family:Arial,sans-serif;
-      touch-action:manipulation;
-    }
-
-    button,input,textarea,select{
-      font:inherit;
-    }
-
-    .app{
-      width:100%;
-      height:100%;
-      position:relative;
-      background:var(--bg);
-    }
-
-    .topbar{
-      position:fixed;
-      top:0;left:0;right:0;
-      height:66px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:0 12px;
-      background:rgba(0,0,0,.72);
-      backdrop-filter:blur(12px);
-      border-bottom:1px solid var(--border);
-      z-index:50;
-    }
-
-    body.light .topbar{
-      background:rgba(255,255,255,.85);
-    }
-
-    .left-head{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
-    }
-
-    .title{
-      font-weight:700;
-      font-size:18px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width:45vw;
-    }
-
-    .icon-btn,.save-btn,.mini-btn,.drawer-btn,.toolbar-btn,.seg-btn,.modal-btn{
-      border:none;
-      outline:none;
-      cursor:pointer;
-      border-radius:14px;
-      background:var(--panel-2);
-      color:var(--text);
-      border:1px solid var(--border);
-    }
-
-    .icon-btn{
-      width:46px;
-      height:46px;
-      font-size:22px;
-    }
-
-    .save-btn{
-      padding:11px 16px;
-      font-weight:700;
-      background:var(--accent);
-      color:#fff;
-      min-width:82px;
-    }
-
-    .page{
-      position:absolute;
-      inset:66px 0 0 0;
-      overflow-y:auto;
-      padding:12px 12px 110px;
-      display:none;
-    }
-
-    .page.active{
-      display:block;
-    }
-
-    .search-wrap{
-      margin-bottom:12px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .search{
-      flex:1;
-      background:var(--panel);
-      color:var(--text);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:14px 16px;
-      outline:none;
-      box-shadow:var(--shadow);
-    }
-
-    .search-info{
-      color:var(--muted);
-      font-size:13px;
-      margin:4px 2px 14px;
-    }
-
-    .notes-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:14px;
-    }
-
-    @media (min-width:780px){
-      .notes-grid{
-        grid-template-columns:repeat(2,1fr);
-      }
-    }
-
-    .note-card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:22px;
-      padding:15px;
-      box-shadow:var(--shadow);
-      position:relative;
-      overflow:hidden;
-      user-select:none;
-    }
-
-    .note-card.pinned::before{
-      content:"📌 Pinned";
-      position:absolute;
-      top:12px;
-      right:12px;
-      background:rgba(255,255,255,.08);
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:6px 10px;
-      font-size:12px;
-    }
-
-    .note-name{
-      font-size:18px;
-      font-weight:700;
-      margin-bottom:8px;
-      padding-right:84px;
-      word-break:break-word;
-    }
-
-    .note-meta{
-      color:var(--muted);
-      font-size:12px;
-      margin-bottom:10px;
-      line-height:1.5;
-    }
-
-    .note-text{
-      white-space:pre-wrap;
-      line-height:1.5;
-      word-break:break-word;
-      font-size:15px;
-    }
-
-    .note-preview-img{
-      width:100%;
-      margin-top:12px;
-      border-radius:16px;
-      border:1px solid var(--border);
-      display:block;
-      max-height:250px;
-      object-fit:cover;
-      background:#000;
-    }
-
-    .empty{
-      min-height:calc(100vh - 180px);
-      display:grid;
-      place-items:center;
-      text-align:center;
-      color:var(--muted);
-      padding:20px;
-    }
-
-    .empty-icon{
-      font-size:48px;
-      margin-bottom:10px;
-    }
-
-    .fab-wrap{
-      position:fixed;
-      right:22px;
-      bottom:22px;
-      z-index:60;
-    }
-
-    .fab-options{
-      display:flex;
-      flex-direction:column;
-      align-items:flex-end;
-      gap:12px;
-      margin-bottom:12px;
-      pointer-events:none;
-    }
-
-    .fab-wrap.open .fab-options{
-      pointer-events:auto;
-    }
-
-    .fab-item{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      transform:translateY(16px) scale(.75);
-      opacity:0;
-      transition:.28s ease;
-    }
-
-    .fab-wrap.open .fab-item{
-      transform:translateY(0) scale(1);
-      opacity:1;
-    }
-
-    .fab-label{
-      background:var(--panel);
-      color:var(--text);
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:10px 12px;
-      box-shadow:var(--shadow);
-      font-size:14px;
-    }
-
-    .fab-mini{
-      width:52px;
-      height:52px;
-      font-size:22px;
-    }
-
-    .fab-main{
-      width:72px;
-      height:72px;
-      border:none;
-      border-radius:50%;
-      cursor:pointer;
-      font-size:42px;
-      color:#fff;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      box-shadow:0 16px 28px rgba(0,0,0,.4);
-      transition:.25s ease;
-    }
-
-    .fab-wrap.open .fab-main{
-      transform:rotate(45deg);
-    }
-
-    .editor-box{
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:24px;
-      padding:14px;
-      box-shadow:var(--shadow);
-    }
-
-    .mode-badge{
-      display:inline-block;
-      background:rgba(255,255,255,.08);
-      border:1px solid var(--border);
-      border-radius:999px;
-      padding:8px 12px;
-      font-size:13px;
-      margin-bottom:12px;
-    }
-
-    .editor-field{
-      width:100%;
-      background:var(--panel-2);
-      color:var(--text);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:14px;
-      outline:none;
-      margin-bottom:12px;
-    }
-
-    .editor-title{
-      font-weight:700;
-      font-size:16px;
-    }
-
-    .editor-text{
-      min-height:200px;
-      resize:none;
-    }
-
-    .toolbar{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-bottom:12px;
-    }
-
-    .toolbar-btn{
-      padding:10px 14px;
-    }
-
-    .toolbar-btn.active{
-      background:var(--accent);
-      color:#fff;
-    }
-
-    .preview-img{
-      width:100%;
-      display:none;
-      border-radius:18px;
-      margin-bottom:12px;
-      border:1px solid var(--border);
-      max-height:290px;
-      object-fit:contain;
-      background:#000;
-    }
-
-    .canvas-wrap{
-      background:#fff;
-      border-radius:18px;
-      border:1px solid var(--border);
-      overflow:hidden;
-    }
-
-    #drawCanvas{
-      display:block;
-      width:100%;
-      height:420px;
-      background:#fff;
-      touch-action:none;
-    }
-
-    .range-box,.color-box{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      background:var(--panel-2);
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:10px 12px;
-    }
-
-    input[type="range"]{
-      width:110px;
-    }
-
-    input[type="color"]{
-      width:34px;
-      height:34px;
-      border:none;
-      background:transparent;
-      padding:0;
-    }
-
-    .drawer-overlay,.context-overlay,.modal-overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.46);
-      opacity:0;
-      pointer-events:none;
-      transition:.24s ease;
-      z-index:80;
-    }
-
-    .drawer-overlay.show,.context-overlay.show,.modal-overlay.show{
-      opacity:1;
-      pointer-events:auto;
-    }
-
-    .drawer{
-      position:fixed;
-      top:0;left:0;
-      width:290px;
-      max-width:86%;
-      height:100%;
-      background:var(--panel);
-      border-right:1px solid var(--border);
-      transform:translateX(-100%);
-      transition:.28s ease;
-      z-index:90;
-      padding:16px 14px;
-      box-shadow:var(--shadow);
-    }
-
-    .drawer.show{
-      transform:translateX(0);
-    }
-
-    .drawer h2{
-      margin:8px 0 18px;
-    }
-
-    .drawer-btn{
-      width:100%;
-      text-align:left;
-      padding:14px 16px;
-      margin-bottom:10px;
-    }
-
-    .context-bar{
-      position:fixed;
-      top:76px;
-      left:50%;
-      transform:translateX(-50%) translateY(-16px);
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:10px;
-      display:flex;
-      gap:8px;
-      max-width:calc(100% - 18px);
-      overflow-x:auto;
-      box-shadow:var(--shadow);
-      opacity:0;
-      pointer-events:none;
-      transition:.22s ease;
-      z-index:100;
-    }
-
-    .context-bar.show{
-      opacity:1;
-      pointer-events:auto;
-      transform:translateX(-50%) translateY(0);
-    }
-
-    .seg-btn{
-      padding:10px 14px;
-      white-space:nowrap;
-    }
-
-    .seg-btn.danger{
-      background:var(--danger);
-      color:#fff;
-    }
-
-    .modal{
-      position:fixed;
-      top:50%;
-      left:50%;
-      transform:translate(-50%,-50%) scale(.92);
-      width:min(92vw,430px);
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:22px;
-      padding:18px;
-      box-shadow:var(--shadow);
-      z-index:110;
-      opacity:0;
-      pointer-events:none;
-      transition:.22s ease;
-    }
-
-    .modal.show{
-      opacity:1;
-      pointer-events:auto;
-      transform:translate(-50%,-50%) scale(1);
-    }
-
-    .modal h3{
-      margin:0 0 14px;
-    }
-
-    .modal p{
-      color:var(--muted);
-      line-height:1.5;
-      margin-bottom:12px;
-    }
-
-    .modal input,.modal select{
-      width:100%;
-      background:var(--panel-2);
-      color:var(--text);
-      border:1px solid var(--border);
-      border-radius:14px;
-      padding:13px 14px;
-      outline:none;
-      margin-bottom:12px;
-    }
-
-    .modal-actions{
-      display:flex;
-      justify-content:flex-end;
-      gap:10px;
-    }
-
-    .modal-btn{
-      padding:11px 14px;
-    }
-
-    .modal-btn.primary{
-      background:var(--accent);
-      color:#fff;
-    }
-
-    .trash-card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:18px;
-      padding:14px;
-      margin-bottom:12px;
-      box-shadow:var(--shadow);
-    }
-
-    .trash-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-
-    .restore{
-      background:var(--success);
-      color:#fff;
-    }
-
-    .remove{
-      background:var(--danger);
-      color:#fff;
-    }
-
-    .about-card{
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:24px;
-      padding:18px;
-      box-shadow:var(--shadow);
-      line-height:1.65;
-    }
-
-    .small{
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    .lock-screen{
-      position:fixed;
-      inset:0;
-      background:linear-gradient(160deg,#000,#0b1220);
-      z-index:200;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-    }
-
-    .lock-card{
-      width:min(92vw,420px);
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      backdrop-filter:blur(16px);
-      border-radius:24px;
-      padding:22px;
-      color:#fff;
-      box-shadow:0 18px 34px rgba(0,0,0,.38);
-      text-align:center;
-    }
-
-    .lock-card h2{
-      margin-top:0;
-      margin-bottom:10px;
-    }
-
-    .lock-card input{
-      width:100%;
-      margin:12px 0;
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.16);
-      outline:none;
-      background:rgba(255,255,255,.1);
-      color:#fff;
-      text-align:center;
-      letter-spacing:2px;
-    }
-
-    .lock-actions{
-      display:flex;
-      gap:10px;
-    }
-
-    .lock-actions button{
-      flex:1;
-      padding:13px;
-      border-radius:16px;
-      border:none;
-      cursor:pointer;
-      font-weight:700;
-    }
-
-    .lock-primary{
-      background:#22c1ff;
-      color:#fff;
-    }
-
-    .lock-secondary{
-      background:rgba(255,255,255,.12);
-      color:#fff;
-    }
-  </style>
-</head>
-<body>
-  <div class="lock-screen" id="lockScreen" style="display:none;">
-    <div class="lock-card">
-      <h2>🔒 Smart Notes Lock</h2>
-      <div class="small" id="lockText">4 digit passcode set karo</div>
-      <input type="password" id="lockInput" maxlength="8" placeholder="Passcode" />
-      <div class="lock-actions">
-        <button class="lock-secondary" id="skipLockBtn">Skip</button>
-        <button class="lock-primary" id="lockActionBtn">Continue</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="app">
-    <header class="topbar">
-      <div class="left-head">
-        <button class="icon-btn" id="menuBtn">☰</button>
-        <div class="title" id="pageTitle">Smart Notes</div>
-      </div>
-      <button class="save-btn" id="saveBtn" style="display:none;">Save</button>
-    </header>
-
-    <section class="page active" id="homePage">
-      <div class="search-wrap">
-        <input class="search" id="searchInput" placeholder="Search notes..." />
-      </div>
-      <div class="search-info" id="searchInfo">All notes</div>
-      <div id="notesContainer"></div>
-    </section>
-
-    <section class="page" id="editorPage">
-      <div class="editor-box">
-        <div class="mode-badge" id="modeBadge">Text Note</div>
-
-        <input class="editor-field editor-title" id="noteNameField" placeholder="Note name" />
-
-        <div id="textEditor">
-          <div class="toolbar">
-            <button class="toolbar-btn" id="micBtn">🎤 Voice</button>
-          </div>
-          <textarea class="editor-field editor-text" id="textInput" placeholder="Yahan likho..."></textarea>
-        </div>
-
-        <div id="imageEditor" style="display:none;">
-          <div class="toolbar">
-            <button class="toolbar-btn" id="galleryBtn">Upload Media</button>
-            <button class="toolbar-btn" id="cameraBtn">Camera</button>
-          </div>
-          <input type="file" id="galleryInput" accept="image/*" hidden />
-          <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden />
-          <img class="preview-img" id="imagePreview" alt="preview" />
-          <textarea class="editor-field editor-text" id="imageTextInput" placeholder="Photo ke baare me likho..."></textarea>
-        </div>
-
-        <div id="drawingEditor" style="display:none;">
-          <div class="toolbar">
-            <button class="toolbar-btn active" id="brushBtn">Brush</button>
-            <button class="toolbar-btn" id="eraserBtn">Eraser</button>
-            <div class="color-box">Color <input type="color" id="brushColor" value="#000000" /></div>
-            <div class="range-box">Brush <input type="range" id="brushSize" min="1" max="30" value="4" /></div>
-            <div class="range-box">Eraser <input type="range" id="eraserSize" min="5" max="40" value="16" /></div>
-            <button class="toolbar-btn" id="clearCanvasBtn">Clear</button>
-          </div>
-          <div class="canvas-wrap">
-            <canvas id="drawCanvas"></canvas>
-          </div>
-          <textarea class="editor-field editor-text" id="drawingTextInput" placeholder="Drawing ke baare me likho..."></textarea>
-        </div>
-      </div>
-    </section>
-
-    <section class="page" id="deletedPage">
-      <div id="deletedContainer"></div>
-    </section>
-
-    <section class="page" id="aboutPage">
-      <div class="about-card">
-        <h2>📝 Smart-Notes-App</h2>
-        <p><strong>Smart-Notes-App</strong> is a core module for the <strong>Nexa AI Voice Assistant</strong>. It transforms simple voice or text inputs into an organized digital database, specifically designed for students and developers to manage their daily tasks and academic assignments.</p>
-
-        <h3>✨ Key Features</h3>
-        <p>• <strong>Smart Storage:</strong> Uses JSON to store notes as structured data, making them easy to search and sort.</p>
-        <p>• <strong>Auto-Timestamp:</strong> Every note is automatically tagged with the exact date and time.</p>
-        <p>• <strong>Nexa Integration:</strong> Optimized to work with Python voice recognition for hands-free note-taking.</p>
-        <p>• <strong>CRUD Operations:</strong> Full support to Create, Read, and Delete notes using unique IDs.</p>
-        <p>• <strong>Privacy First:</strong> All data is stored locally on your device.</p>
-
-        <h3>🛠️ Technical Implementation</h3>
-        <p>Built using HTML, CSS and JavaScript with localStorage, drawing canvas, and browser-based media and speech features.</p>
-
-        <h3>📖 Usage Example</h3>
-        <p><strong>Input:</strong> "Submit BA Sem 1 Assignment by Friday"</p>
-        <p><strong>App Action:</strong> Saves the note with timestamp for future retrieval.</p>
-      </div>
-    </section>
-
-    <div class="fab-wrap" id="fabWrap">
-      <div class="fab-options">
-        <div class="fab-item">
-          <div class="fab-label">Image</div>
-          <button class="mini-btn fab-mini" id="addImageBtn">🖼️</button>
-        </div>
-        <div class="fab-item">
-          <div class="fab-label">Drawing</div>
-          <button class="mini-btn fab-mini" id="addDrawingBtn">✏️</button>
-        </div>
-        <div class="fab-item">
-          <div class="fab-label">Text</div>
-          <button class="mini-btn fab-mini" id="addTextBtn">📝</button>
-        </div>
-      </div>
-      <button class="fab-main" id="fabMain">+</button>
-    </div>
-
-    <div class="drawer-overlay" id="drawerOverlay"></div>
-    <aside class="drawer" id="drawer">
-      <h2>Menu</h2>
-      <button class="drawer-btn" id="themeBtn">Change Theme</button>
-      <button class="drawer-btn" id="deletedBtn">Deleted Notes</button>
-      <button class="drawer-btn" id="aboutBtn">About</button>
-      <button class="drawer-btn" id="lockBtn">Change Passcode</button>
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+const DB_KEY = "smart_notes_react_v1"; const THEME_KEY = "smart_notes_react_theme_v1";
+
+function formatTime(ts) { return new Date(ts).toLocaleString(); }
+
+function downloadJson(note) { const blob = new Blob([JSON.stringify(note, null, 2)], { type: "application/json" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = ${(note.name || "note").replace(/[\\/:*?"<>|]+/g, "_")}.smartnote.json; a.click(); URL.revokeObjectURL(url); }
+
+function LongPressCard({ note, onOpen, onLongPress }) { const timerRef = useRef(null); const blockClickRef = useRef(false);
+
+const start = () => { timerRef.current = setTimeout(() => { blockClickRef.current = true; onLongPress(note.id); }, 550); };
+
+const cancel = () => { clearTimeout(timerRef.current); };
+
+return ( <div className={relative rounded-3xl border p-4 shadow-lg cursor-pointer select-none ${note.pinned ? "ring-2 ring-blue-500" : ""}} onTouchStart={start} onTouchEnd={cancel} onTouchMove={cancel} onMouseDown={start} onMouseUp={cancel} onMouseLeave={cancel} onClick={(e) => { if (blockClickRef.current) { e.preventDefault(); e.stopPropagation(); setTimeout(() => { blockClickRef.current = false; }, 0); return; } onOpen(note.id); }} > {note.pinned && ( <div className="absolute right-3 top-3 rounded-full border px-2 py-1 text-xs"> 📌 Pinned </div> )} <div className="pr-20 text-lg font-bold break-words">{note.name}</div> <div className="mt-1 text-xs opacity-70">{formatTime(note.updatedAt || note.createdAt)}</div> {note.text ? <div className="mt-3 whitespace-pre-wrap break-words text-sm">{note.text}</div> : null} {note.image ? <img src={note.image} alt="note" className="mt-3 max-h-64 w-full rounded-2xl object-cover border" /> : null} {note.drawing ? <img src={note.drawing} alt="drawing" className="mt-3 max-h-64 w-full rounded-2xl object-cover border" /> : null} </div> ); }
+
+export default function App() { const [theme, setTheme] = useState(localStorage.getItem(THEME_KEY) || "dark"); const [page, setPage] = useState("home"); const [notes, setNotes] = useState([]); const [deleted, setDeleted] = useState([]); const [search, setSearch] = useState(""); const [drawerOpen, setDrawerOpen] = useState(false); const [fabOpen, setFabOpen] = useState(false); const [contextId, setContextId] = useState(null); const [mode, setMode] = useState("text"); const [editingId, setEditingId] = useState(null); const [name, setName] = useState(""); const [text, setText] = useState(""); const [imageData, setImageData] = useState(""); const [drawingData, setDrawingData] = useState(""); const [saveOpen, setSaveOpen] = useState(false); const [savePlace, setSavePlace] = useState("app"); const [showRename, setShowRename] = useState(false); const [renameValue, setRenameValue] = useState(""); const [brushMode, setBrushMode] = useState("brush"); const [brushColor, setBrushColor] = useState("#000000"); const [brushSize, setBrushSize] = useState(4); const [eraserSize, setEraserSize] = useState(16);
+
+const canvasRef = useRef(null); const wrapRef = useRef(null); const drawingRef = useRef(false); const lastPointRef = useRef({ x: 0, y: 0 });
+
+useEffect(() => { const db = JSON.parse(localStorage.getItem(DB_KEY) || "{}"); setNotes(Array.isArray(db.notes) ? db.notes : []); setDeleted(Array.isArray(db.deleted) ? db.deleted : []); }, []);
+
+useEffect(() => { localStorage.setItem(DB_KEY, JSON.stringify({ notes, deleted })); }, [notes, deleted]);
+
+useEffect(() => { localStorage.setItem(THEME_KEY, theme); document.documentElement.classList.toggle("dark", theme === "dark"); }, [theme]);
+
+useEffect(() => { if (page === "editor" && mode === "drawing") { setTimeout(initCanvas, 50); } }, [page, mode]);
+
+const filteredNotes = useMemo(() => { const q = search.trim().toLowerCase(); const sorted = [...notes].sort((a, b) => { if ((a.pinned ? 1 : 0) !== (b.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0); return (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt); }); if (!q) return sorted; return sorted.filter((n) => [n.name, n.text, n.type].some((v) => String(v || "").toLowerCase().includes(q)) ); }, [notes, search]);
+
+function resetEditor(newMode = "text") { setMode(newMode); setEditingId(null); setName(""); setText(""); setImageData(""); setDrawingData(""); setFabOpen(false); setPage("editor"); }
+
+function initCanvas() { const canvas = canvasRef.current; const wrap = wrapRef.current; if (!canvas || !wrap) return; const rect = wrap.getBoundingClientRect(); const ratio = window.devicePixelRatio || 1; canvas.width = rect.width * ratio; canvas.height = 420 * ratio; canvas.style.width = rect.width + "px"; canvas.style.height = "420px"; const ctx = canvas.getContext("2d"); ctx.setTransform(ratio, 0, 0, ratio, 0, 0); ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, rect.width, 420); ctx.lineCap = "round"; ctx.lineJoin = "round";
+
+if (drawingData) {
+  const img = new Image();
+  img.onload = () => ctx.drawImage(img, 0, 0, rect.width, 420);
+  img.src = drawingData;
+}
+
+}
+
+function getPoint(e) { const canvas = canvasRef.current; const rect = canvas.getBoundingClientRect(); const p = e.touches ? e.touches[0] : e; return { x: p.clientX - rect.left, y: p.clientY - rect.top }; }
+
+function startDraw(e) { drawingRef.current = true; lastPointRef.current = getPoint(e); }
+
+function draw(e) { if (!drawingRef.current) return; e.preventDefault(); const canvas = canvasRef.current; const ctx = canvas.getContext("2d"); const p = getPoint(e); ctx.beginPath(); ctx.moveTo(lastPointRef.current.x, lastPointRef.current.y); ctx.lineTo(p.x, p.y); ctx.strokeStyle = brushMode === "brush" ? brushColor : "#ffffff"; ctx.lineWidth = brushMode === "brush" ? brushSize : eraserSize; ctx.stroke(); lastPointRef.current = p; }
+
+function stopDraw() { drawingRef.current = false; }
+
+function clearCanvas() { const canvas = canvasRef.current; if (!canvas) return; const ctx = canvas.getContext("2d"); const rect = canvas.getBoundingClientRect(); ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, rect.width, rect.height); setDrawingData(""); }
+
+function openNote(id) { const note = notes.find((n) => n.id === id); if (!note) return; setEditingId(id); setMode(note.type); setName(note.name || ""); setText(note.text || ""); setImageData(note.image || ""); setDrawingData(note.drawing || ""); setPage("editor"); setContextId(null); }
+
+function buildNote() { const finalName = name.trim(); if (!finalName) { alert("Note ka naam likho"); return null; } if (mode === "text" && !text.trim()) { alert("Kuchh likho phir save karo"); return null; } if (mode === "image" && !imageData) { alert("Pehle image select karo"); return null; } const drawing = mode === "drawing" ? canvasRef.current?.toDataURL("image/png") || drawingData : ""; const old = notes.find((n) => n.id === editingId); return { id: editingId || note_${Date.now()}, createdAt: old?.createdAt || Date.now(), updatedAt: Date.now(), pinned: old?.pinned || false, name: finalName, type: mode, text: text.trim(), image: mode === "image" ? imageData : "", drawing: mode === "drawing" ? drawing : "", }; }
+
+function saveNote() { const note = buildNote(); if (!note) return;
+
+if (savePlace === "app" || savePlace === "both") {
+  setNotes((prev) => {
+    const idx = prev.findIndex((n) => n.id === note.id);
+    if (idx === -1) return [note, ...prev];
+    const copy = [...prev];
+    copy[idx] = note;
+    return copy;
+  });
+}
+if (savePlace === "phone" || savePlace === "both") downloadJson(note);
+
+setSaveOpen(false);
+setPage("home");
+setEditingId(null);
+
+}
+
+function pinSelected() { setNotes((prev) => prev.map((n) => (n.id === contextId ? { ...n, pinned: !n.pinned, updatedAt: Date.now() } : n))); setContextId(null); }
+
+function deleteSelected() { const note = notes.find((n) => n.id === contextId); if (!note) return; setNotes((prev) => prev.filter((n) => n.id !== contextId)); setDeleted((prev) => [{ ...note, deletedAt: Date.now() }, ...prev]); setContextId(null); }
+
+function renameSelected() { const val = renameValue.trim(); if (!val) return; setNotes((prev) => prev.map((n) => (n.id === contextId ? { ...n, name: val, updatedAt: Date.now() } : n))); setShowRename(false); setContextId(null); }
+
+function restoreDeleted(id) { const note = deleted.find((n) => n.id === id); if (!note) return; setDeleted((prev) => prev.filter((n) => n.id !== id)); const { deletedAt, ...rest } = note; setNotes((prev) => [{ ...rest, updatedAt: Date.now() }, ...prev]); }
+
+function permanentDelete(id) { setDeleted((prev) => prev.filter((n) => n.id !== id)); }
+
+const dark = theme === "dark";
+
+return ( <div className={dark ? "dark" : ""}> <div className="min-h-screen bg-white text-slate-900 dark:bg-black dark:text-white"> <header className="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-black/10 bg-white/85 px-3 backdrop-blur dark:border-white/10 dark:bg-black/75"> <div className="flex items-center gap-2"> <button className="grid h-11 w-11 place-items-center rounded-2xl border border-black/10 bg-slate-100 text-xl dark:border-white/10 dark:bg-zinc-900" onClick={() => setDrawerOpen(true)}>☰</button> <div className="text-lg font-bold">{page === "home" ? "Home" : page === "editor" ? (editingId ? "Edit Note" : "New Note") : page === "deleted" ? "Deleted Notes" : "About"}</div> </div> {page === "editor" ? ( <button className="rounded-2xl bg-blue-600 px-4 py-2.5 font-bold text-white" onClick={() => setSaveOpen(true)}> Save </button> ) : page === "deleted" ? ( <button className="rounded-2xl border border-black/10 bg-slate-100 px-4 py-2.5 text-sm font-semibold dark:border-white/10 dark:bg-zinc-900" onClick={() => setPage("home")}> Back to Home </button> ) : null} </header>
+
+{drawerOpen && <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setDrawerOpen(false)} />}
+    <aside className={`fixed left-0 top-0 z-50 h-full w-72 max-w-[86%] border-r border-black/10 bg-white p-4 shadow-2xl transition-transform dark:border-white/10 dark:bg-zinc-950 ${drawerOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <h2 className="mb-5 mt-2 text-2xl font-bold">Menu</h2>
+      <button className="mb-3 w-full rounded-2xl border border-black/10 bg-slate-100 px-4 py-3 text-left dark:border-white/10 dark:bg-zinc-900" onClick={() => { setTheme(dark ? "light" : "dark"); setDrawerOpen(false); }}>Change Theme</button>
+      <button className="mb-3 w-full rounded-2xl border border-black/10 bg-slate-100 px-4 py-3 text-left dark:border-white/10 dark:bg-zinc-900" onClick={() => { setPage("deleted"); setDrawerOpen(false); }}>Deleted Notes</button>
+      <button className="w-full rounded-2xl border border-black/10 bg-slate-100 px-4 py-3 text-left dark:border-white/10 dark:bg-zinc-900" onClick={() => { setPage("about"); setDrawerOpen(false); }}>About</button>
     </aside>
 
-    <div class="context-overlay" id="contextOverlay"></div>
-    <div class="context-bar" id="contextBar">
-      <button class="seg-btn" id="pinBtn">📌 Pin</button>
-      <button class="seg-btn" id="renameBtn">✏️ Rename</button>
-      <button class="seg-btn" id="editBtn">📝 Edit</button>
-      <button class="seg-btn danger" id="deleteBtn">🗑 Delete</button>
+    {contextId && <div className="fixed inset-0 z-40 bg-black/40" onClick={() => setContextId(null)} />}
+    <div className={`fixed left-1/2 top-20 z-50 flex max-w-[calc(100%-16px)] -translate-x-1/2 gap-2 overflow-x-auto rounded-2xl border border-black/10 bg-white p-2 shadow-2xl dark:border-white/10 dark:bg-zinc-950 ${contextId ? "opacity-100" : "pointer-events-none opacity-0"}`}>
+      <button className="whitespace-nowrap rounded-xl border border-black/10 bg-slate-100 px-4 py-2 dark:border-white/10 dark:bg-zinc-900" onClick={pinSelected}>📌 Pin</button>
+      <button className="whitespace-nowrap rounded-xl border border-black/10 bg-slate-100 px-4 py-2 dark:border-white/10 dark:bg-zinc-900" onClick={() => { const note = notes.find((n) => n.id === contextId); setRenameValue(note?.name || ""); setShowRename(true); }}>✏️ Rename</button>
+      <button className="whitespace-nowrap rounded-xl border border-black/10 bg-slate-100 px-4 py-2 dark:border-white/10 dark:bg-zinc-900" onClick={() => openNote(contextId)}>📝 Edit</button>
+      <button className="whitespace-nowrap rounded-xl bg-red-600 px-4 py-2 text-white" onClick={deleteSelected}>🗑 Delete</button>
     </div>
 
-    <div class="modal-overlay" id="modalOverlay"></div>
+    <main className="px-3 pb-28 pt-20">
+      {page === "home" && (
+        <>
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search notes..." className="w-full rounded-3xl border border-black/10 bg-white px-4 py-4 shadow-lg outline-none dark:border-white/10 dark:bg-zinc-950" />
+          <div className="mt-2 text-sm opacity-70">{search.trim() ? `${filteredNotes.length} result(s) found` : `${notes.length} note(s)`}</div>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            {filteredNotes.length ? filteredNotes.map((note) => (
+              <LongPressCard key={note.id} note={note} onOpen={openNote} onLongPress={setContextId} />
+            )) : (
+              <div className="grid min-h-[60vh] place-items-center text-center opacity-70">
+                <div>
+                  <div className="mb-2 text-5xl">📝</div>
+                  <div>{search.trim() ? "Koi matching note nahi mila" : "Abhi koi note nahi hai"}</div>
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
 
-    <div class="modal" id="saveModal">
-      <h3>Save Note</h3>
-      <input id="saveNameInput" placeholder="Note ka naam" />
-      <select id="savePlaceSelect">
+      {page === "editor" && (
+        <div className="rounded-[28px] border border-black/10 bg-white p-4 shadow-xl dark:border-white/10 dark:bg-zinc-950">
+          <div className="mb-3 inline-block rounded-full border border-black/10 px-3 py-1 text-sm dark:border-white/10">{mode[0].toUpperCase() + mode.slice(1)} Note</div>
+          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Note name" className="mb-3 w-full rounded-2xl border border-black/10 bg-slate-100 px-4 py-3 outline-none dark:border-white/10 dark:bg-zinc-900" />
+
+          {mode === "text" && (
+            <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Yahan likho..." className="min-h-[240px] w-full rounded-2xl border border-black/10 bg-slate-100 px-4 py-3 outline-none dark:border-white/10 dark:bg-zinc-900" />
+          )}
+
+          {mode === "image" && (
+            <>
+              <div className="mb-3 flex flex-wrap gap-2">
+                <label className="cursor-pointer rounded-2xl border border-black/10 bg-slate-100 px-4 py-2 dark:border-white/10 dark:bg-zinc-900">
+                  Upload Media
+                  <input hidden type="file" accept="image/*" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => setImageData(String(ev.target?.result || ""));
+                    reader.readAsDataURL(file);
+                  }} />
+                </label>
+                <label className="cursor-pointer rounded-2xl border border-black/10 bg-slate-100 px-4 py-2 dark:border-white/10 dark:bg-zinc-900">
+                  Camera
+                  <input hidden type="file" accept="image/*" capture="environment" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => setImageData(String(ev.target?.result || ""));
+                    reader.readAsDataURL(file);
+                  }} />
+                </label>
+              </div>
+              {imageData ? <img src={imageData} alt="preview" className="mb-3 max-h-72 w-full rounded-3xl border object-contain" /> : null}
+              <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Photo ke baare me likho..." className="min-h-[220px] w-full rounded-2xl border border-black/10 bg-slate-100 px-4 py-3 outline-none dark:border-white/10 dark:bg-zinc-900" />
+            </>
+          )}
+
+          {mode === "drawing" && (
+            <>
+              <div className="mb-3 flex flex-wrap gap-2">
+                <button className={`rounded-2xl border px-4 py-2 ${brushMode === "brush" ? "bg-blue-600 text-white" : "bg-slate-100 dark:bg-zinc-900"}`} onClick={() => setBrushMode("brush")}>Brush</button>
+                <button className={`rounded-2xl border px-4 py-2 ${brushMode === "eraser" ? "bg-blue-600 text-white" : "bg-slate-100 dark:bg-zinc-900"}`} onClick={() => setBrushMode("eraser")}>Eraser</button>
+                <div className="flex items-center gap-2 rounded-2xl border bg-slate-100 px-3 py-2 dark:bg-zinc-900">
+                  Color <input type="color" value={brushColor} onChange={(e) => setBrushColor(e.target.value)} />
+                </div>
+                <div className="flex items-center gap-2 rounded-2xl border bg-slate-100 px-3 py-2 dark:bg-zinc-900">
+                  Brush <input type="range" min="1" max="30" value={brushSize} onChange={(e) => setBrushSize(Number(e.target.value))} />
+                </div>
+                <div className="flex items-center gap-2 rounded-2xl border bg-slate-100 px-3 py-2 dark:bg-zinc-900">
+                  Eraser <input type="range" min="5" max="40" value={eraserSize} onChange={(e) => setEraserSize(Number(e.target.value))} />
+                </div>
+                <button className="rounded-2xl border bg-slate-100 px-4 py-2 dark:bg-zinc-900" onClick={clearCanvas}>Clear</button>
+              </div>
+              <div ref={wrapRef} className="overflow-hidden rounded-3xl border bg-white">
+                <canvas
+                  ref={canvasRef}
+                  onMouseDown={startDraw}
+                  onMouseMove={draw}
+                  onMouseUp={stopDraw}
+                  onMouseLeave={stopDraw}
+                  onTouchStart={startDraw}
+                  onTouchMove={draw}
+                  onTouchEnd={stopDraw}
+                />
+              </div>
+              <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Drawing ke baare me likho..." className="mt-3 min-h-[180px] w-full rounded-2xl border border-black/10 bg-slate-100 px-4 py-3 outline-none dark:border-white/10 dark:bg-zinc-900" />
+            </>
+          )}
+        </div>
+      )}
+
+      {page === "deleted" && (
+        <div className="space-y-4">
+          <div className="flex justify-end">
+            <button className="rounded-2xl border border-black/10 bg-slate-100 px-4 py-2.5 text-sm font-semibold dark:border-white/10 dark:bg-zinc-900" onClick={() => setPage("home")}>
+              Back to Home
+            </button>
+          </div>
+          {deleted.length ? deleted.map((note) => (
+            <div key={note.id} className="rounded-3xl border p-4 shadow-lg">
+              <div className="text-lg font-bold">{note.name}</div>
+              <div className="mt-1 text-xs opacity-70">Deleted: {formatTime(note.deletedAt)}</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button className="rounded-2xl bg-emerald-600 px-4 py-2 text-white" onClick={() => restoreDeleted(note.id)}>Restore</button>
+                <button className="rounded-2xl bg-red-600 px-4 py-2 text-white" onClick={() => permanentDelete(note.id)}>Permanent Delete</button>
+              </div>
+            </div>
+          )) : (
+            <div className="grid min-h-[60vh] place-items-center text-center opacity-70">
+              <div>
+                <div className="mb-2 text-5xl">🗑</div>
+                <div>Deleted notes empty hai</div>
+                <button className="mt-4 rounded-2xl border border-black/10 bg-slate-100 px-4 py-2.5 dark:border-white/10 dark:bg-zinc-900" onClick={() => setPage("home")}>
+                  Back to Home
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {page === "about" && (
+        <div className="rounded-[28px] border border-black/10 bg-white p-5 shadow-xl dark:border-white/10 dark:bg-zinc-950">
+          <h2 className="mb-4 text-2xl font-bold">📝 Smart-Notes-App</h2>
+          <p><strong>Smart-Notes-App</strong> helps students and developers manage text, image, and drawing notes in one place.</p>
+          <div className="mt-4 space-y-2 text-sm leading-7 opacity-90">
+            <p>• Smart Storage</p>
+            <p>• Auto Timestamp</p>
+            <p>• Create, Edit, Delete, Restore</p>
+            <p>• Dark / Light Theme</p>
+            <p>• Local Privacy</p>
+          </div>
+        </div>
+      )}
+    </main>
+
+    {page === "home" && (
+      <div className="fixed bottom-6 right-6 z-30">
+        <div className="mb-3 flex flex-col items-end gap-3">
+          {fabOpen && (
+            <>
+              <div className="flex items-center gap-2">
+                <div className="rounded-2xl border border-black/10 bg-white px-3 py-2 shadow-lg dark:border-white/10 dark:bg-zinc-950">Image</div>
+                <button className="grid h-14 w-14 place-items-center rounded-full border border-black/10 bg-white text-xl shadow-lg dark:border-white/10 dark:bg-zinc-950" onClick={() => resetEditor("image")}>🖼️</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="rounded-2xl border border-black/10 bg-white px-3 py-2 shadow-lg dark:border-white/10 dark:bg-zinc-950">Drawing</div>
+                <button className="grid h-14 w-14 place-items-center rounded-full border border-black/10 bg-white text-xl shadow-lg dark:border-white/10 dark:bg-zinc-950" onClick={() => resetEditor("drawing")}>✏️</button>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="rounded-2xl border border-black/10 bg-white px-3 py-2 shadow-lg dark:border-white/10 dark:bg-zinc-950">Text</div>
+                <button className="grid h-14 w-14 place-items-center rounded-full border border-black/10 bg-white text-xl shadow-lg dark:border-white/10 dark:bg-zinc-950" onClick={() => resetEditor("text")}>📝</button>
+              </div>
+            </>
+          )}
+        </div>
+        <button className={`grid h-[74px] w-[74px] place-items-center rounded-full bg-blue-600 text-5xl text-white shadow-2xl transition ${fabOpen ? "rotate-45" : ""}`} onClick={() => setFabOpen((v) => !v)}>+</button>
+      </div>
+    )}
+
+    {saveOpen && <div className="fixed inset-0 z-50 bg-black/50" onClick={() => setSaveOpen(false)} />}
+    <div className={`fixed left-1/2 top-1/2 z-[60] w-[92vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-[28px] border border-black/10 bg-white p-5 shadow-2xl dark:border-white/10 dark:bg-zinc-950 ${saveOpen ? "opacity-100" : "pointer-events-none opacity-0"}`}>
+      <h3 className="mb-3 text-xl font-bold">Save Note</h3>
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Note ka naam" className="mb-3 w-full rounded-2xl border border-black/10 bg-slate-100 px-4 py-3 outline-none dark:border-white/10 dark:bg-zinc-900" />
+      <select value={savePlace} onChange={(e) => setSavePlace(e.target.value)} className="mb-4 w-full rounded-2xl border border-black/10 bg-slate-100 px-4 py-3 outline-none dark:border-white/10 dark:bg-zinc-900">
         <option value="app">App me save</option>
         <option value="phone">Phone me file save</option>
         <option value="both">Dono jagah</option>
       </select>
-      <div class="modal-actions">
-        <button class="modal-btn" id="saveCancelBtn">Cancel</button>
-        <button class="modal-btn primary" id="saveConfirmBtn">Save</button>
+      <div className="flex justify-end gap-2">
+        <button className="rounded-2xl border border-black/10 bg-slate-100 px-4 py-2.5 dark:border-white/10 dark:bg-zinc-900" onClick={() => setSaveOpen(false)}>Cancel</button>
+        <button className="rounded-2xl bg-blue-600 px-4 py-2.5 font-semibold text-white" onClick={saveNote}>Save</button>
       </div>
     </div>
 
-    <div class="modal" id="renameModal">
-      <h3>Rename Note</h3>
-      <input id="renameInput" placeholder="New note name" />
-      <div class="modal-actions">
-        <button class="modal-btn" id="renameCancelBtn">Cancel</button>
-        <button class="modal-btn primary" id="renameConfirmBtn">Rename</button>
+    {showRename && <div className="fixed inset-0 z-50 bg-black/50" onClick={() => setShowRename(false)} />}
+    <div className={`fixed left-1/2 top-1/2 z-[60] w-[92vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-[28px] border border-black/10 bg-white p-5 shadow-2xl dark:border-white/10 dark:bg-zinc-950 ${showRename ? "opacity-100" : "pointer-events-none opacity-0"}`}>
+      <h3 className="mb-3 text-xl font-bold">Rename Note</h3>
+      <input value={renameValue} onChange={(e) => setRenameValue(e.target.value)} placeholder="New note name" className="mb-4 w-full rounded-2xl border border-black/10 bg-slate-100 px-4 py-3 outline-none dark:border-white/10 dark:bg-zinc-900" />
+      <div className="flex justify-end gap-2">
+        <button className="rounded-2xl border border-black/10 bg-slate-100 px-4 py-2.5 dark:border-white/10 dark:bg-zinc-900" onClick={() => setShowRename(false)}>Cancel</button>
+        <button className="rounded-2xl bg-blue-600 px-4 py-2.5 font-semibold text-white" onClick={renameSelected}>Rename</button>
       </div>
     </div>
   </div>
+</div>
 
-  <script>
-    const DB_KEY = "smart_notes_advanced_v2";
-    const THEME_KEY = "smart_notes_theme_v2";
-    const PASS_KEY = "smart_notes_pass_v2";
-
-    const state = {
-      notes: [],
-      deleted: [],
-      mode: null,
-      selectedId: null,
-      editingId: null,
-      imageData: "",
-      brushMode: "brush",
-      drawing: false,
-      x: 0,
-      y: 0,
-      recognition: null,
-      listening: false
-    };
-
-    const homePage = document.getElementById("homePage");
-    const editorPage = document.getElementById("editorPage");
-    const deletedPage = document.getElementById("deletedPage");
-    const aboutPage = document.getElementById("aboutPage");
-    const pageTitle = document.getElementById("pageTitle");
-    const saveBtn = document.getElementById("saveBtn");
-    const fabWrap = document.getElementById("fabWrap");
-    const notesContainer = document.getElementById("notesContainer");
-    const deletedContainer = document.getElementById("deletedContainer");
-    const searchInput = document.getElementById("searchInput");
-    const searchInfo = document.getElementById("searchInfo");
-
-    const drawer = document.getElementById("drawer");
-    const drawerOverlay = document.getElementById("drawerOverlay");
-    const contextBar = document.getElementById("contextBar");
-    const contextOverlay = document.getElementById("contextOverlay");
-    const modalOverlay = document.getElementById("modalOverlay");
-    const saveModal = document.getElementById("saveModal");
-    const renameModal = document.getElementById("renameModal");
-
-    const modeBadge = document.getElementById("modeBadge");
-    const noteNameField = document.getElementById("noteNameField");
-    const textEditor = document.getElementById("textEditor");
-    const imageEditor = document.getElementById("imageEditor");
-    const drawingEditor = document.getElementById("drawingEditor");
-
-    const textInput = document.getElementById("textInput");
-    const imageTextInput = document.getElementById("imageTextInput");
-    const drawingTextInput = document.getElementById("drawingTextInput");
-    const imagePreview = document.getElementById("imagePreview");
-    const galleryInput = document.getElementById("galleryInput");
-    const cameraInput = document.getElementById("cameraInput");
-
-    const canvas = document.getElementById("drawCanvas");
-    const ctx = canvas.getContext("2d");
-
-    const lockScreen = document.getElementById("lockScreen");
-    const lockText = document.getElementById("lockText");
-    const lockInput = document.getElementById("lockInput");
-    const lockActionBtn = document.getElementById("lockActionBtn");
-
-    function escapeHtml(str){
-      return String(str || "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;");
-    }
-
-    function loadDB(){
-      const data = JSON.parse(localStorage.getItem(DB_KEY) || "{}");
-      state.notes = Array.isArray(data.notes) ? data.notes : [];
-      state.deleted = Array.isArray(data.deleted) ? data.deleted : [];
-    }
-
-    function saveDB(){
-      localStorage.setItem(DB_KEY, JSON.stringify({
-        notes: state.notes,
-        deleted: state.deleted
-      }));
-    }
-
-    function applyTheme(){
-      const theme = localStorage.getItem(THEME_KEY) || "dark";
-      document.body.classList.toggle("light", theme === "light");
-    }
-
-    function toggleTheme(){
-      const cur = localStorage.getItem(THEME_KEY) || "dark";
-      localStorage.setItem(THEME_KEY, cur === "dark" ? "light" : "dark");
-      applyTheme();
-      closeDrawer();
-    }
-
-    function showPage(page){
-      [homePage, editorPage, deletedPage, aboutPage].forEach(p => p.classList.remove("active"));
-      page.classList.add("active");
-      closeDrawer();
-      closeContext();
-
-      if(page === homePage){
-        pageTitle.textContent = "Smart Notes";
-        saveBtn.style.display = "none";
-        fabWrap.style.display = "block";
-      }else if(page === editorPage){
-        pageTitle.textContent = state.editingId ? "Edit Note" : "New Note";
-        saveBtn.style.display = "inline-block";
-        fabWrap.style.display = "none";
-      }else if(page === deletedPage){
-        pageTitle.textContent = "Deleted Notes";
-        saveBtn.style.display = "none";
-        fabWrap.style.display = "none";
-      }else{
-        pageTitle.textContent = "About";
-        saveBtn.style.display = "none";
-        fabWrap.style.display = "none";
-      }
-    }
-
-    function formatTime(ts){
-      return new Date(ts).toLocaleString();
-    }
-
-    function filteredNotes(){
-      const q = searchInput.value.trim().toLowerCase();
-      let notes = [...state.notes].sort((a,b)=>{
-        if(a.pinned !== b.pinned) return b.pinned - a.pinned;
-        return b.updatedAt - a.updatedAt;
-      });
-
-      if(!q) return notes;
-      return notes.filter(n =>
-        (n.name || "").toLowerCase().includes(q) ||
-        (n.text || "").toLowerCase().includes(q) ||
-        (n.type || "").toLowerCase().includes(q)
-      );
-    }
-
-    function renderNotes(){
-      const list = filteredNotes();
-      searchInfo.textContent = searchInput.value.trim()
-        ? `${list.length} result(s) found`
-        : `${state.notes.length} note(s)`;
-
-      if(!list.length){
-        notesContainer.innerHTML = `
-          <div class="empty">
-            <div>
-              <div class="empty-icon">📝</div>
-              <div>${searchInput.value.trim() ? "Koi matching note nahi mila" : "Abhi koi note nahi hai"}</div>
-              <div class="small" style="margin-top:8px;">Niche + dabao aur note banao</div>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      notesContainer.innerHTML = `
-        <div class="notes-grid">
-          ${list.map(note => `
-            <div class="note-card ${note.pinned ? "pinned" : ""}" data-id="${note.id}" onclick="openNoteById('${note.id}')">
-              <div class="note-name">${escapeHtml(note.name)}</div>
-              <div class="note-meta">
-                Type: ${escapeHtml(note.type)}<br>
-                Updated: ${formatTime(note.updatedAt)}
-              </div>
-              <div class="note-text">${escapeHtml((note.text || "").slice(0, 220))}</div>
-              ${note.image ? `<img class="note-preview-img" src="${note.image}" alt="img" />` : ""}
-              ${note.drawing ? `<img class="note-preview-img" src="${note.drawing}" alt="drawing" />` : ""}
-            </div>
-          `).join("")}
-        </div>
-      `;
-      attachLongPress();
-    }
-
-    function renderDeleted(){
-      if(!state.deleted.length){
-        deletedContainer.innerHTML = `
-          <div class="empty">
-            <div>
-              <div class="empty-icon">🗑</div>
-              <div>Deleted notes empty hai</div>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      deletedContainer.innerHTML = state.deleted.map(note => `
-        <div class="trash-card">
-          <div class="note-name">${escapeHtml(note.name)}</div>
-          <div class="note-meta">Deleted: ${formatTime(note.deletedAt || Date.now())}</div>
-          <div class="trash-actions">
-            <button class="seg-btn restore" onclick="restoreDeleted('${note.id}')">Restore</button>
-            <button class="seg-btn remove" onclick="removeDeleted('${note.id}')">Permanent Delete</button>
-          </div>
-        </div>
-      `).join("");
-    }
-
-    function resetEditors(){
-      state.mode = null;
-      state.editingId = null;
-      state.imageData = "";
-      noteNameField.value = "";
-      textInput.value = "";
-      imageTextInput.value = "";
-      drawingTextInput.value = "";
-      imagePreview.src = "";
-      imagePreview.style.display = "none";
-      textEditor.style.display = "none";
-      imageEditor.style.display = "none";
-      drawingEditor.style.display = "none";
-      clearCanvas();
-      stopVoice();
-    }
-
-    function setMode(mode){
-      state.mode = mode;
-      textEditor.style.display = mode === "text" ? "block" : "none";
-      imageEditor.style.display = mode === "image" ? "block" : "none";
-      drawingEditor.style.display = mode === "drawing" ? "block" : "none";
-      modeBadge.textContent = mode.charAt(0).toUpperCase() + mode.slice(1) + " Note";
-      if(mode === "drawing"){
-        setTimeout(resizeCanvas, 60);
-      }
-    }
-
-    function openNewEditor(mode){
-      resetEditors();
-      setMode(mode);
-      showPage(editorPage);
-    }
-
-    function openDrawer(){
-      drawer.classList.add("show");
-      drawerOverlay.classList.add("show");
-    }
-
-    function closeDrawer(){
-      drawer.classList.remove("show");
-      drawerOverlay.classList.remove("show");
-    }
-
-    function openContext(){
-      contextBar.classList.add("show");
-      contextOverlay.classList.add("show");
-    }
-
-    function closeContext(){
-      contextBar.classList.remove("show");
-      contextOverlay.classList.remove("show");
-      state.selectedId = null;
-    }
-
-    function showModal(modal){
-      modal.classList.add("show");
-      modalOverlay.classList.add("show");
-    }
-
-    function hideModal(modal){
-      modal.classList.remove("show");
-      modalOverlay.classList.remove("show");
-    }
-
-    function closeAllModals(){
-      [saveModal, renameModal].forEach(m => m.classList.remove("show"));
-      modalOverlay.classList.remove("show");
-    }
-
-    function attachLongPress(){
-      document.querySelectorAll(".note-card").forEach(card => {
-        let timer = null;
-        let blockedClick = false;
-
-        const start = () => {
-          const id = card.dataset.id;
-          timer = setTimeout(() => {
-            state.selectedId = id;
-            blockedClick = true;
-            openContext();
-          }, 550);
-        };
-
-        const cancel = () => clearTimeout(timer);
-
-        card.addEventListener("touchstart", start, {passive:true});
-        card.addEventListener("touchend", cancel);
-        card.addEventListener("touchmove", cancel);
-        card.addEventListener("mousedown", start);
-        card.addEventListener("mouseup", cancel);
-        card.addEventListener("mouseleave", cancel);
-
-        card.addEventListener("click", e => {
-          if(blockedClick){
-            e.preventDefault();
-            e.stopPropagation();
-            setTimeout(() => blockedClick = false, 0);
-          }
-        });
-      });
-    }
-
-    function openNoteById(id){
-      if(contextBar.classList.contains("show")) return;
-      const note = state.notes.find(n => n.id === id);
-      if(!note) return;
-
-      resetEditors();
-      state.editingId = id;
-      setMode(note.type);
-      noteNameField.value = note.name || "";
-
-      if(note.type === "text"){
-        textInput.value = note.text || "";
-      }else if(note.type === "image"){
-        state.imageData = note.image || "";
-        if(note.image){
-          imagePreview.src = note.image;
-          imagePreview.style.display = "block";
-        }
-        imageTextInput.value = note.text || "";
-      }else if(note.type === "drawing"){
-        drawingTextInput.value = note.text || "";
-        setTimeout(() => {
-          resizeCanvas();
-          if(note.drawing){
-            const img = new Image();
-            img.onload = () => {
-              const rect = canvas.getBoundingClientRect();
-              ctx.clearRect(0,0,canvas.width,canvas.height);
-              ctx.fillStyle = "#fff";
-              ctx.fillRect(0,0,rect.width,rect.height);
-              ctx.drawImage(img,0,0,rect.width,rect.height);
-            };
-            img.src = note.drawing;
-          }
-        }, 70);
-      }
-      showPage(editorPage);
-    }
-
-    function openSaveModal(){
-      document.getElementById("saveNameInput").value = noteNameField.value.trim();
-      showModal(saveModal);
-    }
-
-    function buildNoteObject(id){
-      const name = noteNameField.value.trim() || document.getElementById("saveNameInput").value.trim();
-      if(!name){
-        alert("Note ka naam likho");
-        return null;
-      }
-
-      let note = state.notes.find(n => n.id === id);
-      const base = note || {
-        id: id || "n_" + Date.now(),
-        createdAt: Date.now(),
-        pinned: false
-      };
-
-      const obj = {
-        ...base,
-        name,
-        type: state.mode,
-        updatedAt: Date.now(),
-        text: "",
-        image: "",
-        drawing: ""
-      };
-
-      if(state.mode === "text"){
-        const val = textInput.value.trim();
-        if(!val){
-          alert("Kuchh likho phir save karo");
-          return null;
-        }
-        obj.text = val;
-      }
-
-      if(state.mode === "image"){
-        if(!state.imageData){
-          alert("Pehle image select karo");
-          return null;
-        }
-        obj.image = state.imageData;
-        obj.text = imageTextInput.value.trim();
-      }
-
-      if(state.mode === "drawing"){
-        obj.drawing = canvas.toDataURL("image/png");
-        obj.text = drawingTextInput.value.trim();
-      }
-
-      return obj;
-    }
-
-    function saveCurrentNote(){
-      const savePlace = document.getElementById("savePlaceSelect").value;
-      const obj = buildNoteObject(state.editingId);
-      if(!obj) return;
-
-      if(savePlace === "app" || savePlace === "both"){
-        const index = state.notes.findIndex(n => n.id === obj.id);
-        if(index === -1){
-          state.notes.unshift(obj);
-        }else{
-          state.notes[index] = obj;
-        }
-        saveDB();
-      }
-
-      if(savePlace === "phone" || savePlace === "both"){
-        const blob = new Blob([JSON.stringify(obj, null, 2)], {type:"application/json"});
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = sanitizeFileName(obj.name) + ".smartnote.json";
-        a.click();
-        URL.revokeObjectURL(a.href);
-      }
-
-      closeAllModals();
-      renderNotes();
-      resetEditors();
-      showPage(homePage);
-    }
-
-    function sanitizeFileName(name){
-      return String(name).replace(/[\\/:*?"<>|]+/g,"_");
-    }
-
-    function pinSelected(){
-      const note = state.notes.find(n => n.id === state.selectedId);
-      if(!note) return;
-      note.pinned = !note.pinned;
-      note.updatedAt = Date.now();
-      saveDB();
-      renderNotes();
-      closeContext();
-    }
-
-    function deleteSelected(){
-      const idx = state.notes.findIndex(n => n.id === state.selectedId);
-      if(idx === -1) return;
-      const [note] = state.notes.splice(idx,1);
-      note.deletedAt = Date.now();
-      state.deleted.unshift(note);
-      saveDB();
-      renderNotes();
-      renderDeleted();
-      closeContext();
-    }
-
-    function editSelected(){
-      const id = state.selectedId;
-      closeContext();
-      openNoteById(id);
-    }
-
-    function openRenameModal(){
-      const note = state.notes.find(n => n.id === state.selectedId);
-      if(!note) return;
-      document.getElementById("renameInput").value = note.name;
-      closeContext();
-      showModal(renameModal);
-    }
-
-    function renameSelected(){
-      const newName = document.getElementById("renameInput").value.trim();
-      if(!newName){
-        alert("Naya naam likho");
-        return;
-      }
-      const note = state.notes.find(n => n.id === state.selectedId);
-      if(!note) return;
-      note.name = newName;
-      note.updatedAt = Date.now();
-      saveDB();
-      renderNotes();
-      hideModal(renameModal);
-    }
-
-    function restoreDeleted(id){
-      const idx = state.deleted.findIndex(n => n.id === id);
-      if(idx === -1) return;
-      const [note] = state.deleted.splice(idx,1);
-      delete note.deletedAt;
-      note.updatedAt = Date.now();
-      state.notes.unshift(note);
-      saveDB();
-      renderNotes();
-      renderDeleted();
-    }
-
-    function removeDeleted(id){
-      const idx = state.deleted.findIndex(n => n.id === id);
-      if(idx === -1) return;
-      state.deleted.splice(idx,1);
-      saveDB();
-      renderDeleted();
-    }
-
-    function handleImage(file){
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        state.imageData = e.target.result;
-        imagePreview.src = state.imageData;
-        imagePreview.style.display = "block";
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function resizeCanvas(){
-      const rect = canvas.getBoundingClientRect();
-      const ratio = window.devicePixelRatio || 1;
-      canvas.width = rect.width * ratio;
-      canvas.height = rect.height * ratio;
-      ctx.setTransform(ratio,0,0,ratio,0,0);
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0,0,rect.width,rect.height);
-    }
-
-    function clearCanvas(){
-      const rect = canvas.getBoundingClientRect();
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.setTransform(window.devicePixelRatio || 1,0,0,window.devicePixelRatio || 1,0,0);
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0,0,rect.width,rect.height);
-    }
-
-    function getPos(e){
-      const rect = canvas.getBoundingClientRect();
-      const p = e.touches ? e.touches[0] : e;
-      return { x:p.clientX - rect.left, y:p.clientY - rect.top };
-    }
-
-    function startDraw(e){
-      state.drawing = true;
-      const p = getPos(e);
-      state.x = p.x;
-      state.y = p.y;
-    }
-
-    function draw(e){
-      if(!state.drawing) return;
-      e.preventDefault();
-      const p = getPos(e);
-      ctx.beginPath();
-      ctx.moveTo(state.x, state.y);
-      ctx.lineTo(p.x, p.y);
-      ctx.strokeStyle = state.brushMode === "brush" ? document.getElementById("brushColor").value : "#ffffff";
-      ctx.lineWidth = state.brushMode === "brush"
-        ? Number(document.getElementById("brushSize").value)
-        : Number(document.getElementById("eraserSize").value);
-      ctx.stroke();
-      state.x = p.x;
-      state.y = p.y;
-    }
-
-    function stopDraw(){
-      state.drawing = false;
-    }
-
-    function initVoice(){
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if(!SpeechRecognition) return false;
-
-      state.recognition = new SpeechRecognition();
-      state.recognition.lang = "en-IN";
-      state.recognition.continuous = true;
-      state.recognition.interimResults = true;
-
-      state.recognition.onresult = (event) => {
-        let transcript = "";
-        for(let i = event.resultIndex; i < event.results.length; i++){
-          transcript += event.results[i][0].transcript;
-        }
-        textInput.value += (textInput.value ? " " : "") + transcript;
-      };
-
-      state.recognition.onend = () => {
-        state.listening = false;
-        document.getElementById("micBtn").classList.remove("active");
-        document.getElementById("micBtn").textContent = "🎤 Voice";
-      };
-      return true;
-    }
-
-    function toggleVoice(){
-      if(!state.recognition && !initVoice()){
-        alert("Voice feature is not supported in this browser.");
-        return;
-      }
-
-      if(!state.listening){
-        state.listening = true;
-        document.getElementById("micBtn").classList.add("active");
-        document.getElementById("micBtn").textContent = "⏹ Stop";
-        state.recognition.start();
-      }else{
-        stopVoice();
-      }
-    }
-
-    function stopVoice(){
-      if(state.recognition && state.listening){
-        state.recognition.stop();
-      }
-      state.listening = false;
-      const micBtn = document.getElementById("micBtn");
-      micBtn.classList.remove("active");
-      micBtn.textContent = "🎤 Voice";
-    }
-
-    function checkLock(){
-      const savedPass = localStorage.getItem(PASS_KEY);
-      lockScreen.style.display = "flex";
-
-      if(savedPass){
-        lockText.textContent = "Passcode enter karo";
-        lockActionBtn.textContent = "Unlock";
-        lockActionBtn.onclick = () => {
-          if(lockInput.value === savedPass){
-            lockScreen.style.display = "none";
-            lockInput.value = "";
-          }else{
-            alert("Wrong passcode");
-          }
-        };
-      }else{
-        lockText.textContent = "4 digit passcode set karo";
-        lockActionBtn.textContent = "Set Passcode";
-        lockActionBtn.onclick = () => {
-          const val = lockInput.value.trim();
-          if(!val){
-            alert("Passcode likho");
-            return;
-          }
-          localStorage.setItem(PASS_KEY, val);
-          lockScreen.style.display = "none";
-          lockInput.value = "";
-        };
-      }
-    }
-
-    function changePasscode(){
-      closeDrawer();
-      lockScreen.style.display = "flex";
-      lockText.textContent = "Naya passcode set karo";
-      lockActionBtn.textContent = "Save";
-      lockInput.value = "";
-      lockActionBtn.onclick = () => {
-        const val = lockInput.value.trim();
-        if(!val){
-          alert("Passcode likho");
-          return;
-        }
-        localStorage.setItem(PASS_KEY, val);
-        lockScreen.style.display = "none";
-      };
-    }
-
-    document.getElementById("skipLockBtn").addEventListener("click", () => {
-      lockScreen.style.display = "none";
-    });
-
-    document.getElementById("menuBtn").addEventListener("click", openDrawer);
-    drawerOverlay.addEventListener("click", closeDrawer);
-    contextOverlay.addEventListener("click", closeContext);
-    modalOverlay.addEventListener("click", closeAllModals);
-
-    document.getElementById("themeBtn").addEventListener("click", toggleTheme);
-    document.getElementById("deletedBtn").addEventListener("click", () => {
-      renderDeleted();
-      showPage(deletedPage);
-    });
-    document.getElementById("aboutBtn").addEventListener("click", () => showPage(aboutPage));
-    document.getElementById("lockBtn").addEventListener("click", changePasscode);
-
-    document.getElementById("fabMain").addEventListener("click", () => fabWrap.classList.toggle("open"));
-    document.getElementById("addTextBtn").addEventListener("click", () => { fabWrap.classList.remove("open"); openNewEditor("text"); });
-    document.getElementById("addImageBtn").addEventListener("click", () => { fabWrap.classList.remove("open"); openNewEditor("image"); });
-    document.getElementById("addDrawingBtn").addEventListener("click", () => { fabWrap.classList.remove("open"); openNewEditor("drawing"); });
-
-    saveBtn.addEventListener("click", openSaveModal);
-    document.getElementById("saveCancelBtn").addEventListener("click", () => hideModal(saveModal));
-    document.getElementById("saveConfirmBtn").addEventListener("click", saveCurrentNote);
-
-    document.getElementById("renameCancelBtn").addEventListener("click", () => hideModal(renameModal));
-    document.getElementById("renameConfirmBtn").addEventListener("click", renameSelected);
-
-    document.getElementById("pinBtn").addEventListener("click", pinSelected);
-    document.getElementById("renameBtn").addEventListener("click", openRenameModal);
-    document.getElementById("deleteBtn").addEventListener("click", deleteSelected);
-    document.getElementById("editBtn").addEventListener("click", editSelected);
-
-    document.getElementById("galleryBtn").addEventListener("click", () => galleryInput.click());
-    document.getElementById("cameraBtn").addEventListener("click", () => cameraInput.click());
-    galleryInput.addEventListener("change", e => handleImage(e.target.files[0]));
-    cameraInput.addEventListener("change", e => handleImage(e.target.files[0]));
-
-    document.getElementById("brushBtn").addEventListener("click", () => {
-      state.brushMode = "brush";
-      document.getElementById("brushBtn").classList.add("active");
-      document.getElementById("eraserBtn").classList.remove("active");
-    });
-
-    document.getElementById("eraserBtn").addEventListener("click", () => {
-      state.brushMode = "eraser";
-      document.getElementById("eraserBtn").classList.add("active");
-      document.getElementById("brushBtn").classList.remove("active");
-    });
-
-    document.getElementById("clearCanvasBtn").addEventListener("click", clearCanvas);
-    document.getElementById("micBtn").addEventListener("click", toggleVoice);
-    searchInput.addEventListener("input", renderNotes);
-
-    canvas.addEventListener("mousedown", startDraw);
-    canvas.addEventListener("mousemove", draw);
-    window.addEventListener("mouseup", stopDraw);
-    canvas.addEventListener("touchstart", startDraw, {passive:true});
-    canvas.addEventListener("touchmove", draw, {passive:false});
-    window.addEventListener("touchend", stopDraw);
-    window.addEventListener("resize", () => {
-      if(state.mode === "drawing") setTimeout(resizeCanvas, 80);
-    });
-
-    window.openNoteById = openNoteById;
-    window.restoreDeleted = restoreDeleted;
-    window.removeDeleted = removeDeleted;
-
-    loadDB();
-    applyTheme();
-    renderNotes();
-    renderDeleted();
-    checkLock();
-  </script>
-</body>
-</html>
+); }
