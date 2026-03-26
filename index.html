@@ -1,51 +1,273 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Smart Notes Premium Auth</title>
+  <title>Smart Notes Premium Phase 3</title>
   <style>
     :root{
-      --bg:#070b14;--bg2:#111827;--panel:rgba(17,24,39,.82);--panel-2:rgba(30,41,59,.88);--card:rgba(15,23,42,.78);
-      --text:#f8fafc;--muted:#94a3b8;--accent:#38bdf8;--accent-2:#6366f1;--danger:#ef4444;--success:#10b981;--border:rgba(255,255,255,.08);
-      --glow:0 0 0 1px rgba(255,255,255,.05),0 20px 40px rgba(0,0,0,.35)
-    }
-    body.light{
-      --bg:#eef4ff;--bg2:#dbeafe;--panel:rgba(255,255,255,.78);--panel-2:rgba(241,245,249,.96);--card:rgba(255,255,255,.86);
-      --text:#0f172a;--muted:#64748b;--accent:#2563eb;--accent-2:#7c3aed;--danger:#dc2626;--success:#059669;--border:rgba(15,23,42,.08);
-      --glow:0 0 0 1px rgba(255,255,255,.4),0 18px 35px rgba(37,99,235,.10)
-    }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;color:var(--text);background:
-      radial-gradient(circle at top left, rgba(56,189,248,.16), transparent 28%),
-      radial-gradient(circle at bottom right, rgba(99,102,241,.16), transparent 30%),
-      linear-gradient(160deg,var(--bg),var(--bg2))}
-    button,input,textarea,select,a{font:inherit}
-    .app{width:100%;height:100%;position:relative}
-    .hidden{display:none!important}
-    .topbar{position:fixed;top:0;left:0;right:0;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:var(--panel);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);z-index:50;box-shadow:var(--glow)}
-    .left-head{display:flex;align-items:center;gap:10px;min-width:0}.title{font-weight:800;font-size:19px;max-width:36vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.top-actions{display:flex;gap:8px}
-    .icon-btn,.action-btn,.mini-btn,.drawer-btn,.toolbar-btn,.seg-btn,.modal-btn,.eye-btn,.support-link,.auth-btn,.tab-btn{border:none;outline:none;cursor:pointer;border-radius:16px;color:var(--text);background:var(--panel-2);border:1px solid var(--border);box-shadow:var(--glow);transition:.22s ease;text-decoration:none}
-    .icon-btn:active,.action-btn:active,.mini-btn:active,.drawer-btn:active,.toolbar-btn:active,.seg-btn:active,.modal-btn:active,.eye-btn:active,.support-link:active,.auth-btn:active,.tab-btn:active{transform:scale(.98)}
-    .icon-btn{width:46px;height:46px;font-size:22px}.action-btn{padding:10px 13px;min-width:78px;font-weight:700}.primary-btn{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:none}
-    .page{position:absolute;inset:70px 0 0 0;overflow-y:auto;padding:14px 14px 120px;display:none}.page.active{display:block}
-    .search{width:100%;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:15px 16px;outline:none;box-shadow:var(--glow);margin-bottom:12px}
-    .search-info{color:var(--muted);font-size:13px;margin:8px 2px 14px}
-    .notes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}@media (max-width:640px){.notes-grid{grid-template-columns:1fr}}
-    .note-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:12px;min-height:118px;box-shadow:var(--glow);position:relative;overflow:hidden;user-select:none}
-    .note-card.pinned::before{content:"📌";position:absolute;top:8px;right:10px;font-size:14px;z-index:1}
-    .note-name{font-size:15px;font-weight:800;margin-bottom:6px;padding-right:24px;word-break:break-word}.note-meta{color:var(--muted);font-size:11px;margin-bottom:8px;line-height:1.4}.note-text{white-space:pre-wrap;line-height:1.42;word-break:break-word;font-size:13px}.note-preview-img{width:100%;margin-top:10px;border-radius:12px;border:1px solid var(--border);display:block;max-height:138px;object-fit:cover;background:#000}
-    .empty{min-height:calc(100vh - 190px);display:grid;place-items:center;text-align:center;color:var(--muted);padding:20px}.empty-icon{font-size:52px;margin-bottom:10px}
-    .fab-wrap{position:fixed;right:20px;bottom:22px;z-index:60}.fab-options{display:flex;flex-direction:column;align-items:flex-end;gap:10px;margin-bottom:12px;pointer-events:none}.fab-wrap.open .fab-options{pointer-events:auto}.fab-item{display:flex;align-items:center;gap:10px;transform:translateY(16px) scale(.78);opacity:0;transition:.28s ease}.fab-wrap.open .fab-item{transform:translateY(0) scale(1);opacity:1}.fab-label{background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:16px;padding:10px 12px;box-shadow:var(--glow);font-size:14px}.fab-mini{width:52px;height:52px;font-size:22px}.fab-main{width:74px;height:74px;border:none;border-radius:50%;cursor:pointer;font-size:42px;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 22px 40px rgba(0,0,0,.35)}.fab-wrap.open .fab-main{transform:rotate(45deg)}
-    .editor-box,.about-card,.trash-card,.support-card{background:var(--panel);border:1px solid var(--border);border-radius:26px;padding:16px;box-shadow:var(--glow)}
-    .mode-badge{display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--border);margin-bottom:12px;font-size:13px}.editor-field{width:100%;background:var(--panel-2);color:var(--text);border:1px solid var(--border);border-radius:18px;padding:14px;outline:none;margin-bottom:12px}.editor-title{font-weight:700;font-size:16px}.editor-text{min-height:210px;resize:none}.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}.toolbar-btn{padding:10px 14px}.toolbar-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:none}.preview-img{width:100%;display:none;border-radius:18px;margin-bottom:12px;border:1px solid var(--border);max-height:260px;object-fit:contain;background:#000}.canvas-wrap{background:#fff;border-radius:20px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--glow)}#drawCanvas{display:block;width:100%;height:420px;background:#fff;touch-action:none}.range-box,.color-box{display:flex;align-items:center;gap:8px;background:var(--panel-2);border:1px solid var(--border);border-radius:14px;padding:10px 12px;box-shadow:var(--glow)} input[type="range"]{width:110px} input[type="color"]{width:34px;height:34px;border:none;background:transparent;padding:0}
-    .drawer-overlay,.context-overlay,.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.24s ease;z-index:80;backdrop-filter:blur(2px)}.drawer-overlay.show,.context-overlay.show,.modal-overlay.show{opacity:1;pointer-events:auto}.drawer{position:fixed;top:0;left:0;width:300px;max-width:88%;height:100%;background:var(--panel);border-right:1px solid var(--border);transform:translateX(-100%);transition:.28s ease;z-index:90;padding:16px 14px;box-shadow:var(--glow);overflow-y:auto}.drawer.show{transform:translateX(0)}.drawer h2{margin:8px 0 18px;font-size:24px}.drawer-btn,.auth-btn{width:100%;text-align:left;padding:14px 16px;margin-bottom:10px}
-    .user-box{display:flex;gap:12px;align-items:center;margin:8px 0 18px;padding:12px;border-radius:18px;border:1px solid var(--border);background:var(--panel-2);box-shadow:var(--glow)}.user-photo{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--border);background:#111;flex-shrink:0}.user-name{font-size:14px;font-weight:700;word-break:break-word}.user-email{font-size:11px;color:var(--muted);word-break:break-word;margin-top:2px}
-    .context-bar{position:fixed;top:78px;left:50%;transform:translateX(-50%) translateY(-16px);background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:10px;display:flex;gap:8px;max-width:calc(100% - 18px);overflow-x:auto;box-shadow:var(--glow);opacity:0;pointer-events:none;transition:.22s ease;z-index:100}.context-bar.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}.seg-btn{padding:10px 14px;white-space:nowrap}.seg-btn.danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none}
-    .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.92);width:min(92vw,440px);background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:18px;box-shadow:var(--glow);z-index:110;opacity:0;pointer-events:none;transition:.22s ease}.modal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}.modal h3{margin:0 0 14px;font-size:22px}.modal p{color:var(--muted);line-height:1.5;margin-bottom:12px}.modal input,.modal select{width:100%;background:var(--panel-2);color:var(--text);border:1px solid var(--border);border-radius:16px;padding:13px 48px 13px 14px;outline:none;margin-bottom:12px;box-shadow:var(--glow)}.input-wrap{position:relative}.eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;background:transparent;box-shadow:none}.modal-actions,.trash-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}.modal-btn{padding:11px 14px}.modal-btn.primary,.restore{background:linear-gradient(135deg,var(--success),#059669);color:#fff;border:none}.remove{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none}.error-text{display:none;color:#ff4d4f;font-size:13px;margin:-4px 0 10px;font-weight:700}.error-text.show{display:block}
-    .small{font-size:13px;color:var(--muted)} .lock-screen{position:fixed;inset:0;background:#000;z-index:300;display:none;align-items:center;justify-content:center;padding:20px}.lock-card{width:min(92vw,420px);background:linear-gradient(180deg,#0f172a,#111827);border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:22px;color:#fff;box-shadow:0 24px 50px rgba(0,0,0,.55),0 0 30px rgba(56,189,248,.10);text-align:center}.lock-card h2{margin-top:0;margin-bottom:10px;font-size:26px}.lock-card .input-wrap{margin:12px 0}.lock-card input{width:100%;padding:14px 48px 14px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.12);outline:none;background:rgba(255,255,255,.06);color:#fff}.lock-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}.lock-actions button{flex:1;min-width:120px;padding:13px;border-radius:16px;border:none;cursor:pointer;font-weight:700}.lock-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}.lock-secondary{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.14)}
-    .support-links{display:grid;gap:12px;margin-top:14px}.support-link{display:block;padding:14px 16px;border-radius:18px;text-decoration:none;color:var(--text);background:var(--panel-2)}.support-label{font-size:12px;color:var(--muted);margin-bottom:4px}.support-value{font-weight:700;word-break:break-word}
-    .auth-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.tab-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border:none} #recaptcha-container{margin-bottom:12px}
+      --bg:#070b14;
+      --bg2:#111827;
+      --panel:rgba(17,24,39,0.82);
+      --panel-2:rgba(30,41,59,0.85);
+      --card:rgba(15,23,42,0.78);
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --accent:#38bdf8;
+      --accent-2:#6366f1;
+      --danger:#ef4444;
+      --success:#10b981;
+      --border:rgba(255,255,255,0.08);
+      --glow:0 0 0 1px rgba(255,255,255,.05), 0 20px 40px rgba(0,0,0,.35);
+    }body.light{
+  --bg:#eef4ff;
+  --bg2:#dbeafe;
+  --panel:rgba(255,255,255,0.78);
+  --panel-2:rgba(241,245,249,0.95);
+  --card:rgba(255,255,255,0.82);
+  --text:#0f172a;
+  --muted:#64748b;
+  --accent:#2563eb;
+  --accent-2:#7c3aed;
+  --danger:#dc2626;
+  --success:#059669;
+  --border:rgba(15,23,42,0.08);
+  --glow:0 0 0 1px rgba(255,255,255,.4), 0 18px 35px rgba(37,99,235,.10);
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(56,189,248,.16), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(99,102,241,.16), transparent 30%),
+    linear-gradient(160deg,var(--bg),var(--bg2));
+  touch-action:manipulation;
+}
+
+button,input,textarea,select,a{ font:inherit; }
+
+.app{ width:100%; height:100%; position:relative; }
+
+.topbar{
+  position:fixed;
+  top:0;left:0;right:0;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+  background:var(--panel);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  z-index:50;
+  box-shadow:var(--glow);
+}
+
+.left-head{ display:flex; align-items:center; gap:10px; min-width:0; }
+.title{ font-weight:800; font-size:19px; letter-spacing:.2px; max-width:34vw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.top-actions{ display:flex; gap:8px; align-items:center; }
+
+.icon-btn,.action-btn,.mini-btn,.drawer-btn,.toolbar-btn,.seg-btn,.modal-btn,.eye-btn,.support-link,.auth-btn{
+  border:none;
+  outline:none;
+  cursor:pointer;
+  border-radius:16px;
+  color:var(--text);
+  background:var(--panel-2);
+  border:1px solid var(--border);
+  box-shadow:var(--glow);
+  transition:.22s ease;
+  text-decoration:none;
+}
+
+.icon-btn:active,.action-btn:active,.mini-btn:active,.drawer-btn:active,.toolbar-btn:active,.seg-btn:active,.modal-btn:active,.eye-btn:active,.support-link:active,.auth-btn:active{ transform:scale(.98); }
+.icon-btn{ width:46px; height:46px; font-size:22px; }
+.action-btn{ padding:10px 13px; min-width:78px; font-weight:700; }
+.primary-btn{ background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff; border:none; }
+
+.page{
+  position:absolute;
+  inset:70px 0 0 0;
+  overflow-y:auto;
+  padding:14px 14px 120px;
+  display:none;
+}
+.page.active{ display:block; }
+
+.search-wrap{ margin-bottom:12px; }
+.search{
+  width:100%;
+  background:var(--panel);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:15px 16px;
+  outline:none;
+  box-shadow:var(--glow);
+  backdrop-filter:blur(14px);
+}
+.search-info{ color:var(--muted); font-size:13px; margin:8px 2px 14px; }
+
+.notes-grid{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+@media (max-width:640px){ .notes-grid{ grid-template-columns:1fr; } }
+
+.note-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:12px;
+  min-height:118px;
+  box-shadow:var(--glow);
+  position:relative;
+  overflow:hidden;
+  user-select:none;
+  backdrop-filter:blur(14px);
+}
+
+.note-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,.04), transparent 45%);
+  pointer-events:none;
+}
+
+.note-card.pinned::before{
+  content:"📌";
+  position:absolute;
+  top:8px;
+  right:10px;
+  font-size:14px;
+  z-index:1;
+}
+
+.note-name{ font-size:15px; font-weight:800; margin-bottom:6px; padding-right:24px; word-break:break-word; position:relative; z-index:1; }
+.note-meta{ color:var(--muted); font-size:11px; margin-bottom:8px; line-height:1.4; position:relative; z-index:1; }
+.note-text{ white-space:pre-wrap; line-height:1.42; word-break:break-word; font-size:13px; position:relative; z-index:1; }
+
+.note-preview-img{
+  width:100%;
+  margin-top:10px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  display:block;
+  max-height:138px;
+  object-fit:cover;
+  background:#000;
+  position:relative;
+  z-index:1;
+}
+
+.empty{ min-height:calc(100vh - 190px); display:grid; place-items:center; text-align:center; color:var(--muted); padding:20px; }
+.empty-icon{ font-size:52px; margin-bottom:10px; filter:drop-shadow(0 6px 18px rgba(56,189,248,.18)); }
+
+.fab-wrap{ position:fixed; right:20px; bottom:22px; z-index:60; }
+.fab-options{ display:flex; flex-direction:column; align-items:flex-end; gap:10px; margin-bottom:12px; pointer-events:none; }
+.fab-wrap.open .fab-options{ pointer-events:auto; }
+.fab-item{ display:flex; align-items:center; gap:10px; transform:translateY(16px) scale(.78); opacity:0; transition:.28s ease; }
+.fab-wrap.open .fab-item{ transform:translateY(0) scale(1); opacity:1; }
+.fab-label{ background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:16px; padding:10px 12px; box-shadow:var(--glow); backdrop-filter:blur(16px); font-size:14px; }
+.fab-mini{ width:52px; height:52px; font-size:22px; }
+.fab-main{
+  width:74px; height:74px; border:none; border-radius:50%; cursor:pointer; font-size:42px; color:#fff;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  box-shadow:0 22px 40px rgba(0,0,0,.35), 0 0 25px rgba(56,189,248,.18);
+  transition:.25s ease;
+}
+.fab-wrap.open .fab-main{ transform:rotate(45deg); }
+
+.editor-box,.about-card,.trash-card,.support-card{ background:var(--panel); border:1px solid var(--border); border-radius:26px; padding:16px; box-shadow:var(--glow); backdrop-filter:blur(18px); }
+.mode-badge{ display:inline-block; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid var(--border); margin-bottom:12px; font-size:13px; }
+.editor-field{ width:100%; background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:18px; padding:14px; outline:none; margin-bottom:12px; box-shadow:inset 0 1px 0 rgba(255,255,255,.03); }
+.editor-title{ font-weight:700; font-size:16px; }
+.editor-text{ min-height:210px; resize:none; }
+.toolbar{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+.toolbar-btn{ padding:10px 14px; }
+.toolbar-btn.active{ background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff; border:none; }
+.preview-img{ width:100%; display:none; border-radius:18px; margin-bottom:12px; border:1px solid var(--border); max-height:260px; object-fit:contain; background:#000; }
+.canvas-wrap{ background:#fff; border-radius:20px; border:1px solid var(--border); overflow:hidden; box-shadow:var(--glow); }
+#drawCanvas{ display:block; width:100%; height:420px; background:#fff; touch-action:none; }
+.range-box,.color-box{ display:flex; align-items:center; gap:8px; background:var(--panel-2); border:1px solid var(--border); border-radius:14px; padding:10px 12px; box-shadow:var(--glow); }
+input[type="range"]{ width:110px; }
+input[type="color"]{ width:34px; height:34px; border:none; background:transparent; padding:0; }
+
+.drawer-overlay,.context-overlay,.modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.5); opacity:0; pointer-events:none; transition:.24s ease; z-index:80; backdrop-filter:blur(2px); }
+.drawer-overlay.show,.context-overlay.show,.modal-overlay.show{ opacity:1; pointer-events:auto; }
+
+.drawer{
+  position:fixed; top:0; left:0; width:290px; max-width:86%; height:100%; background:var(--panel); border-right:1px solid var(--border);
+  transform:translateX(-100%); transition:.28s ease; z-index:90; padding:16px 14px; box-shadow:var(--glow); overflow-y:auto; backdrop-filter:blur(18px);
+}
+.drawer.show{ transform:translateX(0); }
+.drawer h2{ margin:8px 0 18px; font-size:24px; }
+.drawer-btn,.auth-btn{ width:100%; text-align:left; padding:14px 16px; margin-bottom:10px; }
+
+.user-box{ display:flex; gap:12px; align-items:center; margin:8px 0 18px; padding:12px; border-radius:18px; border:1px solid var(--border); background:var(--panel-2); box-shadow:var(--glow); }
+.user-photo{ width:48px; height:48px; border-radius:50%; object-fit:cover; border:1px solid var(--border); background:#111; flex-shrink:0; }
+.user-name{ font-size:14px; font-weight:700; word-break:break-word; }
+.user-email{ font-size:11px; color:var(--muted); word-break:break-word; margin-top:2px; }
+
+.context-bar{
+  position:fixed; top:78px; left:50%; transform:translateX(-50%) translateY(-16px); background:var(--panel); border:1px solid var(--border);
+  border-radius:20px; padding:10px; display:flex; gap:8px; max-width:calc(100% - 18px); overflow-x:auto; box-shadow:var(--glow); opacity:0;
+  pointer-events:none; transition:.22s ease; z-index:100; backdrop-filter:blur(18px);
+}
+.context-bar.show{ opacity:1; pointer-events:auto; transform:translateX(-50%) translateY(0); }
+.seg-btn{ padding:10px 14px; white-space:nowrap; }
+.seg-btn.danger{ background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; }
+
+.modal{
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(.92); width:min(92vw,430px); background:var(--panel);
+  border:1px solid var(--border); border-radius:24px; padding:18px; box-shadow:var(--glow); z-index:110; opacity:0; pointer-events:none;
+  transition:.22s ease; backdrop-filter:blur(18px);
+}
+.modal.show{ opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1); animation:popIn .22s ease; }
+@keyframes popIn{ 0%{transform:translate(-50%,-50%) scale(.86); opacity:0;} 100%{transform:translate(-50%,-50%) scale(1); opacity:1;} }
+@keyframes blinkError{ 0%,100%{opacity:1;} 50%{opacity:.15;} }
+.error-text{ display:none; color:#ff4d4f; font-size:13px; margin:-4px 0 10px; font-weight:700; }
+.error-text.show{ display:block; animation:blinkError .7s linear infinite; }
+.modal h3{ margin:0 0 14px; font-size:22px; }
+.modal p{ color:var(--muted); line-height:1.5; margin-bottom:12px; }
+.modal input,.modal select{ width:100%; background:var(--panel-2); color:var(--text); border:1px solid var(--border); border-radius:16px; padding:13px 48px 13px 14px; outline:none; margin-bottom:12px; box-shadow:var(--glow); }
+.input-wrap{ position:relative; }
+.eye-btn{ position:absolute; right:10px; top:50%; transform:translateY(-50%); width:34px; height:34px; border-radius:10px; display:grid; place-items:center; font-size:16px; background:transparent; box-shadow:none; }
+.modal-actions,.trash-actions{ display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
+.modal-btn{ padding:11px 14px; }
+.modal-btn.primary,.restore{ background:linear-gradient(135deg,var(--success),#059669); color:#fff; border:none; }
+.remove{ background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; }
+.small{ font-size:13px; color:var(--muted); }
+
+.lock-screen{ position:fixed; inset:0; background:#000; z-index:300; display:none; align-items:center; justify-content:center; padding:20px; }
+.lock-card{ width:min(92vw,420px); background:linear-gradient(180deg,#0f172a,#111827); border:1px solid rgba(255,255,255,.08); border-radius:26px; padding:22px; color:#fff; box-shadow:0 24px 50px rgba(0,0,0,.55), 0 0 30px rgba(56,189,248,.10); text-align:center; }
+.lock-card h2{ margin-top:0; margin-bottom:10px; font-size:26px; }
+.lock-card .input-wrap{ margin:12px 0; }
+.lock-card input{ width:100%; padding:14px 48px 14px 14px; border-radius:18px; border:1px solid rgba(255,255,255,.12); outline:none; background:rgba(255,255,255,.06); color:#fff; letter-spacing:1px; }
+.lock-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+.lock-actions button{ flex:1; min-width:120px; padding:13px; border-radius:16px; border:none; cursor:pointer; font-weight:700; }
+.lock-primary{ background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff; }
+.lock-secondary{ background:rgba(255,255,255,.1); color:#fff; border:1px solid rgba(255,255,255,.14); }
+
+.support-links{ display:grid; gap:12px; margin-top:14px; }
+.support-link{ display:block; padding:14px 16px; border-radius:18px; text-decoration:none; color:var(--text); background:var(--panel-2); }
+.support-label{ font-size:12px; color:var(--muted); margin-bottom:4px; }
+.support-value{ font-weight:700; word-break:break-word; }
+
+.otp-row{ display:flex; gap:8px; flex-wrap:wrap; }
+.otp-row > *{ flex:1; min-width:120px; }
+.cloud-badge{ margin:0 0 12px; padding:10px 12px; border-radius:14px; background:var(--panel-2); border:1px solid var(--border); color:var(--muted); font-size:13px; }
+.auth-note{ color:var(--muted); font-size:12px; margin-top:-4px; margin-bottom:10px; }
+#recaptcha-container{ margin-top:8px; }
+
   </style>
 </head>
 <body>
@@ -63,9 +285,7 @@
         <button class="lock-primary" id="lockOkBtn">OK</button>
       </div>
     </div>
-  </div>
-
-  <div class="app">
+  </div>  <div class="app">
     <header class="topbar">
       <div class="left-head">
         <button class="icon-btn" id="menuBtn">☰</button>
@@ -75,237 +295,267 @@
         <button class="action-btn" id="backBtn" style="display:none;">Back</button>
         <button class="action-btn primary-btn" id="saveBtn" style="display:none;">Save</button>
       </div>
-    </header>
+    </header><section class="page active" id="homePage">
+  <div class="search-wrap">
+    <input class="search" id="searchInput" placeholder="Search notes..." />
+  </div>
+  <div class="search-info" id="searchInfo">All notes</div>
+  <div id="notesContainer"></div>
+</section>
 
-    <section class="page active" id="homePage">
-      <input class="search" id="searchInput" placeholder="Search notes..." />
-      <div class="search-info" id="searchInfo">All notes</div>
-      <div id="notesContainer"></div>
-    </section>
+<section class="page" id="editorPage">
+  <div class="editor-box">
+    <div class="cloud-badge" id="cloudStatus">Cloud sync: guest mode</div>
+    <div class="mode-badge" id="modeBadge">Text Note</div>
 
-    <section class="page" id="editorPage">
-      <div class="editor-box">
-        <div class="mode-badge" id="modeBadge">Text Note</div>
-        <input class="editor-field editor-title" id="noteNameField" placeholder="Note name" />
+    <input class="editor-field editor-title" id="noteNameField" placeholder="Note name" />
 
-        <div id="textEditor">
-          <div class="toolbar"><button class="toolbar-btn" id="micBtn">🎤 Voice</button></div>
-          <textarea class="editor-field editor-text" id="textInput" placeholder="Write here..."></textarea>
-        </div>
-
-        <div id="imageEditor" style="display:none;">
-          <div class="toolbar">
-            <button class="toolbar-btn" id="galleryBtn">Upload Media</button>
-            <button class="toolbar-btn" id="cameraBtn">Camera</button>
-          </div>
-          <input type="file" id="galleryInput" accept="image/*" hidden />
-          <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden />
-          <img class="preview-img" id="imagePreview" alt="preview" />
-          <textarea class="editor-field editor-text" id="imageTextInput" placeholder="Write about this photo..."></textarea>
-        </div>
-
-        <div id="drawingEditor" style="display:none;">
-          <div class="toolbar">
-            <button class="toolbar-btn active" id="brushBtn">Brush</button>
-            <button class="toolbar-btn" id="eraserBtn">Eraser</button>
-            <div class="color-box">Color <input type="color" id="brushColor" value="#000000" /></div>
-            <div class="range-box">Brush <input type="range" id="brushSize" min="1" max="30" value="4" /></div>
-            <div class="range-box">Eraser <input type="range" id="eraserSize" min="5" max="40" value="16" /></div>
-            <button class="toolbar-btn" id="clearCanvasBtn">Clear</button>
-          </div>
-          <div class="canvas-wrap"><canvas id="drawCanvas"></canvas></div>
-          <textarea class="editor-field editor-text" id="drawingTextInput" placeholder="Write about this drawing..."></textarea>
-        </div>
+    <div id="textEditor">
+      <div class="toolbar">
+        <button class="toolbar-btn" id="micBtn">🎤 Voice</button>
       </div>
-    </section>
-
-    <section class="page" id="deletedPage"><div id="deletedContainer"></div></section>
-    <section class="page" id="aboutPage">
-      <div class="about-card">
-        <h2>📝 Smart Notes App</h2>
-        <p><strong>Smart Notes App</strong> helps students and developers manage text, image, and drawing notes in one place.</p>
-        <h3>Features</h3>
-        <p>• Smart storage</p>
-        <p>• Auto timestamp</p>
-        <p>• Text, image and drawing notes</p>
-        <p>• Pin, rename, delete and restore</p>
-        <p>• Local privacy</p>
-        <p>• Google, Email and Phone login support</p>
-      </div>
-    </section>
-    <section class="page" id="supportPage">
-      <div class="support-card">
-        <h2>💬 Help & Support</h2>
-        <p>Tap any option below to contact support.</p>
-        <div class="support-links">
-          <a class="support-link" href="mailto:rajanuj50340@gmail.com?subject=Smart%20Notes%20Support">
-            <div class="support-label">Email Support</div>
-            <div class="support-value">rajanuj50340@gmail.com</div>
-          </a>
-          <a class="support-link" href="https://instagram.com/anujfinx" target="_blank" rel="noopener noreferrer">
-            <div class="support-label">Instagram</div>
-            <div class="support-value">@anujfinx</div>
-          </a>
-          <a class="support-link" href="https://wa.me/916204020450?text=Hello%20Anuj%2C%20I%20need%20support%20for%20Smart%20Notes." target="_blank" rel="noopener noreferrer">
-            <div class="support-label">WhatsApp Support</div>
-            <div class="support-value">6204020450</div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <div class="fab-wrap" id="fabWrap">
-      <div class="fab-options">
-        <div class="fab-item"><div class="fab-label">Image</div><button class="mini-btn fab-mini" id="addImageBtn">🖼️</button></div>
-        <div class="fab-item"><div class="fab-label">Drawing</div><button class="mini-btn fab-mini" id="addDrawingBtn">✏️</button></div>
-        <div class="fab-item"><div class="fab-label">Text</div><button class="mini-btn fab-mini" id="addTextBtn">📝</button></div>
-      </div>
-      <button class="fab-main" id="fabMain">+</button>
+      <textarea class="editor-field editor-text" id="textInput" placeholder="Write here..."></textarea>
     </div>
 
-    <div class="drawer-overlay" id="drawerOverlay"></div>
-    <aside class="drawer" id="drawer">
-      <h2>Menu</h2>
-      <div class="user-box">
-        <img class="user-photo" id="userPhoto" src="https://via.placeholder.com/48?text=U" alt="user" />
-        <div><div class="user-name" id="userName">Guest User</div><div class="user-email" id="userEmail">Not signed in</div></div>
+    <div id="imageEditor" style="display:none;">
+      <div class="toolbar">
+        <button class="toolbar-btn" id="galleryBtn">Upload Media</button>
+        <button class="toolbar-btn" id="cameraBtn">Camera</button>
       </div>
-
-      <div class="auth-tabs">
-        <button class="tab-btn active" data-auth-tab="google">Google</button>
-        <button class="tab-btn" data-auth-tab="email">Email</button>
-        <button class="tab-btn" data-auth-tab="phone">Phone</button>
-      </div>
-
-      <div id="googleAuthBox">
-        <button class="auth-btn" id="googleLoginBtn">Continue with Google</button>
-      </div>
-
-      <div id="emailAuthBox" class="hidden">
-        <input id="emailInput" class="editor-field" placeholder="Email address" type="email" />
-        <input id="emailPasswordInput" class="editor-field" placeholder="Password" type="password" />
-        <button class="auth-btn" id="emailSignupBtn">Create Account</button>
-        <button class="auth-btn" id="emailLoginBtn">Login with Email</button>
-        <button class="auth-btn" id="emailResetBtn">Send Reset Email</button>
-        <div class="small">Email recovery email Firebase bhejega.</div>
-      </div>
-
-      <div id="phoneAuthBox" class="hidden">
-        <input id="phoneInput" class="editor-field" placeholder="+91XXXXXXXXXX" type="tel" />
-        <div id="recaptcha-container"></div>
-        <button class="auth-btn" id="sendOtpBtn">Send OTP</button>
-        <input id="otpInput" class="editor-field hidden" placeholder="Enter OTP" />
-        <button class="auth-btn hidden" id="verifyOtpBtn">Verify OTP</button>
-        <div class="small">Phone OTP login Firebase ke through hoga.</div>
-      </div>
-
-      <button class="auth-btn" id="logoutBtn" style="display:none;">Logout</button>
-      <button class="drawer-btn" id="themeBtn">Change Theme</button>
-      <button class="drawer-btn" id="deletedBtn">Deleted Notes</button>
-      <button class="drawer-btn" id="aboutBtn">About</button>
-      <button class="drawer-btn" id="supportBtn">Help & Support</button>
-      <button class="drawer-btn" id="toggleLockBtn">Enable Lock</button>
-      <button class="drawer-btn" id="changePassBtn">Set / Change Password</button>
-    </aside>
-
-    <div class="context-overlay" id="contextOverlay"></div>
-    <div class="context-bar" id="contextBar">
-      <button class="seg-btn" id="pinBtn">📌 Pin</button>
-      <button class="seg-btn" id="renameBtn">✏️ Rename</button>
-      <button class="seg-btn" id="editBtn">📝 Edit</button>
-      <button class="seg-btn danger" id="deleteBtn">🗑 Delete</button>
+      <input type="file" id="galleryInput" accept="image/*" hidden />
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden />
+      <img class="preview-img" id="imagePreview" alt="preview" />
+      <textarea class="editor-field editor-text" id="imageTextInput" placeholder="Write about this photo..."></textarea>
     </div>
 
-    <div class="modal-overlay" id="modalOverlay"></div>
-    <div class="modal" id="saveModal">
-      <h3>Save Note</h3>
-      <input id="saveNameInput" placeholder="Note name" />
-      <select id="savePlaceSelect">
-        <option value="app">Save in app</option>
-        <option value="phone">Save file in phone</option>
-        <option value="both">Save in both</option>
-      </select>
-      <div class="modal-actions">
-        <button class="modal-btn" id="saveCancelBtn">Cancel</button>
-        <button class="modal-btn primary" id="saveConfirmBtn">Save</button>
+    <div id="drawingEditor" style="display:none;">
+      <div class="toolbar">
+        <button class="toolbar-btn active" id="brushBtn">Brush</button>
+        <button class="toolbar-btn" id="eraserBtn">Eraser</button>
+        <div class="color-box">Color <input type="color" id="brushColor" value="#000000" /></div>
+        <div class="range-box">Brush <input type="range" id="brushSize" min="1" max="30" value="4" /></div>
+        <div class="range-box">Eraser <input type="range" id="eraserSize" min="5" max="40" value="16" /></div>
+        <button class="toolbar-btn" id="clearCanvasBtn">Clear</button>
       </div>
+      <div class="canvas-wrap">
+        <canvas id="drawCanvas"></canvas>
+      </div>
+      <textarea class="editor-field editor-text" id="drawingTextInput" placeholder="Write about this drawing..."></textarea>
     </div>
+  </div>
+</section>
 
-    <div class="modal" id="renameModal">
-      <h3>Rename Note</h3>
-      <input id="renameInput" placeholder="New note name" />
-      <div class="modal-actions">
-        <button class="modal-btn" id="renameCancelBtn">Cancel</button>
-        <button class="modal-btn primary" id="renameConfirmBtn">Rename</button>
-      </div>
+<section class="page" id="deletedPage">
+  <div id="deletedContainer"></div>
+</section>
+
+<section class="page" id="aboutPage">
+  <div class="about-card">
+    <h2>📝 Smart Notes App</h2>
+    <p><strong>Smart Notes App</strong> helps students and developers manage text, image, and drawing notes in one place.</p>
+    <h3>Features</h3>
+    <p>• Smart storage</p>
+    <p>• Auto timestamp</p>
+    <p>• Text, image and drawing notes</p>
+    <p>• Pin, rename, delete and restore</p>
+    <p>• Local privacy</p>
+    <p>• Google login support</p>
+    <p>• Phone OTP login support</p>
+    <p>• Cloud sync with Firestore</p>
+  </div>
+</section>
+
+<section class="page" id="supportPage">
+  <div class="support-card">
+    <h2>💬 Help & Support</h2>
+    <p>Tap any option below to contact support.</p>
+
+    <div class="support-links">
+      <a class="support-link" href="mailto:rajanuj50340@gmail.com?subject=Smart%20Notes%20Support">
+        <div class="support-label">Email Support</div>
+        <div class="support-value">rajanuj50340@gmail.com</div>
+      </a>
+
+      <a class="support-link" href="https://instagram.com/anujfinx" target="_blank" rel="noopener noreferrer">
+        <div class="support-label">Instagram</div>
+        <div class="support-value">@anujfinx</div>
+      </a>
+
+      <a class="support-link" href="https://wa.me/916204020450?text=Hello%20Anuj%2C%20I%20need%20support%20for%20Smart%20Notes." target="_blank" rel="noopener noreferrer">
+        <div class="support-label">WhatsApp Support</div>
+        <div class="support-value">6204020450</div>
+      </a>
     </div>
+  </div>
+</section>
 
-    <div class="modal" id="enableLockModal">
-      <h3>Enable Lock</h3>
-      <p>Password must be at least 4 characters.</p>
-      <div class="input-wrap">
-        <input id="enableLockPasswordInput" type="password" placeholder="Enter password" />
-        <button class="eye-btn" id="enableLockEyeBtn" type="button">👁</button>
-      </div>
-      <div class="modal-actions">
-        <button class="modal-btn" id="enableLockCancelBtn">Cancel</button>
-        <button class="modal-btn primary" id="enableLockSaveBtn">Save</button>
-      </div>
+<div class="fab-wrap" id="fabWrap">
+  <div class="fab-options">
+    <div class="fab-item">
+      <div class="fab-label">Image</div>
+      <button class="mini-btn fab-mini" id="addImageBtn">🖼️</button>
     </div>
-
-    <div class="modal" id="changePasswordModal">
-      <h3>Set / Change Password</h3>
-      <p>Password must be at least 4 characters.</p>
-      <div class="input-wrap">
-        <input id="oldPasswordInput" type="password" placeholder="Old password" />
-        <button class="eye-btn" id="oldPasswordEyeBtn" type="button">👁</button>
-      </div>
-      <div class="error-text" id="oldPasswordError">Incorrect password</div>
-      <div class="input-wrap">
-        <input id="newPasswordInput" type="password" placeholder="New password" />
-        <button class="eye-btn" id="newPasswordEyeBtn" type="button">👁</button>
-      </div>
-      <div class="modal-actions">
-        <button class="modal-btn" id="forgotPasswordBtn">Forget Password</button>
-        <button class="modal-btn" id="changePasswordCancelBtn">Cancel</button>
-        <button class="modal-btn primary" id="changePasswordSaveBtn">Save</button>
-      </div>
+    <div class="fab-item">
+      <div class="fab-label">Drawing</div>
+      <button class="mini-btn fab-mini" id="addDrawingBtn">✏️</button>
     </div>
-
-    <div class="modal" id="disableLockModal">
-      <h3>Disable Lock</h3>
-      <p>Enter current password to disable lock.</p>
-      <div class="input-wrap">
-        <input id="disablePasswordInput" type="password" placeholder="Current password" />
-        <button class="eye-btn" id="disablePasswordEyeBtn" type="button">👁</button>
-      </div>
-      <div class="error-text" id="disablePasswordError">Incorrect password</div>
-      <div class="modal-actions">
-        <button class="modal-btn" id="disableForgotBtn">Forget Password</button>
-        <button class="modal-btn" id="disableLockCancelBtn">Cancel</button>
-        <button class="modal-btn primary" id="disableLockConfirmBtn">Disable</button>
-      </div>
+    <div class="fab-item">
+      <div class="fab-label">Text</div>
+      <button class="mini-btn fab-mini" id="addTextBtn">📝</button>
     </div>
+  </div>
+  <button class="fab-main" id="fabMain">+</button>
+</div>
 
-    <div class="modal" id="forgotConfirmModal">
-      <h3>Reset Password</h3>
-      <p id="forgotText">All saved notes and deleted notes will be permanently deleted. Continue?</p>
-      <div class="modal-actions">
-        <button class="modal-btn" id="forgotConfirmCancelBtn">Cancel</button>
-        <button class="modal-btn primary" id="forgotConfirmOkBtn">Reset</button>
-      </div>
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer">
+  <h2>Menu</h2>
+
+  <div class="user-box" id="userBox">
+    <img class="user-photo" id="userPhoto" src="https://via.placeholder.com/48?text=U" alt="user" />
+    <div>
+      <div class="user-name" id="userName">Guest User</div>
+      <div class="user-email" id="userEmail">Not signed in</div>
     </div>
   </div>
 
-  <script type="module">
+  <button class="auth-btn" id="googleLoginBtn">Continue with Google</button>
+  <button class="auth-btn" id="phoneLoginBtn">Login with Phone OTP</button>
+  <div id="phoneAuthPanel" style="display:none; margin-bottom:12px;">
+    <input class="editor-field" id="phoneNumberInput" placeholder="+91XXXXXXXXXX" style="margin-bottom:10px;" />
+    <div class="otp-row">
+      <button class="auth-btn" id="sendOtpBtn" style="margin-bottom:0;">Send OTP</button>
+    </div>
+    <input class="editor-field" id="otpInput" placeholder="Enter OTP" style="margin:10px 0 10px; display:none;" />
+    <div class="otp-row">
+      <button class="auth-btn" id="verifyOtpBtn" style="margin-bottom:0; display:none;">Verify OTP</button>
+    </div>
+    <div class="auth-note">Phone sign-in may need authorized domain setup in Firebase.</div>
+    <div id="recaptcha-container"></div>
+  </div>
+  <button class="auth-btn" id="logoutBtn" style="display:none;">Logout</button>
+
+  <button class="drawer-btn" id="themeBtn">Change Theme</button>
+  <button class="drawer-btn" id="deletedBtn">Deleted Notes</button>
+  <button class="drawer-btn" id="aboutBtn">About</button>
+  <button class="drawer-btn" id="supportBtn">Help & Support</button>
+  <button class="drawer-btn" id="syncNowBtn">Sync Now</button>
+  <button class="drawer-btn" id="toggleLockBtn">Enable Lock</button>
+  <button class="drawer-btn" id="changePassBtn">Set / Change Password</button>
+</aside>
+
+<div class="context-overlay" id="contextOverlay"></div>
+<div class="context-bar" id="contextBar">
+  <button class="seg-btn" id="pinBtn">📌 Pin</button>
+  <button class="seg-btn" id="renameBtn">✏️ Rename</button>
+  <button class="seg-btn" id="editBtn">📝 Edit</button>
+  <button class="seg-btn danger" id="deleteBtn">🗑 Delete</button>
+</div>
+
+<div class="modal-overlay" id="modalOverlay"></div>
+
+<div class="modal" id="saveModal">
+  <h3>Save Note</h3>
+  <input id="saveNameInput" placeholder="Note name" />
+  <select id="savePlaceSelect">
+    <option value="app">Save in app</option>
+    <option value="phone">Save file in phone</option>
+    <option value="both">Save in both</option>
+  </select>
+  <div class="modal-actions">
+    <button class="modal-btn" id="saveCancelBtn">Cancel</button>
+    <button class="modal-btn primary" id="saveConfirmBtn">Save</button>
+  </div>
+</div>
+
+<div class="modal" id="renameModal">
+  <h3>Rename Note</h3>
+  <input id="renameInput" placeholder="New note name" />
+  <div class="modal-actions">
+    <button class="modal-btn" id="renameCancelBtn">Cancel</button>
+    <button class="modal-btn primary" id="renameConfirmBtn">Rename</button>
+  </div>
+</div>
+
+<div class="modal" id="enableLockModal">
+  <h3>Enable Lock</h3>
+  <p>Password must be at least 4 characters.</p>
+  <div class="input-wrap">
+    <input id="enableLockPasswordInput" type="password" placeholder="Enter password" />
+    <button class="eye-btn" id="enableLockEyeBtn" type="button">👁</button>
+  </div>
+  <div class="modal-actions">
+    <button class="modal-btn" id="enableLockCancelBtn">Cancel</button>
+    <button class="modal-btn primary" id="enableLockSaveBtn">Save</button>
+  </div>
+</div>
+
+<div class="modal" id="changePasswordModal">
+  <h3>Set / Change Password</h3>
+  <p>Password must be at least 4 characters.</p>
+
+  <div class="input-wrap">
+    <input id="oldPasswordInput" type="password" placeholder="Old password" />
+    <button class="eye-btn" id="oldPasswordEyeBtn" type="button">👁</button>
+  </div>
+  <div class="error-text" id="oldPasswordError">Incorrect password</div>
+
+  <div class="input-wrap">
+    <input id="newPasswordInput" type="password" placeholder="New password" />
+    <button class="eye-btn" id="newPasswordEyeBtn" type="button">👁</button>
+  </div>
+
+  <div class="modal-actions">
+    <button class="modal-btn" id="forgotPasswordBtn">Forget Password</button>
+    <button class="modal-btn" id="changePasswordCancelBtn">Cancel</button>
+    <button class="modal-btn primary" id="changePasswordSaveBtn">Save</button>
+  </div>
+</div>
+
+<div class="modal" id="disableLockModal">
+  <h3>Disable Lock</h3>
+  <p>Enter current password to disable lock.</p>
+
+  <div class="input-wrap">
+    <input id="disablePasswordInput" type="password" placeholder="Current password" />
+    <button class="eye-btn" id="disablePasswordEyeBtn" type="button">👁</button>
+  </div>
+  <div class="error-text" id="disablePasswordError">Incorrect password</div>
+
+  <div class="modal-actions">
+    <button class="modal-btn" id="disableForgotBtn">Forget Password</button>
+    <button class="modal-btn" id="disableLockCancelBtn">Cancel</button>
+    <button class="modal-btn primary" id="disableLockConfirmBtn">Disable</button>
+  </div>
+</div>
+
+<div class="modal" id="forgotConfirmModal">
+  <h3>Reset Password</h3>
+  <p>All saved notes and deleted notes will be permanently deleted. Continue?</p>
+  <div class="modal-actions">
+    <button class="modal-btn" id="forgotConfirmCancelBtn">Cancel</button>
+    <button class="modal-btn primary" id="forgotConfirmOkBtn">Reset</button>
+  </div>
+</div>
+
+  </div>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
     import {
-      getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
-      createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail,
-      RecaptchaVerifier, signInWithPhoneNumber
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged,
+      RecaptchaVerifier,
+      signInWithPhoneNumber
     } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+    import {
+      getFirestore,
+      setDoc,
+      doc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDf7IOz_Pca9mp2voY0DYU2cHr0wq5CCu0",
@@ -318,171 +568,791 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    try{ getAnalytics(app); }catch(e){}
+    getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
-    let confirmationResult = null;
-    let currentUser = null;
 
     const THEME_KEY = "smart_notes_premium_theme_v2";
     const PASS_KEY = "smart_notes_premium_pass_v2";
     const LOCK_ENABLED_KEY = "smart_notes_premium_lock_enabled_v2";
-    const AUTH_TYPE_KEY = "smart_notes_auth_type_v2";
 
-    const state = { notes: [], deleted: [], mode: null, selectedId: null, editingId: null, imageData: "", brushMode: "brush", drawing: false, x: 0, y: 0, recognition: null, listening: false };
+    let currentUser = null;
+    let confirmationResult = null;
+    let recaptchaVerifier = null;
 
-    const pages = { home: document.getElementById("homePage"), editor: document.getElementById("editorPage"), deleted: document.getElementById("deletedPage"), about: document.getElementById("aboutPage"), support: document.getElementById("supportPage") };
-    const pageTitle = document.getElementById("pageTitle"), saveBtn = document.getElementById("saveBtn"), backBtn = document.getElementById("backBtn"), fabWrap = document.getElementById("fabWrap");
-    const notesContainer = document.getElementById("notesContainer"), deletedContainer = document.getElementById("deletedContainer"), searchInput = document.getElementById("searchInput"), searchInfo = document.getElementById("searchInfo");
-    const drawer = document.getElementById("drawer"), drawerOverlay = document.getElementById("drawerOverlay"), contextBar = document.getElementById("contextBar"), contextOverlay = document.getElementById("contextOverlay"), modalOverlay = document.getElementById("modalOverlay");
-    const saveModal = document.getElementById("saveModal"), renameModal = document.getElementById("renameModal"), enableLockModal = document.getElementById("enableLockModal"), changePasswordModal = document.getElementById("changePasswordModal"), disableLockModal = document.getElementById("disableLockModal"), forgotConfirmModal = document.getElementById("forgotConfirmModal");
-    const modeBadge = document.getElementById("modeBadge"), noteNameField = document.getElementById("noteNameField"), textEditor = document.getElementById("textEditor"), imageEditor = document.getElementById("imageEditor"), drawingEditor = document.getElementById("drawingEditor");
-    const textInput = document.getElementById("textInput"), imageTextInput = document.getElementById("imageTextInput"), drawingTextInput = document.getElementById("drawingTextInput"), imagePreview = document.getElementById("imagePreview"), galleryInput = document.getElementById("galleryInput"), cameraInput = document.getElementById("cameraInput");
-    const canvas = document.getElementById("drawCanvas"), ctx = canvas.getContext("2d");
-    const lockScreen = document.getElementById("lockScreen"), lockInput = document.getElementById("lockInput"), lockError = document.getElementById("lockError"), toggleLockBtn = document.getElementById("toggleLockBtn");
-    const googleLoginBtn = document.getElementById("googleLoginBtn"), logoutBtn = document.getElementById("logoutBtn"), userPhoto = document.getElementById("userPhoto"), userName = document.getElementById("userName"), userEmail = document.getElementById("userEmail");
+    const state = {
+      notes: [],
+      deleted: [],
+      mode: null,
+      selectedId: null,
+      editingId: null,
+      imageData: "",
+      brushMode: "brush",
+      drawing: false,
+      x: 0,
+      y: 0,
+      recognition: null,
+      listening: false,
+      syncInProgress: false,
+      cloudLoadedForUid: null
+    };
 
-    const emailInput = document.getElementById("emailInput"), emailPasswordInput = document.getElementById("emailPasswordInput"), phoneInput = document.getElementById("phoneInput"), otpInput = document.getElementById("otpInput"), verifyOtpBtn = document.getElementById("verifyOtpBtn");
-
-    function escapeHtml(str){ return String(str || "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;"); }
-    function getDBKey(){ return currentUser ? `smart_notes_premium_user_${currentUser.uid}` : "smart_notes_premium_guest"; }
-    async function getCloudDoc(){ if(!currentUser) return null; return await getDoc(doc(db, "notes", currentUser.uid)); }
-    async function saveCloud(){ if(!currentUser) return; await setDoc(doc(db, "notes", currentUser.uid), { notes: state.notes, deleted: state.deleted, updatedAt: Date.now() }); }
-
-    async function loadDB(){
-      const local = JSON.parse(localStorage.getItem(getDBKey()) || "{}");
-      state.notes = Array.isArray(local.notes) ? local.notes : [];
-      state.deleted = Array.isArray(local.deleted) ? local.deleted : [];
-      if(currentUser){
-        try{
-          const snap = await getCloudDoc();
-          if(snap && snap.exists()){
-            const data = snap.data() || {};
-            state.notes = Array.isArray(data.notes) ? data.notes : state.notes;
-            state.deleted = Array.isArray(data.deleted) ? data.deleted : state.deleted;
-            saveLocal();
-          }
-        }catch(e){ console.error(e); }
-      }
+    function getDBKey() {
+      return currentUser ? `smart_notes_premium_user_${currentUser.uid}` : "smart_notes_premium_guest";
     }
-    function saveLocal(){ localStorage.setItem(getDBKey(), JSON.stringify({ notes: state.notes, deleted: state.deleted })); }
-    async function saveDB(){ saveLocal(); await saveCloud(); }
-    function applyTheme(){ document.body.classList.toggle("light", (localStorage.getItem(THEME_KEY) || "dark") === "light"); }
-    function toggleTheme(){ const cur = localStorage.getItem(THEME_KEY) || "dark"; localStorage.setItem(THEME_KEY, cur === "dark" ? "light" : "dark"); applyTheme(); closeDrawer(); }
+
+    const pages = {
+      home: document.getElementById("homePage"),
+      editor: document.getElementById("editorPage"),
+      deleted: document.getElementById("deletedPage"),
+      about: document.getElementById("aboutPage"),
+      support: document.getElementById("supportPage")
+    };
+
+    const pageTitle = document.getElementById("pageTitle");
+    const saveBtn = document.getElementById("saveBtn");
+    const backBtn = document.getElementById("backBtn");
+    const fabWrap = document.getElementById("fabWrap");
+    const notesContainer = document.getElementById("notesContainer");
+    const deletedContainer = document.getElementById("deletedContainer");
+    const searchInput = document.getElementById("searchInput");
+    const searchInfo = document.getElementById("searchInfo");
+    const cloudStatus = document.getElementById("cloudStatus");
+
+    const drawer = document.getElementById("drawer");
+    const drawerOverlay = document.getElementById("drawerOverlay");
+    const contextBar = document.getElementById("contextBar");
+    const contextOverlay = document.getElementById("contextOverlay");
+    const modalOverlay = document.getElementById("modalOverlay");
+
+    const saveModal = document.getElementById("saveModal");
+    const renameModal = document.getElementById("renameModal");
+    const enableLockModal = document.getElementById("enableLockModal");
+    const changePasswordModal = document.getElementById("changePasswordModal");
+    const disableLockModal = document.getElementById("disableLockModal");
+    const forgotConfirmModal = document.getElementById("forgotConfirmModal");
+
+    const modeBadge = document.getElementById("modeBadge");
+    const noteNameField = document.getElementById("noteNameField");
+    const textEditor = document.getElementById("textEditor");
+    const imageEditor = document.getElementById("imageEditor");
+    const drawingEditor = document.getElementById("drawingEditor");
+
+    const textInput = document.getElementById("textInput");
+    const imageTextInput = document.getElementById("imageTextInput");
+    const drawingTextInput = document.getElementById("drawingTextInput");
+    const imagePreview = document.getElementById("imagePreview");
+    const galleryInput = document.getElementById("galleryInput");
+    const cameraInput = document.getElementById("cameraInput");
+
+    const canvas = document.getElementById("drawCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const lockScreen = document.getElementById("lockScreen");
+    const lockInput = document.getElementById("lockInput");
+    const lockError = document.getElementById("lockError");
+    const toggleLockBtn = document.getElementById("toggleLockBtn");
+
+    const googleLoginBtn = document.getElementById("googleLoginBtn");
+    const phoneLoginBtn = document.getElementById("phoneLoginBtn");
+    const phoneAuthPanel = document.getElementById("phoneAuthPanel");
+    const phoneNumberInput = document.getElementById("phoneNumberInput");
+    const otpInput = document.getElementById("otpInput");
+    const sendOtpBtn = document.getElementById("sendOtpBtn");
+    const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const syncNowBtn = document.getElementById("syncNowBtn");
+    const userPhoto = document.getElementById("userPhoto");
+    const userName = document.getElementById("userName");
+    const userEmail = document.getElementById("userEmail");
+
+    function escapeHtml(str){
+      return String(str || "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;");
+    }
+
+    function loadDB(){
+      const data = JSON.parse(localStorage.getItem(getDBKey()) || "{}");
+      state.notes = Array.isArray(data.notes) ? data.notes : [];
+      state.deleted = Array.isArray(data.deleted) ? data.deleted : [];
+    }
+
+    function saveDB(){
+      localStorage.setItem(getDBKey(), JSON.stringify({
+        notes: state.notes,
+        deleted: state.deleted
+      }));
+    }
+
+    function applyTheme(){
+      const theme = localStorage.getItem(THEME_KEY) || "dark";
+      document.body.classList.toggle("light", theme === "light");
+    }
+
+    function toggleTheme(){
+      const cur = localStorage.getItem(THEME_KEY) || "dark";
+      localStorage.setItem(THEME_KEY, cur === "dark" ? "light" : "dark");
+      applyTheme();
+      closeDrawer();
+    }
+
     function isLockEnabled(){ return localStorage.getItem(LOCK_ENABLED_KEY) === "true"; }
     function getSavedPassword(){ return localStorage.getItem(PASS_KEY) || ""; }
     function updateLockButtonText(){ toggleLockBtn.textContent = isLockEnabled() ? "Disable Lock" : "Enable Lock"; }
-    function showModal(modal){ modal.classList.add("show"); modalOverlay.classList.add("show"); }
-    function hideModal(modal){ modal.classList.remove("show"); if(!document.querySelector(".modal.show")) modalOverlay.classList.remove("show"); }
-    function hidePasswordErrors(){ document.getElementById("oldPasswordError").classList.remove("show"); document.getElementById("disablePasswordError").classList.remove("show"); lockError.classList.remove("show"); }
-    function closeAllModals(){ [saveModal, renameModal, enableLockModal, changePasswordModal, disableLockModal, forgotConfirmModal].forEach(m => m.classList.remove("show")); modalOverlay.classList.remove("show"); hidePasswordErrors(); }
 
-    function updateUserUI(){
-      if(currentUser){
-        userName.textContent = currentUser.displayName || currentUser.phoneNumber || currentUser.email || "User";
+    function updateCloudStatus(text){
+      cloudStatus.textContent = text;
+    }
+
+    function updateUserUI() {
+      if (currentUser) {
+        userName.textContent = currentUser.displayName || "Signed In User";
         userEmail.textContent = currentUser.email || currentUser.phoneNumber || "Signed in";
         userPhoto.src = currentUser.photoURL || "https://via.placeholder.com/48?text=U";
         googleLoginBtn.style.display = "none";
+        phoneLoginBtn.style.display = "none";
+        phoneAuthPanel.style.display = "none";
         logoutBtn.style.display = "block";
-      }else{
+        syncNowBtn.style.display = "block";
+        updateCloudStatus("Cloud sync: connected");
+      } else {
         userName.textContent = "Guest User";
         userEmail.textContent = "Not signed in";
         userPhoto.src = "https://via.placeholder.com/48?text=U";
         googleLoginBtn.style.display = "block";
+        phoneLoginBtn.style.display = "block";
         logoutBtn.style.display = "none";
+        syncNowBtn.style.display = "none";
+        updateCloudStatus("Cloud sync: guest mode");
       }
     }
+
+    function showModal(modal){ modal.classList.add("show"); modalOverlay.classList.add("show"); }
+    function hideModal(modal){ modal.classList.remove("show"); if (!document.querySelector(".modal.show")) modalOverlay.classList.remove("show"); }
+    function closeAllModals(){ [saveModal, renameModal, enableLockModal, changePasswordModal, disableLockModal, forgotConfirmModal].forEach(m => m.classList.remove("show")); modalOverlay.classList.remove("show"); hidePasswordErrors(); }
 
     function showPage(key){
       Object.values(pages).forEach(p => p.classList.remove("active"));
       pages[key].classList.add("active");
       closeDrawer();
       closeContext();
+
       if(key === "home"){
         pageTitle.textContent = "Recent";
         saveBtn.style.display = "none";
         backBtn.style.display = "none";
         fabWrap.style.display = "block";
-      } else if(key === "editor"){
+      }else if(key === "editor"){
         pageTitle.textContent = state.editingId ? "Edit Note" : "New Note";
         saveBtn.style.display = "inline-block";
         backBtn.style.display = "inline-block";
         fabWrap.style.display = "none";
-      } else {
-        pageTitle.textContent = key === "deleted" ? "Deleted Notes" : key === "about" ? "About" : "Help & Support";
+      }else if(key === "deleted"){
+        pageTitle.textContent = "Deleted Notes";
+        saveBtn.style.display = "none";
+        backBtn.style.display = "inline-block";
+        fabWrap.style.display = "none";
+      }else if(key === "about"){
+        pageTitle.textContent = "About";
+        saveBtn.style.display = "none";
+        backBtn.style.display = "inline-block";
+        fabWrap.style.display = "none";
+      }else if(key === "support"){
+        pageTitle.textContent = "Help & Support";
         saveBtn.style.display = "none";
         backBtn.style.display = "inline-block";
         fabWrap.style.display = "none";
       }
     }
+
     function formatTime(ts){ return new Date(ts).toLocaleString(); }
-    function filteredNotes(){ const q = searchInput.value.trim().toLowerCase(); let notes = [...state.notes].sort((a,b)=> ((b.pinned?1:0)-(a.pinned?1:0)) || ((b.updatedAt||b.createdAt)-(a.updatedAt||a.createdAt))); return !q ? notes : notes.filter(n => (n.name||"").toLowerCase().includes(q) || (n.text||"").toLowerCase().includes(q) || (n.type||"").toLowerCase().includes(q)); }
-    function renderNotes(){ const list = filteredNotes(); searchInfo.textContent = searchInput.value.trim() ? `${list.length} result(s) found` : `${state.notes.length} note(s)`; if(!list.length){ notesContainer.innerHTML = `<div class="empty"><div><div class="empty-icon">📝</div><div>${searchInput.value.trim() ? "No matching note found" : "No notes yet"}</div><div class="small" style="margin-top:8px;">Tap + to create a note</div></div></div>`; return; } notesContainer.innerHTML = `<div class="notes-grid">${list.map(note => `<div class="note-card ${note.pinned ? "pinned" : ""}" data-id="${note.id}" onclick="window.openNoteById('${note.id}')"><div class="note-name">${escapeHtml(note.name)}</div><div class="note-meta">${formatTime(note.updatedAt || note.createdAt)}</div><div class="note-text">${escapeHtml((note.text || "").slice(0, 120))}</div>${note.image ? `<img class="note-preview-img" src="${note.image}" alt="img" />` : ""}${note.drawing ? `<img class="note-preview-img" src="${note.drawing}" alt="drawing" />` : ""}</div>`).join("")}</div>`; attachLongPress(); }
-    function renderDeleted(){ if(!state.deleted.length){ deletedContainer.innerHTML = `<div class="empty"><div><div class="empty-icon">🗑</div><div>No deleted notes</div><button class="seg-btn" style="margin-top:14px;" onclick="window.goHome()">Back to Home</button></div></div>`; return; } deletedContainer.innerHTML = `<div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><button class="seg-btn" onclick="window.goHome()">Back to Home</button></div>${state.deleted.map(note => `<div class="trash-card"><div class="note-name">${escapeHtml(note.name)}</div><div class="note-meta">Deleted: ${formatTime(note.deletedAt || Date.now())}</div><div class="trash-actions"><button class="seg-btn restore" onclick="window.restoreDeleted('${note.id}')">Restore</button><button class="seg-btn remove" onclick="window.removeDeleted('${note.id}')">Permanent Delete</button></div></div>`).join("")}`; }
-    function resetEditors(){ state.mode = null; state.editingId = null; state.imageData = ""; noteNameField.value = ""; textInput.value = ""; imageTextInput.value = ""; drawingTextInput.value = ""; imagePreview.src = ""; imagePreview.style.display = "none"; textEditor.style.display = "none"; imageEditor.style.display = "none"; drawingEditor.style.display = "none"; clearCanvas(); stopVoice(); }
-    function setMode(mode){ state.mode = mode; textEditor.style.display = mode === "text" ? "block" : "none"; imageEditor.style.display = mode === "image" ? "block" : "none"; drawingEditor.style.display = mode === "drawing" ? "block" : "none"; modeBadge.textContent = mode.charAt(0).toUpperCase() + mode.slice(1) + " Note"; if(mode === "drawing") setTimeout(resizeCanvas, 60); }
+
+    function filteredNotes(){
+      const q = searchInput.value.trim().toLowerCase();
+      let notes = [...state.notes].sort((a,b)=>{
+        if((a.pinned ? 1 : 0) !== (b.pinned ? 1 : 0)) return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        return (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt);
+      });
+
+      if(!q) return notes;
+      return notes.filter(n =>
+        (n.name || "").toLowerCase().includes(q) ||
+        (n.text || "").toLowerCase().includes(q) ||
+        (n.type || "").toLowerCase().includes(q)
+      );
+    }
+
+    function renderNotes(){
+      const list = filteredNotes();
+      searchInfo.textContent = searchInput.value.trim() ? `${list.length} result(s) found` : `${state.notes.length} note(s)`;
+
+      if(!list.length){
+        notesContainer.innerHTML = `
+          <div class="empty">
+            <div>
+              <div class="empty-icon">📝</div>
+              <div>${searchInput.value.trim() ? "No matching note found" : "No notes yet"}</div>
+              <div class="small" style="margin-top:8px;">Tap + to create a note</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      notesContainer.innerHTML = `
+        <div class="notes-grid">
+          ${list.map(note => `
+            <div class="note-card ${note.pinned ? "pinned" : ""}" data-id="${note.id}" onclick="window.openNoteById('${note.id}')">
+              <div class="note-name">${escapeHtml(note.name)}</div>
+              <div class="note-meta">${formatTime(note.updatedAt || note.createdAt)}</div>
+              <div class="note-text">${escapeHtml((note.text || "").slice(0, 120))}</div>
+              ${note.image ? `<img class="note-preview-img" src="${note.image}" alt="img" />` : ""}
+              ${note.drawing ? `<img class="note-preview-img" src="${note.drawing}" alt="drawing" />` : ""}
+            </div>
+          `).join("")}
+        </div>
+      `;
+      attachLongPress();
+    }
+
+    function renderDeleted(){
+      if(!state.deleted.length){
+        deletedContainer.innerHTML = `
+          <div class="empty">
+            <div>
+              <div class="empty-icon">🗑</div>
+              <div>No deleted notes</div>
+              <button class="seg-btn" style="margin-top:14px;" onclick="window.goHome()">Back to Home</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      deletedContainer.innerHTML = `
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+          <button class="seg-btn" onclick="window.goHome()">Back to Home</button>
+        </div>
+        ${state.deleted.map(note => `
+          <div class="trash-card">
+            <div class="note-name">${escapeHtml(note.name)}</div>
+            <div class="note-meta">Deleted: ${formatTime(note.deletedAt || Date.now())}</div>
+            <div class="trash-actions">
+              <button class="seg-btn restore" onclick="window.restoreDeleted('${note.id}')">Restore</button>
+              <button class="seg-btn remove" onclick="window.removeDeleted('${note.id}')">Permanent Delete</button>
+            </div>
+          </div>
+        `).join("")}
+      `;
+    }
+
+    function resetEditors(){
+      state.mode = null;
+      state.editingId = null;
+      state.imageData = "";
+      noteNameField.value = "";
+      textInput.value = "";
+      imageTextInput.value = "";
+      drawingTextInput.value = "";
+      imagePreview.src = "";
+      imagePreview.style.display = "none";
+      textEditor.style.display = "none";
+      imageEditor.style.display = "none";
+      drawingEditor.style.display = "none";
+      clearCanvas();
+      stopVoice();
+    }
+
+    function setMode(mode){
+      state.mode = mode;
+      textEditor.style.display = mode === "text" ? "block" : "none";
+      imageEditor.style.display = mode === "image" ? "block" : "none";
+      drawingEditor.style.display = mode === "drawing" ? "block" : "none";
+      modeBadge.textContent = mode.charAt(0).toUpperCase() + mode.slice(1) + " Note";
+      if(mode === "drawing") setTimeout(resizeCanvas, 60);
+    }
+
     function openNewEditor(mode){ resetEditors(); setMode(mode); showPage("editor"); }
     function openDrawer(){ updateLockButtonText(); drawer.classList.add("show"); drawerOverlay.classList.add("show"); }
     function closeDrawer(){ drawer.classList.remove("show"); drawerOverlay.classList.remove("show"); }
     function openContext(){ contextBar.classList.add("show"); contextOverlay.classList.add("show"); }
     function closeContext(){ contextBar.classList.remove("show"); contextOverlay.classList.remove("show"); state.selectedId = null; }
-    function attachLongPress(){ document.querySelectorAll(".note-card").forEach(card => { let timer = null, blockedClick = false; const start = () => { const id = card.dataset.id; timer = setTimeout(() => { state.selectedId = id; blockedClick = true; openContext(); }, 550); }; const cancel = () => clearTimeout(timer); card.addEventListener("touchstart", start, {passive:true}); card.addEventListener("touchend", cancel); card.addEventListener("touchmove", cancel); card.addEventListener("mousedown", start); card.addEventListener("mouseup", cancel); card.addEventListener("mouseleave", cancel); card.addEventListener("click", e => { if(blockedClick){ e.preventDefault(); e.stopPropagation(); setTimeout(() => blockedClick = false, 0); } }); }); }
-    function openNoteById(id){ if(contextBar.classList.contains("show")) return; const note = state.notes.find(n => n.id === id); if(!note) return; resetEditors(); state.editingId = id; setMode(note.type); noteNameField.value = note.name || ""; if(note.type === "text") textInput.value = note.text || ""; else if(note.type === "image"){ state.imageData = note.image || ""; if(note.image){ imagePreview.src = note.image; imagePreview.style.display = "block"; } imageTextInput.value = note.text || ""; } else if(note.type === "drawing"){ drawingTextInput.value = note.text || ""; setTimeout(() => { resizeCanvas(); if(note.drawing){ const img = new Image(); img.onload = () => { const rect = canvas.getBoundingClientRect(); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#fff"; ctx.fillRect(0,0,rect.width,rect.height); ctx.drawImage(img,0,0,rect.width,rect.height); }; img.src = note.drawing; } }, 70); } showPage("editor"); }
+
+    function attachLongPress(){
+      document.querySelectorAll(".note-card").forEach(card => {
+        let timer = null;
+        let blockedClick = false;
+
+        const start = () => {
+          const id = card.dataset.id;
+          timer = setTimeout(() => {
+            state.selectedId = id;
+            blockedClick = true;
+            openContext();
+          }, 550);
+        };
+
+        const cancel = () => clearTimeout(timer);
+
+        card.addEventListener("touchstart", start, {passive:true});
+        card.addEventListener("touchend", cancel);
+        card.addEventListener("touchmove", cancel);
+        card.addEventListener("mousedown", start);
+        card.addEventListener("mouseup", cancel);
+        card.addEventListener("mouseleave", cancel);
+
+        card.addEventListener("click", e => {
+          if(blockedClick){
+            e.preventDefault();
+            e.stopPropagation();
+            setTimeout(() => blockedClick = false, 0);
+          }
+        });
+      });
+    }
+
+    function openNoteById(id){
+      if(contextBar.classList.contains("show")) return;
+      const note = state.notes.find(n => n.id === id);
+      if(!note) return;
+
+      resetEditors();
+      state.editingId = id;
+      setMode(note.type);
+      noteNameField.value = note.name || "";
+
+      if(note.type === "text"){
+        textInput.value = note.text || "";
+      }else if(note.type === "image"){
+        state.imageData = note.image || "";
+        if(note.image){ imagePreview.src = note.image; imagePreview.style.display = "block"; }
+        imageTextInput.value = note.text || "";
+      }else if(note.type === "drawing"){
+        drawingTextInput.value = note.text || "";
+        setTimeout(() => {
+          resizeCanvas();
+          if(note.drawing){
+            const img = new Image();
+            img.onload = () => {
+              const rect = canvas.getBoundingClientRect();
+              ctx.clearRect(0,0,canvas.width,canvas.height);
+              ctx.fillStyle = "#fff";
+              ctx.fillRect(0,0,rect.width,rect.height);
+              ctx.drawImage(img,0,0,rect.width,rect.height);
+            };
+            img.src = note.drawing;
+          }
+        }, 70);
+      }
+      showPage("editor");
+    }
+
     function openSaveModal(){ document.getElementById("saveNameInput").value = noteNameField.value.trim(); showModal(saveModal); }
-    function buildNoteObject(id){ const name = noteNameField.value.trim() || document.getElementById("saveNameInput").value.trim(); if(!name){ alert("Enter note name"); return null; } let note = state.notes.find(n => n.id === id); const base = note || { id: id || "n_" + Date.now(), createdAt: Date.now(), pinned: false }; const obj = { ...base, name, type: state.mode, updatedAt: Date.now(), text: "", image: "", drawing: "" }; if(state.mode === "text"){ const val = textInput.value.trim(); if(!val){ alert("Write something before saving"); return null; } obj.text = val; } if(state.mode === "image"){ if(!state.imageData){ alert("Please select an image first"); return null; } obj.image = state.imageData; obj.text = imageTextInput.value.trim(); } if(state.mode === "drawing"){ obj.drawing = canvas.toDataURL("image/png"); obj.text = drawingTextInput.value.trim(); } return obj; }
-    async function saveCurrentNote(){ const savePlace = document.getElementById("savePlaceSelect").value; const obj = buildNoteObject(state.editingId); if(!obj) return; if(savePlace === "app" || savePlace === "both"){ const index = state.notes.findIndex(n => n.id === obj.id); if(index === -1) state.notes.unshift(obj); else state.notes[index] = obj; await saveDB(); } if(savePlace === "phone" || savePlace === "both"){ const blob = new Blob([JSON.stringify(obj, null, 2)], {type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = sanitizeFileName(obj.name) + ".smartnote.json"; a.click(); URL.revokeObjectURL(a.href); } closeAllModals(); renderNotes(); resetEditors(); showPage("home"); }
+
+    function buildNoteObject(id){
+      const name = noteNameField.value.trim() || document.getElementById("saveNameInput").value.trim();
+      if(!name){ alert("Enter note name"); return null; }
+
+      let note = state.notes.find(n => n.id === id);
+      const base = note || { id: id || "n_" + Date.now(), createdAt: Date.now(), pinned: false };
+
+      const obj = { ...base, name, type: state.mode, updatedAt: Date.now(), text: "", image: "", drawing: "" };
+
+      if(state.mode === "text"){
+        const val = textInput.value.trim();
+        if(!val){ alert("Write something before saving"); return null; }
+        obj.text = val;
+      }
+
+      if(state.mode === "image"){
+        if(!state.imageData){ alert("Please select an image first"); return null; }
+        obj.image = state.imageData;
+        obj.text = imageTextInput.value.trim();
+      }
+
+      if(state.mode === "drawing"){
+        obj.drawing = canvas.toDataURL("image/png");
+        obj.text = drawingTextInput.value.trim();
+      }
+      return obj;
+    }
+
+    async function saveCurrentNote(){
+      const savePlace = document.getElementById("savePlaceSelect").value;
+      const obj = buildNoteObject(state.editingId);
+      if(!obj) return;
+
+      if(savePlace === "app" || savePlace === "both"){
+        const index = state.notes.findIndex(n => n.id === obj.id);
+        if(index === -1) state.notes.unshift(obj);
+        else state.notes[index] = obj;
+        saveDB();
+      }
+
+      if(savePlace === "phone" || savePlace === "both"){
+        const blob = new Blob([JSON.stringify(obj, null, 2)], {type:"application/json"});
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = sanitizeFileName(obj.name) + ".smartnote.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+
+      if(currentUser){
+        await syncToCloud(false);
+      }
+
+      closeAllModals();
+      renderNotes();
+      resetEditors();
+      showPage("home");
+    }
+
     function sanitizeFileName(name){ return String(name).replace(/[\\/:*?"<>|]+/g,"_"); }
-    async function pinSelected(){ const note = state.notes.find(n => n.id === state.selectedId); if(!note) return; note.pinned = !note.pinned; note.updatedAt = Date.now(); await saveDB(); renderNotes(); closeContext(); }
-    async function deleteSelected(){ const idx = state.notes.findIndex(n => n.id === state.selectedId); if(idx === -1) return; const [note] = state.notes.splice(idx,1); note.deletedAt = Date.now(); state.deleted.unshift(note); await saveDB(); renderNotes(); renderDeleted(); closeContext(); }
+
+    async function pinSelected(){
+      const note = state.notes.find(n => n.id === state.selectedId);
+      if(!note) return;
+      note.pinned = !note.pinned;
+      note.updatedAt = Date.now();
+      saveDB();
+      if(currentUser) await syncToCloud(false);
+      renderNotes();
+      closeContext();
+    }
+
+    async function deleteSelected(){
+      const idx = state.notes.findIndex(n => n.id === state.selectedId);
+      if(idx === -1) return;
+      const [note] = state.notes.splice(idx,1);
+      note.deletedAt = Date.now();
+      state.deleted.unshift(note);
+      saveDB();
+      if(currentUser) await syncToCloud(false);
+      renderNotes();
+      renderDeleted();
+      closeContext();
+    }
+
     function editSelected(){ const id = state.selectedId; closeContext(); openNoteById(id); }
-    function openRenameModal(){ const note = state.notes.find(n => n.id === state.selectedId); if(!note) return; document.getElementById("renameInput").value = note.name; closeContext(); showModal(renameModal); }
-    async function renameSelected(){ const newName = document.getElementById("renameInput").value.trim(); if(!newName){ alert("Enter new name"); return; } const note = state.notes.find(n => n.id === state.selectedId); if(!note) return; note.name = newName; note.updatedAt = Date.now(); await saveDB(); renderNotes(); hideModal(renameModal); }
-    async function restoreDeleted(id){ const idx = state.deleted.findIndex(n => n.id === id); if(idx === -1) return; const [note] = state.deleted.splice(idx,1); delete note.deletedAt; note.updatedAt = Date.now(); state.notes.unshift(note); await saveDB(); renderNotes(); renderDeleted(); }
-    async function removeDeleted(id){ const idx = state.deleted.findIndex(n => n.id === id); if(idx === -1) return; state.deleted.splice(idx,1); await saveDB(); renderDeleted(); }
+
+    function openRenameModal(){
+      const note = state.notes.find(n => n.id === state.selectedId);
+      if(!note) return;
+      document.getElementById("renameInput").value = note.name;
+      closeContext();
+      showModal(renameModal);
+    }
+
+    async function renameSelected(){
+      const newName = document.getElementById("renameInput").value.trim();
+      if(!newName){ alert("Enter new name"); return; }
+      const note = state.notes.find(n => n.id === state.selectedId);
+      if(!note) return;
+      note.name = newName;
+      note.updatedAt = Date.now();
+      saveDB();
+      if(currentUser) await syncToCloud(false);
+      renderNotes();
+      hideModal(renameModal);
+    }
+
+    async function restoreDeleted(id){
+      const idx = state.deleted.findIndex(n => n.id === id);
+      if(idx === -1) return;
+      const [note] = state.deleted.splice(idx,1);
+      delete note.deletedAt;
+      note.updatedAt = Date.now();
+      state.notes.unshift(note);
+      saveDB();
+      if(currentUser) await syncToCloud(false);
+      renderNotes();
+      renderDeleted();
+    }
+
+    async function removeDeleted(id){
+      const idx = state.deleted.findIndex(n => n.id === id);
+      if(idx === -1) return;
+      state.deleted.splice(idx,1);
+      saveDB();
+      if(currentUser) await syncToCloud(false);
+      renderDeleted();
+    }
+
     function goHome(){ showPage("home"); }
-    function handleImage(file){ if(!file) return; const reader = new FileReader(); reader.onload = e => { state.imageData = e.target.result; imagePreview.src = state.imageData; imagePreview.style.display = "block"; }; reader.readAsDataURL(file); }
-    function resizeCanvas(){ const rect = canvas.getBoundingClientRect(); const ratio = window.devicePixelRatio || 1; canvas.width = rect.width * ratio; canvas.height = rect.height * ratio; ctx.setTransform(ratio,0,0,ratio,0,0); ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.fillStyle = "#fff"; ctx.fillRect(0,0,rect.width,rect.height); }
-    function clearCanvas(){ const rect = canvas.getBoundingClientRect(); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.setTransform(window.devicePixelRatio || 1,0,0,window.devicePixelRatio || 1,0,0); ctx.fillStyle = "#fff"; ctx.fillRect(0,0,rect.width,rect.height); }
+
+    function handleImage(file){
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        state.imageData = e.target.result;
+        imagePreview.src = state.imageData;
+        imagePreview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resizeCanvas(){
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = rect.width * ratio;
+      canvas.height = rect.height * ratio;
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0,0,rect.width,rect.height);
+    }
+
+    function clearCanvas(){
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0,0,rect.width,rect.height);
+    }
+
     function getPos(e){ const rect = canvas.getBoundingClientRect(); const p = e.touches ? e.touches[0] : e; return { x:p.clientX - rect.left, y:p.clientY - rect.top }; }
     function startDraw(e){ state.drawing = true; const p = getPos(e); state.x = p.x; state.y = p.y; }
-    function draw(e){ if(!state.drawing) return; e.preventDefault(); const p = getPos(e); ctx.beginPath(); ctx.moveTo(state.x, state.y); ctx.lineTo(p.x, p.y); ctx.strokeStyle = state.brushMode === "brush" ? document.getElementById("brushColor").value : "#ffffff"; ctx.lineWidth = state.brushMode === "brush" ? Number(document.getElementById("brushSize").value) : Number(document.getElementById("eraserSize").value); ctx.stroke(); state.x = p.x; state.y = p.y; }
+    function draw(e){
+      if(!state.drawing) return;
+      e.preventDefault();
+      const p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(state.x, state.y);
+      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = state.brushMode === "brush" ? document.getElementById("brushColor").value : "#ffffff";
+      ctx.lineWidth = state.brushMode === "brush" ? Number(document.getElementById("brushSize").value) : Number(document.getElementById("eraserSize").value);
+      ctx.stroke();
+      state.x = p.x;
+      state.y = p.y;
+    }
     function stopDraw(){ state.drawing = false; }
-    function initVoice(){ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; if(!SpeechRecognition) return false; state.recognition = new SpeechRecognition(); state.recognition.lang = "en-IN"; state.recognition.continuous = true; state.recognition.interimResults = true; state.recognition.onresult = (event) => { let transcript = ""; for(let i = event.resultIndex; i < event.results.length; i++) transcript += event.results[i][0].transcript; textInput.value += (textInput.value ? " " : "") + transcript; }; state.recognition.onend = () => { state.listening = false; document.getElementById("micBtn").classList.remove("active"); document.getElementById("micBtn").textContent = "🎤 Voice"; }; return true; }
-    function toggleVoice(){ if(!state.recognition && !initVoice()){ alert("Voice feature is not supported in this browser."); return; } if(!state.listening){ state.listening = true; document.getElementById("micBtn").classList.add("active"); document.getElementById("micBtn").textContent = "⏹ Stop"; state.recognition.start(); } else stopVoice(); }
-    function stopVoice(){ if(state.recognition && state.listening) state.recognition.stop(); state.listening = false; const micBtn = document.getElementById("micBtn"); micBtn.classList.remove("active"); micBtn.textContent = "🎤 Voice"; }
+
+    function initVoice(){
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if(!SpeechRecognition) return false;
+      state.recognition = new SpeechRecognition();
+      state.recognition.lang = "en-IN";
+      state.recognition.continuous = true;
+      state.recognition.interimResults = true;
+      state.recognition.onresult = (event) => {
+        let transcript = "";
+        for(let i = event.resultIndex; i < event.results.length; i++) transcript += event.results[i][0].transcript;
+        textInput.value += (textInput.value ? " " : "") + transcript;
+      };
+      state.recognition.onend = () => {
+        state.listening = false;
+        document.getElementById("micBtn").classList.remove("active");
+        document.getElementById("micBtn").textContent = "🎤 Voice";
+      };
+      return true;
+    }
+
+    function toggleVoice(){
+      if(!state.recognition && !initVoice()){
+        alert("Voice feature is not supported in this browser.");
+        return;
+      }
+      if(!state.listening){
+        state.listening = true;
+        document.getElementById("micBtn").classList.add("active");
+        document.getElementById("micBtn").textContent = "⏹ Stop";
+        state.recognition.start();
+      }else stopVoice();
+    }
+
+    function stopVoice(){
+      if(state.recognition && state.listening) state.recognition.stop();
+      state.listening = false;
+      const micBtn = document.getElementById("micBtn");
+      micBtn.classList.remove("active");
+      micBtn.textContent = "🎤 Voice";
+    }
+
     function validatePassword(pass){ return String(pass).trim().length >= 4; }
+    function hidePasswordErrors(){ document.getElementById("oldPasswordError").classList.remove("show"); document.getElementById("disablePasswordError").classList.remove("show"); lockError.classList.remove("show"); }
     function toggleEye(inputId, btn){ const input = document.getElementById(inputId); if(input.type === "password"){ input.type = "text"; btn.textContent = "🙈"; } else { input.type = "password"; btn.textContent = "👁"; } }
-    async function resetEverything(){ localStorage.removeItem(getDBKey()); localStorage.removeItem(PASS_KEY); localStorage.removeItem(LOCK_ENABLED_KEY); state.notes = []; state.deleted = []; await saveDB(); renderNotes(); renderDeleted(); closeAllModals(); lockScreen.style.display = "none"; updateLockButtonText(); showPage("home"); alert("Password reset complete."); }
-    function openLockScreenIfNeeded(){ const lockEnabled = isLockEnabled(); const savedPass = getSavedPassword(); if(lockEnabled && savedPass){ lockInput.value = ""; hidePasswordErrors(); document.getElementById("lockTitleText").textContent = "Enter password to continue"; lockScreen.style.display = "flex"; } else lockScreen.style.display = "none"; }
 
-    async function doGoogleLogin(){ try{ await signInWithPopup(auth, provider); localStorage.setItem(AUTH_TYPE_KEY, "google"); closeDrawer(); }catch(e){ alert("Google login failed."); console.error(e); } }
-    async function doEmailSignup(){ try{ await createUserWithEmailAndPassword(auth, emailInput.value.trim(), emailPasswordInput.value); localStorage.setItem(AUTH_TYPE_KEY, "email"); closeDrawer(); }catch(e){ alert(e.message); } }
-    async function doEmailLogin(){ try{ await signInWithEmailAndPassword(auth, emailInput.value.trim(), emailPasswordInput.value); localStorage.setItem(AUTH_TYPE_KEY, "email"); closeDrawer(); }catch(e){ alert(e.message); } }
-    async function doEmailReset(){ const email = emailInput.value.trim(); if(!email) return alert("Enter email first"); try{ await sendPasswordResetEmail(auth, email); alert("Reset email sent"); }catch(e){ alert(e.message); } }
-    function initRecaptcha(){ if(window.recaptchaVerifier) return; window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", { size: "normal" }); }
-    async function sendOtp(){ try{ initRecaptcha(); confirmationResult = await signInWithPhoneNumber(auth, phoneInput.value.trim(), window.recaptchaVerifier); otpInput.classList.remove("hidden"); verifyOtpBtn.classList.remove("hidden"); alert("OTP sent"); }catch(e){ alert(e.message); console.error(e); } }
-    async function verifyOtp(){ try{ await confirmationResult.confirm(otpInput.value.trim()); localStorage.setItem(AUTH_TYPE_KEY, "phone"); closeDrawer(); }catch(e){ alert("Invalid OTP"); } }
-    async function doLogout(){ try{ await signOut(auth); closeDrawer(); }catch(e){ alert("Logout failed."); console.error(e); } }
+    async function resetEverything(){
+      localStorage.removeItem(getDBKey());
+      localStorage.removeItem(PASS_KEY);
+      localStorage.removeItem(LOCK_ENABLED_KEY);
+      state.notes = [];
+      state.deleted = [];
+      saveDB();
+      if(currentUser) await syncToCloud(false);
+      renderNotes();
+      renderDeleted();
+      closeAllModals();
+      lockScreen.style.display = "none";
+      updateLockButtonText();
+      showPage("home");
+      alert("Password reset complete. All notes have been deleted.");
+    }
 
-    onAuthStateChanged(auth, async (user) => { currentUser = user || null; updateUserUI(); await loadDB(); renderNotes(); renderDeleted(); });
+    function openLockScreenIfNeeded(){
+      const lockEnabled = isLockEnabled();
+      const savedPass = getSavedPassword();
+      if(lockEnabled && savedPass){
+        lockInput.value = "";
+        hidePasswordErrors();
+        document.getElementById("lockTitleText").textContent = "Enter password to continue";
+        lockScreen.style.display = "flex";
+      }else lockScreen.style.display = "none";
+    }
 
-    document.querySelectorAll("[data-auth-tab]").forEach(btn => btn.addEventListener("click", () => {
-      document.querySelectorAll("[data-auth-tab]").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById("googleAuthBox").classList.add("hidden");
-      document.getElementById("emailAuthBox").classList.add("hidden");
-      document.getElementById("phoneAuthBox").classList.add("hidden");
-      document.getElementById(btn.dataset.authTab + "AuthBox").classList.remove("hidden");
-    }));
+    async function saveCloudDoc(uid){
+      await setDoc(doc(db, "notes", uid), {
+        data: {
+          notes: state.notes,
+          deleted: state.deleted,
+          updatedAt: Date.now()
+        }
+      });
+    }
+
+    async function loadCloudDoc(uid){
+      const ref = doc(db, "notes", uid);
+      const snap = await getDoc(ref);
+      if(!snap.exists()) return null;
+      return snap.data()?.data || null;
+    }
+
+    async function syncToCloud(showAlert = true){
+      if(!currentUser) {
+        if(showAlert) alert("Sign in first for cloud sync.");
+        return;
+      }
+      if(state.syncInProgress) return;
+      state.syncInProgress = true;
+      updateCloudStatus("Cloud sync: syncing...");
+      try{
+        await saveCloudDoc(currentUser.uid);
+        updateCloudStatus("Cloud sync: synced");
+        if(showAlert) alert("Notes synced to cloud.");
+      }catch(err){
+        console.error(err);
+        updateCloudStatus("Cloud sync: failed");
+        if(showAlert) alert("Cloud sync failed.");
+      }finally{
+        state.syncInProgress = false;
+      }
+    }
+
+    async function loadNotesFromCloud(uid){
+      updateCloudStatus("Cloud sync: loading...");
+      try{
+        const data = await loadCloudDoc(uid);
+        if(data){
+          state.notes = Array.isArray(data.notes) ? data.notes : [];
+          state.deleted = Array.isArray(data.deleted) ? data.deleted : [];
+          saveDB();
+          renderNotes();
+          renderDeleted();
+          updateCloudStatus("Cloud sync: loaded");
+        }else{
+          updateCloudStatus("Cloud sync: no cloud notes yet");
+          await syncToCloud(false);
+        }
+      }catch(err){
+        console.error(err);
+        updateCloudStatus("Cloud sync: load failed");
+      }
+    }
+
+    function ensureRecaptcha(){
+      if(recaptchaVerifier) return recaptchaVerifier;
+      recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', { size: 'invisible' });
+      return recaptchaVerifier;
+    }
+
+    async function doGoogleLogin() {
+      try {
+        await signInWithPopup(auth, provider);
+        closeDrawer();
+      } catch (e) {
+        alert("Google login failed.");
+        console.error(e);
+      }
+    }
+
+    async function sendOTP() {
+      const phone = phoneNumberInput.value.trim();
+      if(!phone){ alert("Enter phone number with country code."); return; }
+      try{
+        const verifier = ensureRecaptcha();
+        confirmationResult = await signInWithPhoneNumber(auth, phone, verifier);
+        otpInput.style.display = "block";
+        verifyOtpBtn.style.display = "block";
+        alert("OTP sent successfully.");
+      }catch(err){
+        console.error(err);
+        alert("OTP send failed. Check phone auth and authorized domain in Firebase.");
+      }
+    }
+
+    async function verifyOTP(){
+      const code = otpInput.value.trim();
+      if(!confirmationResult){ alert("Send OTP first."); return; }
+      if(!code){ alert("Enter OTP."); return; }
+      try{
+        await confirmationResult.confirm(code);
+        otpInput.value = "";
+        phoneNumberInput.value = "";
+        phoneAuthPanel.style.display = "none";
+        otpInput.style.display = "none";
+        verifyOtpBtn.style.display = "none";
+        closeDrawer();
+      }catch(err){
+        console.error(err);
+        alert("Invalid OTP.");
+      }
+    }
+
+    async function doLogout() {
+      try {
+        await signOut(auth);
+        closeDrawer();
+      } catch (e) {
+        alert("Logout failed.");
+        console.error(e);
+      }
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user || null;
+      updateUserUI();
+      loadDB();
+
+      if(currentUser){
+        if(state.cloudLoadedForUid !== currentUser.uid){
+          await loadNotesFromCloud(currentUser.uid);
+          state.cloudLoadedForUid = currentUser.uid;
+        }
+      }else{
+        state.cloudLoadedForUid = null;
+      }
+
+      renderNotes();
+      renderDeleted();
+    });
 
     googleLoginBtn.addEventListener("click", doGoogleLogin);
-    document.getElementById("emailSignupBtn").addEventListener("click", doEmailSignup);
-    document.getElementById("emailLoginBtn").addEventListener("click", doEmailLogin);
-    document.getElementById("emailResetBtn").addEventListener("click", doEmailReset);
-    document.getElementById("sendOtpBtn").addEventListener("click", sendOtp);
-    verifyOtpBtn.addEventListener("click", verifyOtp);
+    phoneLoginBtn.addEventListener("click", () => {
+      phoneAuthPanel.style.display = phoneAuthPanel.style.display === "none" ? "block" : "none";
+      otpInput.style.display = "none";
+      verifyOtpBtn.style.display = "none";
+    });
+    sendOtpBtn.addEventListener("click", sendOTP);
+    verifyOtpBtn.addEventListener("click", verifyOTP);
     logoutBtn.addEventListener("click", doLogout);
+    syncNowBtn.addEventListener("click", () => syncToCloud(true));
 
     document.getElementById("enableLockEyeBtn").addEventListener("click", () => toggleEye("enableLockPasswordInput", document.getElementById("enableLockEyeBtn")));
     document.getElementById("oldPasswordEyeBtn").addEventListener("click", () => toggleEye("oldPasswordInput", document.getElementById("oldPasswordEyeBtn")));
@@ -494,6 +1364,7 @@
     drawerOverlay.addEventListener("click", closeDrawer);
     contextOverlay.addEventListener("click", closeContext);
     modalOverlay.addEventListener("click", closeAllModals);
+
     document.getElementById("themeBtn").addEventListener("click", toggleTheme);
     document.getElementById("deletedBtn").addEventListener("click", () => { renderDeleted(); showPage("deleted"); });
     document.getElementById("aboutBtn").addEventListener("click", () => showPage("about"));
@@ -501,73 +1372,138 @@
 
     toggleLockBtn.addEventListener("click", () => {
       if(isLockEnabled()){
-        closeDrawer(); document.getElementById("disablePasswordInput").value = ""; hidePasswordErrors(); showModal(disableLockModal);
+        closeDrawer();
+        document.getElementById("disablePasswordInput").value = "";
+        hidePasswordErrors();
+        showModal(disableLockModal);
       }else{
-        closeDrawer(); document.getElementById("enableLockPasswordInput").value = ""; showModal(enableLockModal);
+        closeDrawer();
+        document.getElementById("enableLockPasswordInput").value = "";
+        showModal(enableLockModal);
       }
     });
 
     document.getElementById("enableLockCancelBtn").addEventListener("click", () => hideModal(enableLockModal));
     document.getElementById("enableLockSaveBtn").addEventListener("click", () => {
       const val = document.getElementById("enableLockPasswordInput").value.trim();
-      if(!validatePassword(val)) return alert("Password must be at least 4 characters");
-      localStorage.setItem(PASS_KEY, val); localStorage.setItem(LOCK_ENABLED_KEY, "true"); updateLockButtonText(); hideModal(enableLockModal); alert("Lock enabled");
+      if(!validatePassword(val)){ alert("Password must be at least 4 characters"); return; }
+      localStorage.setItem(PASS_KEY, val);
+      localStorage.setItem(LOCK_ENABLED_KEY, "true");
+      updateLockButtonText();
+      hideModal(enableLockModal);
+      alert("Lock enabled");
     });
+
     document.getElementById("disableLockCancelBtn").addEventListener("click", () => { hideModal(disableLockModal); hidePasswordErrors(); });
     document.getElementById("disableLockConfirmBtn").addEventListener("click", () => {
-      const entered = document.getElementById("disablePasswordInput").value, savedPass = getSavedPassword(), err = document.getElementById("disablePasswordError"); hidePasswordErrors();
+      const entered = document.getElementById("disablePasswordInput").value;
+      const savedPass = getSavedPassword();
+      const err = document.getElementById("disablePasswordError");
+      hidePasswordErrors();
       if(entered !== savedPass){ err.classList.add("show"); return; }
-      localStorage.setItem(LOCK_ENABLED_KEY, "false"); updateLockButtonText(); hideModal(disableLockModal); alert("Lock disabled");
-    });
-    document.getElementById("disableForgotBtn").addEventListener("click", () => {
+      localStorage.setItem(LOCK_ENABLED_KEY, "false");
+      updateLockButtonText();
       hideModal(disableLockModal);
-      const type = localStorage.getItem(AUTH_TYPE_KEY) || "guest";
-      document.getElementById("forgotText").textContent =
-        type === "guest"
-          ? "All guest notes and deleted notes will be permanently deleted. Continue?"
-          : type === "email"
-          ? "Password reset email already available in Email tab. App lock reset will clear local lock only after you re-login. Continue and clear local app lock?"
-          : type === "phone"
-          ? "Phone user ke liye OTP login se re-login karo. Continue and clear local app lock?"
-          : "Google user ke liye re-login required hai. Continue and clear local app lock?";
-      showModal(forgotConfirmModal);
+      alert("Lock disabled");
     });
-    document.getElementById("changePassBtn").addEventListener("click", () => { closeDrawer(); hidePasswordErrors(); document.getElementById("oldPasswordInput").value = ""; document.getElementById("newPasswordInput").value = ""; showModal(changePasswordModal); });
+
+    document.getElementById("disableForgotBtn").addEventListener("click", () => { hideModal(disableLockModal); showModal(forgotConfirmModal); });
+
+    document.getElementById("changePassBtn").addEventListener("click", () => {
+      closeDrawer();
+      hidePasswordErrors();
+      document.getElementById("oldPasswordInput").value = "";
+      document.getElementById("newPasswordInput").value = "";
+      showModal(changePasswordModal);
+    });
+
     document.getElementById("changePasswordCancelBtn").addEventListener("click", () => { hideModal(changePasswordModal); hidePasswordErrors(); });
     document.getElementById("changePasswordSaveBtn").addEventListener("click", () => {
-      const oldPass = document.getElementById("oldPasswordInput").value, newPass = document.getElementById("newPasswordInput").value.trim(), savedPass = getSavedPassword(), oldErr = document.getElementById("oldPasswordError"); hidePasswordErrors();
+      const oldPass = document.getElementById("oldPasswordInput").value;
+      const newPass = document.getElementById("newPasswordInput").value.trim();
+      const savedPass = getSavedPassword();
+      const oldErr = document.getElementById("oldPasswordError");
+      hidePasswordErrors();
       if(savedPass && oldPass !== savedPass){ oldErr.classList.add("show"); return; }
-      if(!validatePassword(newPass)) return alert("New password must be at least 4 characters");
-      localStorage.setItem(PASS_KEY, newPass); updateLockButtonText(); hideModal(changePasswordModal); alert("Password changed successfully");
+      if(!validatePassword(newPass)){ alert("New password must be at least 4 characters"); return; }
+      localStorage.setItem(PASS_KEY, newPass);
+      updateLockButtonText();
+      hideModal(changePasswordModal);
+      alert("Password changed successfully");
     });
-    document.getElementById("forgotPasswordBtn").addEventListener("click", () => { hideModal(changePasswordModal); document.getElementById("disableForgotBtn").click(); });
-    document.getElementById("forgotConfirmCancelBtn").addEventListener("click", () => hideModal(forgotConfirmModal));
-    document.getElementById("forgotConfirmOkBtn").addEventListener("click", async () => {
-      const type = localStorage.getItem(AUTH_TYPE_KEY) || "guest";
-      localStorage.removeItem(PASS_KEY); localStorage.removeItem(LOCK_ENABLED_KEY); updateLockButtonText();
-      if(type === "guest") await resetEverything();
-      else { closeAllModals(); alert(type === "email" ? "Local app lock cleared. Email reset is in Email tab." : type === "phone" ? "Local app lock cleared. Re-login with phone OTP if needed." : "Local app lock cleared. Re-login with Google if needed."); }
+
+    document.getElementById("forgotPasswordBtn").addEventListener("click", () => { hideModal(changePasswordModal); showModal(forgotConfirmModal); });
+    document.getElementById("forgotConfirmCancelBtn").addEventListener("click", () => { hideModal(forgotConfirmModal); });
+    document.getElementById("forgotConfirmOkBtn").addEventListener("click", () => { resetEverything(); });
+
+    document.getElementById("lockForgotBtn").addEventListener("click", () => { lockScreen.style.display = "none"; showModal(forgotConfirmModal); });
+    document.getElementById("lockOkBtn").addEventListener("click", () => {
+      const entered = lockInput.value;
+      const savedPass = getSavedPassword();
+      hidePasswordErrors();
+      if(entered === savedPass) lockScreen.style.display = "none";
+      else lockError.classList.add("show");
     });
-    document.getElementById("lockForgotBtn").addEventListener("click", () => { lockScreen.style.display = "none"; document.getElementById("disableForgotBtn").click(); });
-    document.getElementById("lockOkBtn").addEventListener("click", () => { const entered = lockInput.value, savedPass = getSavedPassword(); hidePasswordErrors(); if(entered === savedPass) lockScreen.style.display = "none"; else lockError.classList.add("show"); });
 
     document.getElementById("fabMain").addEventListener("click", () => fabWrap.classList.toggle("open"));
     document.getElementById("addTextBtn").addEventListener("click", () => { fabWrap.classList.remove("open"); openNewEditor("text"); });
     document.getElementById("addImageBtn").addEventListener("click", () => { fabWrap.classList.remove("open"); openNewEditor("image"); });
     document.getElementById("addDrawingBtn").addEventListener("click", () => { fabWrap.classList.remove("open"); openNewEditor("drawing"); });
-    saveBtn.addEventListener("click", openSaveModal); backBtn.addEventListener("click", () => showPage("home"));
-    document.getElementById("saveCancelBtn").addEventListener("click", () => hideModal(saveModal)); document.getElementById("saveConfirmBtn").addEventListener("click", saveCurrentNote);
-    document.getElementById("renameCancelBtn").addEventListener("click", () => hideModal(renameModal)); document.getElementById("renameConfirmBtn").addEventListener("click", renameSelected);
-    document.getElementById("pinBtn").addEventListener("click", pinSelected); document.getElementById("renameBtn").addEventListener("click", openRenameModal); document.getElementById("deleteBtn").addEventListener("click", deleteSelected); document.getElementById("editBtn").addEventListener("click", editSelected);
-    document.getElementById("galleryBtn").addEventListener("click", () => galleryInput.click()); document.getElementById("cameraBtn").addEventListener("click", () => cameraInput.click()); galleryInput.addEventListener("change", e => handleImage(e.target.files[0])); cameraInput.addEventListener("change", e => handleImage(e.target.files[0]));
-    document.getElementById("brushBtn").addEventListener("click", () => { state.brushMode = "brush"; document.getElementById("brushBtn").classList.add("active"); document.getElementById("eraserBtn").classList.remove("active"); });
-    document.getElementById("eraserBtn").addEventListener("click", () => { state.brushMode = "eraser"; document.getElementById("eraserBtn").classList.add("active"); document.getElementById("brushBtn").classList.remove("active"); });
-    document.getElementById("clearCanvasBtn").addEventListener("click", clearCanvas); document.getElementById("micBtn").addEventListener("click", toggleVoice); searchInput.addEventListener("input", renderNotes);
-    canvas.addEventListener("mousedown", startDraw); canvas.addEventListener("mousemove", draw); window.addEventListener("mouseup", stopDraw); canvas.addEventListener("touchstart", startDraw, {passive:true}); canvas.addEventListener("touchmove", draw, {passive:false}); window.addEventListener("touchend", stopDraw); window.addEventListener("resize", () => { if(state.mode === "drawing") setTimeout(resizeCanvas, 80); });
 
-    window.openNoteById = openNoteById; window.restoreDeleted = restoreDeleted; window.removeDeleted = removeDeleted; window.goHome = goHome;
+    saveBtn.addEventListener("click", openSaveModal);
+    backBtn.addEventListener("click", () => showPage("home"));
 
-    await loadDB(); applyTheme(); renderNotes(); renderDeleted(); updateLockButtonText(); updateUserUI(); openLockScreenIfNeeded();
-  </script>
-</body>
+    document.getElementById("saveCancelBtn").addEventListener("click", () => hideModal(saveModal));
+    document.getElementById("saveConfirmBtn").addEventListener("click", saveCurrentNote);
+
+    document.getElementById("renameCancelBtn").addEventListener("click", () => hideModal(renameModal));
+    document.getElementById("renameConfirmBtn").addEventListener("click", renameSelected);
+
+    document.getElementById("pinBtn").addEventListener("click", pinSelected);
+    document.getElementById("renameBtn").addEventListener("click", openRenameModal);
+    document.getElementById("deleteBtn").addEventListener("click", deleteSelected);
+    document.getElementById("editBtn").addEventListener("click", editSelected);
+
+    document.getElementById("galleryBtn").addEventListener("click", () => galleryInput.click());
+    document.getElementById("cameraBtn").addEventListener("click", () => cameraInput.click());
+    galleryInput.addEventListener("change", e => handleImage(e.target.files[0]));
+    cameraInput.addEventListener("change", e => handleImage(e.target.files[0]));
+
+    document.getElementById("brushBtn").addEventListener("click", () => {
+      state.brushMode = "brush";
+      document.getElementById("brushBtn").classList.add("active");
+      document.getElementById("eraserBtn").classList.remove("active");
+    });
+
+    document.getElementById("eraserBtn").addEventListener("click", () => {
+      state.brushMode = "eraser";
+      document.getElementById("eraserBtn").classList.add("active");
+      document.getElementById("brushBtn").classList.remove("active");
+    });
+
+    document.getElementById("clearCanvasBtn").addEventListener("click", clearCanvas);
+    document.getElementById("micBtn").addEventListener("click", toggleVoice);
+    searchInput.addEventListener("input", renderNotes);
+
+    canvas.addEventListener("mousedown", startDraw);
+    canvas.addEventListener("mousemove", draw);
+    window.addEventListener("mouseup", stopDraw);
+    canvas.addEventListener("touchstart", startDraw, {passive:true});
+    canvas.addEventListener("touchmove", draw, {passive:false});
+    window.addEventListener("touchend", stopDraw);
+    window.addEventListener("resize", () => { if(state.mode === "drawing") setTimeout(resizeCanvas, 80); });
+
+    window.openNoteById = openNoteById;
+    window.restoreDeleted = restoreDeleted;
+    window.removeDeleted = removeDeleted;
+    window.goHome = goHome;
+
+    loadDB();
+    applyTheme();
+    renderNotes();
+    renderDeleted();
+    updateLockButtonText();
+    updateUserUI();
+    openLockScreenIfNeeded();
+  </script></body>
 </html>
