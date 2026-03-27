@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Smart Notes Premium Advanced</title>
+  <title>Smart Notes Ultra Premium</title>
   <style>
     :root{
       --bg:#070b14;
       --bg2:#111827;
       --panel:rgba(17,24,39,.82);
-      --panel2:rgba(30,41,59,.9);
-      --card:rgba(15,23,42,.78);
+      --panel2:rgba(30,41,59,.92);
+      --card:rgba(15,23,42,.82);
       --text:#f8fafc;
       --muted:#94a3b8;
       --accent:#38bdf8;
@@ -25,9 +25,9 @@
     body.light{
       --bg:#eef4ff;
       --bg2:#dbeafe;
-      --panel:rgba(255,255,255,.78);
-      --panel2:rgba(241,245,249,.96);
-      --card:rgba(255,255,255,.88);
+      --panel:rgba(255,255,255,.82);
+      --panel2:rgba(241,245,249,.97);
+      --card:rgba(255,255,255,.9);
       --text:#0f172a;
       --muted:#64748b;
       --accent:#2563eb;
@@ -36,17 +36,13 @@
       --success:#059669;
       --warning:#d97706;
       --border:rgba(15,23,42,.08);
-      --glow:0 0 0 1px rgba(255,255,255,.4),0 18px 35px rgba(37,99,235,.1);
+      --glow:0 0 0 1px rgba(255,255,255,.45),0 18px 35px rgba(37,99,235,.1);
     }
 
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     html,body{
-      margin:0;
-      width:100%;
-      height:100%;
-      overflow:hidden;
-      font-family:Arial,sans-serif;
-      color:var(--text);
+      margin:0;width:100%;height:100%;overflow:hidden;
+      font-family:Arial,sans-serif;color:var(--text);
       background:
         radial-gradient(circle at top left, rgba(56,189,248,.16), transparent 28%),
         radial-gradient(circle at bottom right, rgba(99,102,241,.16), transparent 30%),
@@ -59,12 +55,8 @@
     .topbar{
       position:fixed;top:0;left:0;right:0;height:70px;
       display:flex;align-items:center;justify-content:space-between;
-      padding:0 14px;
-      background:var(--panel);
-      backdrop-filter:blur(18px);
-      border-bottom:1px solid var(--border);
-      z-index:50;
-      box-shadow:var(--glow);
+      padding:0 14px;background:var(--panel);backdrop-filter:blur(18px);
+      border-bottom:1px solid var(--border);z-index:50;box-shadow:var(--glow)
     }
     .left-head{display:flex;align-items:center;gap:10px;min-width:0}
     .title{
@@ -73,13 +65,12 @@
     }
     .top-actions{display:flex;gap:8px}
 
-    .icon-btn,.action-btn,.mini-btn,.drawer-btn,.toolbar-btn,.seg-btn,.modal-btn,.eye-btn,.support-link,.auth-btn,.style-btn{
+    .icon-btn,.action-btn,.mini-btn,.drawer-btn,.toolbar-btn,.seg-btn,.modal-btn,.eye-btn,.support-link,.auth-btn,.style-btn,.chip{
       border:none;outline:none;cursor:pointer;border-radius:16px;
-      color:var(--text);background:var(--panel2);
-      border:1px solid var(--border);box-shadow:var(--glow);
-      transition:.22s ease;text-decoration:none
+      color:var(--text);background:var(--panel2);border:1px solid var(--border);
+      box-shadow:var(--glow);transition:.22s ease;text-decoration:none
     }
-    .icon-btn:active,.action-btn:active,.mini-btn:active,.drawer-btn:active,.toolbar-btn:active,.seg-btn:active,.modal-btn:active,.eye-btn:active,.support-link:active,.auth-btn:active,.style-btn:active{
+    .icon-btn:active,.action-btn:active,.mini-btn:active,.drawer-btn:active,.toolbar-btn:active,.seg-btn:active,.modal-btn:active,.eye-btn:active,.support-link:active,.auth-btn:active,.style-btn:active,.chip:active{
       transform:scale(.98)
     }
     .icon-btn{width:46px;height:46px;font-size:22px}
@@ -90,26 +81,33 @@
     }
 
     .page{
-      position:absolute;inset:70px 0 0 0;
-      overflow-y:auto;padding:14px 14px 120px;display:none
+      position:absolute;inset:70px 0 0 0;overflow-y:auto;
+      padding:14px 14px 120px;display:none
     }
     .page.active{display:block}
 
     .search{
-      width:100%;background:var(--panel);color:var(--text);
-      border:1px solid var(--border);border-radius:20px;
-      padding:15px 16px;outline:none;box-shadow:var(--glow);
-      margin-bottom:12px
+      width:100%;background:var(--panel);color:var(--text);border:1px solid var(--border);
+      border-radius:20px;padding:15px 16px;outline:none;box-shadow:var(--glow);margin-bottom:12px
     }
     .search-info{color:var(--muted);font-size:13px;margin:8px 2px 14px}
+
+    .filter-row,.style-row{
+      display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px
+    }
+    .chip,.style-btn,.toolbar-btn{padding:10px 12px}
+    .chip.active,.style-btn.active,.toolbar-btn.active{
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#fff;border:none
+    }
 
     .notes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     @media (max-width:640px){.notes-grid{grid-template-columns:1fr}}
 
     .note-card{
-      background:var(--card);border:1px solid var(--border);
-      border-radius:18px;padding:12px;min-height:118px;
-      box-shadow:var(--glow);position:relative;overflow:hidden;user-select:none
+      background:var(--card);border:1px solid var(--border);border-radius:18px;
+      padding:12px;min-height:118px;box-shadow:var(--glow);
+      position:relative;overflow:hidden;user-select:none
     }
     .note-card.pinned::before{
       content:"📌";position:absolute;top:8px;right:10px;font-size:14px;z-index:1
@@ -123,8 +121,8 @@
     }
 
     .empty{
-      min-height:calc(100vh - 190px);display:grid;place-items:center;
-      text-align:center;color:var(--muted);padding:20px
+      min-height:calc(100vh - 190px);display:grid;place-items:center;text-align:center;
+      color:var(--muted);padding:20px
     }
     .empty-icon{font-size:52px;margin-bottom:10px}
 
@@ -140,21 +138,20 @@
     }
     .fab-wrap.open .fab-item{transform:translateY(0) scale(1);opacity:1}
     .fab-label{
-      background:var(--panel);color:var(--text);
-      border:1px solid var(--border);border-radius:16px;
-      padding:10px 12px;box-shadow:var(--glow);font-size:14px
+      background:var(--panel);color:var(--text);border:1px solid var(--border);
+      border-radius:16px;padding:10px 12px;box-shadow:var(--glow);font-size:14px
     }
     .fab-mini{width:52px;height:52px;font-size:22px}
     .fab-main{
-      width:74px;height:74px;border:none;border-radius:50%;cursor:pointer;
-      font-size:42px;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));
+      width:74px;height:74px;border:none;border-radius:50%;cursor:pointer;font-size:42px;
+      color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));
       box-shadow:0 22px 40px rgba(0,0,0,.35)
     }
     .fab-wrap.open .fab-main{transform:rotate(45deg)}
 
     .editor-box,.about-card,.trash-card,.support-card{
-      background:var(--panel);border:1px solid var(--border);
-      border-radius:26px;padding:16px;box-shadow:var(--glow)
+      background:var(--panel);border:1px solid var(--border);border-radius:26px;
+      padding:16px;box-shadow:var(--glow)
     }
 
     .mode-badge{
@@ -164,23 +161,14 @@
     }
 
     .editor-field{
-      width:100%;background:var(--panel2);color:var(--text);
-      border:1px solid var(--border);border-radius:18px;
-      padding:14px;outline:none;margin-bottom:12px
+      width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);
+      border-radius:18px;padding:14px;outline:none;margin-bottom:12px
     }
     .editor-title{font-weight:700;font-size:16px}
     .editor-text{min-height:210px;resize:none}
-
-    .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
-    .toolbar-btn,.style-btn{padding:10px 14px}
-    .toolbar-btn.active,.style-btn.active{
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      color:#fff;border:none
-    }
-
     .preview-img{
-      width:100%;display:none;border-radius:18px;margin-bottom:12px;
-      border:1px solid var(--border);max-height:260px;object-fit:contain;background:#000
+      width:100%;display:none;border-radius:18px;margin-bottom:12px;border:1px solid var(--border);
+      max-height:260px;object-fit:contain;background:#000
     }
 
     .canvas-wrap{
@@ -199,16 +187,15 @@
     input[type="color"]{width:34px;height:34px;border:none;background:transparent;padding:0}
 
     .drawer-overlay,.context-overlay,.modal-overlay{
-      position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;
-      pointer-events:none;transition:.24s ease;z-index:80;backdrop-filter:blur(2px)
+      position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;
+      transition:.24s ease;z-index:80;backdrop-filter:blur(2px)
     }
     .drawer-overlay.show,.context-overlay.show,.modal-overlay.show{opacity:1;pointer-events:auto}
 
     .drawer{
       position:fixed;top:0;left:0;width:300px;max-width:88%;height:100%;
-      background:var(--panel);border-right:1px solid var(--border);
-      transform:translateX(-100%);transition:.28s ease;z-index:90;padding:16px 14px;
-      box-shadow:var(--glow);overflow-y:auto
+      background:var(--panel);border-right:1px solid var(--border);transform:translateX(-100%);
+      transition:.28s ease;z-index:90;padding:16px 14px;box-shadow:var(--glow);overflow-y:auto
     }
     .drawer.show{transform:translateX(0)}
     .drawer h2{margin:8px 0 18px;font-size:24px}
@@ -219,17 +206,17 @@
       border-radius:18px;border:1px solid var(--border);background:var(--panel2);box-shadow:var(--glow)
     }
     .user-photo{
-      width:48px;height:48px;border-radius:50%;object-fit:cover;
-      border:1px solid var(--border);background:#111;flex-shrink:0
+      width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--border);
+      background:#111;flex-shrink:0
     }
     .user-name{font-size:14px;font-weight:700;word-break:break-word}
     .user-email{font-size:11px;color:var(--muted);word-break:break-word;margin-top:2px}
 
     .context-bar{
       position:fixed;top:78px;left:50%;transform:translateX(-50%) translateY(-16px);
-      background:var(--panel);border:1px solid var(--border);border-radius:20px;
-      padding:10px;display:flex;gap:8px;max-width:calc(100% - 18px);overflow-x:auto;
-      box-shadow:var(--glow);opacity:0;pointer-events:none;transition:.22s ease;z-index:100
+      background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:10px;
+      display:flex;gap:8px;max-width:calc(100% - 18px);overflow-x:auto;box-shadow:var(--glow);
+      opacity:0;pointer-events:none;transition:.22s ease;z-index:100
     }
     .context-bar.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
     .seg-btn{padding:10px 14px;white-space:nowrap}
@@ -237,7 +224,7 @@
 
     .modal{
       position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.92);
-      width:min(92vw,440px);background:var(--panel);border:1px solid var(--border);
+      width:min(92vw,450px);background:var(--panel);border:1px solid var(--border);
       border-radius:24px;padding:18px;box-shadow:var(--glow);z-index:110;
       opacity:0;pointer-events:none;transition:.22s ease
     }
@@ -245,9 +232,8 @@
     .modal h3{margin:0 0 14px;font-size:22px}
     .modal p{color:var(--muted);line-height:1.5;margin-bottom:12px}
     .modal input,.modal select{
-      width:100%;background:var(--panel2);color:var(--text);
-      border:1px solid var(--border);border-radius:16px;
-      padding:13px 48px 13px 14px;outline:none;margin-bottom:12px;box-shadow:var(--glow)
+      width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);
+      border-radius:16px;padding:13px 48px 13px 14px;outline:none;margin-bottom:12px;box-shadow:var(--glow)
     }
     .input-wrap{position:relative}
     .eye-btn{
@@ -275,8 +261,8 @@
     .lock-card h2{margin-top:0;margin-bottom:10px;font-size:26px}
     .lock-card .input-wrap{margin:12px 0}
     .lock-card input{
-      width:100%;padding:14px 48px 14px 14px;border-radius:18px;
-      border:1px solid rgba(255,255,255,.12);outline:none;background:rgba(255,255,255,.06);color:#fff
+      width:100%;padding:14px 48px 14px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.12);
+      outline:none;background:rgba(255,255,255,.06);color:#fff
     }
     .lock-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
     .lock-actions button{
@@ -287,13 +273,10 @@
 
     .support-links{display:grid;gap:12px;margin-top:14px}
     .support-link{
-      display:block;padding:14px 16px;border-radius:18px;text-decoration:none;
-      color:var(--text);background:var(--panel2)
+      display:block;padding:14px 16px;border-radius:18px;text-decoration:none;color:var(--text);background:var(--panel2)
     }
     .support-label{font-size:12px;color:var(--muted);margin-bottom:4px}
     .support-value{font-weight:700;word-break:break-word}
-
-    .style-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
   </style>
 </head>
 <body>
@@ -326,6 +309,11 @@
 
     <section class="page active" id="homePage">
       <input class="search" id="searchInput" placeholder="Search notes..." />
+      <div class="filter-row">
+        <button class="chip active" id="sortNewestBtn">Newest</button>
+        <button class="chip" id="sortOldestBtn">Oldest</button>
+        <button class="chip" id="sortPinnedBtn">Pinned First</button>
+      </div>
       <div class="search-info" id="searchInfo">All notes</div>
       <div id="notesContainer"></div>
     </section>
@@ -333,7 +321,18 @@
     <section class="page" id="editorPage">
       <div class="editor-box">
         <div class="mode-badge" id="modeBadge">Text Note</div>
+
         <input class="editor-field editor-title" id="noteNameField" placeholder="Note name" />
+
+        <div class="filter-row">
+          <button class="chip active" data-note-color="default">Default</button>
+          <button class="chip" data-note-color="#ef4444">Red</button>
+          <button class="chip" data-note-color="#f59e0b">Orange</button>
+          <button class="chip" data-note-color="#10b981">Green</button>
+          <button class="chip" data-note-color="#3b82f6">Blue</button>
+          <button class="chip" data-note-color="#8b5cf6">Purple</button>
+          <button class="chip" data-note-color="#ec4899">Pink</button>
+        </div>
 
         <div id="textEditor">
           <div class="toolbar">
@@ -344,6 +343,7 @@
             <button class="style-btn" id="italicBtn"><i>I</i></button>
             <button class="style-btn" id="upperBtn">UPPER</button>
             <button class="style-btn" id="lowerBtn">lower</button>
+            <div class="color-box">Text <input type="color" id="textColorInput" value="#ffffff" /></div>
             <select class="editor-field" id="textSizeSelect" style="margin:0;max-width:140px;padding-right:14px;">
               <option value="14">Text 14px</option>
               <option value="16" selected>Text 16px</option>
@@ -372,12 +372,17 @@
             <button class="toolbar-btn" id="eraserBtn">Eraser</button>
             <button class="toolbar-btn" id="markerBtn">Marker</button>
             <button class="toolbar-btn" id="sprayBtn">Spray</button>
+            <button class="toolbar-btn" id="bucketBtn">Bucket</button>
             <button class="toolbar-btn" id="lineBtn">Line</button>
             <button class="toolbar-btn" id="rectBtn">Rect</button>
+            <button class="toolbar-btn" id="squareBtn">Square</button>
             <button class="toolbar-btn" id="circleBtn">Circle</button>
+            <button class="toolbar-btn" id="triangleBtn">Triangle</button>
             <div class="color-box">Color <input type="color" id="brushColor" value="#000000" /></div>
             <div class="range-box">Brush <input type="range" id="brushSize" min="1" max="40" value="4" /></div>
             <div class="range-box">Eraser <input type="range" id="eraserSize" min="5" max="50" value="16" /></div>
+            <button class="toolbar-btn" id="undoBtn">Undo</button>
+            <button class="toolbar-btn" id="redoBtn">Redo</button>
             <button class="toolbar-btn" id="clearCanvasBtn">Clear</button>
           </div>
           <div class="canvas-wrap"><canvas id="drawCanvas"></canvas></div>
@@ -520,12 +525,10 @@
         <button class="eye-btn" id="oldPasswordEyeBtn" type="button">👁</button>
       </div>
       <div class="error-text" id="oldPasswordError">Incorrect password</div>
-
       <div class="input-wrap">
         <input id="newPasswordInput" type="password" placeholder="New password" />
         <button class="eye-btn" id="newPasswordEyeBtn" type="button">👁</button>
       </div>
-
       <div class="modal-actions">
         <button class="modal-btn" id="forgotPasswordBtn">Forget Password</button>
         <button class="modal-btn" id="changePasswordCancelBtn">Cancel</button>
@@ -575,16 +578,17 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    try{ getAnalytics(app); }catch(e){}
+    try { getAnalytics(app); } catch(e) {}
     const auth = getAuth(app);
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
-    let currentUser = null;
 
-    const THEME_KEY = "smart_notes_premium_theme_v2";
-    const PASS_KEY = "smart_notes_premium_pass_v2";
-    const LOCK_ENABLED_KEY = "smart_notes_premium_lock_enabled_v2";
-    const AUTH_TYPE_KEY = "smart_notes_auth_type_v2";
+    const THEME_KEY = "smart_notes_ultra_theme_v1";
+    const PASS_KEY = "smart_notes_ultra_pass_v1";
+    const LOCK_ENABLED_KEY = "smart_notes_ultra_lock_enabled_v1";
+    const AUTH_TYPE_KEY = "smart_notes_ultra_auth_type_v1";
+
+    let currentUser = null;
 
     const state = {
       notes: [],
@@ -604,7 +608,13 @@
       listening: false,
       markerAlpha: .25,
       textBold: false,
-      textItalic: false
+      textItalic: false,
+      textColor: "#ffffff",
+      sortMode: "newest",
+      noteColor: "default",
+      canvasHistory: [],
+      canvasRedo: [],
+      shapeBaseImage: null
     };
 
     const pages = {
@@ -672,7 +682,7 @@
     }
 
     function getDBKey(){
-      return currentUser ? `smart_notes_premium_user_${currentUser.uid}` : "smart_notes_premium_guest";
+      return currentUser ? `smart_notes_ultra_user_${currentUser.uid}` : "smart_notes_ultra_guest";
     }
 
     async function getCloudDoc(){
@@ -723,6 +733,10 @@
 
     function applyTheme(){
       document.body.classList.toggle("light", (localStorage.getItem(THEME_KEY) || "dark") === "light");
+      if(!state.editingId && !textInput.value){
+        state.textColor = document.body.classList.contains("light") ? "#0f172a" : "#ffffff";
+      }
+      applyTextStyleUI();
     }
 
     function toggleTheme(){
@@ -730,6 +744,7 @@
       localStorage.setItem(THEME_KEY, cur === "dark" ? "light" : "dark");
       applyTheme();
       closeDrawer();
+      renderNotes();
     }
 
     function isLockEnabled(){
@@ -761,8 +776,7 @@
     }
 
     function closeAllModals(){
-      [saveModal, renameModal, enableLockModal, changePasswordModal, disableLockModal, forgotConfirmModal]
-        .forEach(m => m.classList.remove("show"));
+      [saveModal, renameModal, enableLockModal, changePasswordModal, disableLockModal, forgotConfirmModal].forEach(m => m.classList.remove("show"));
       modalOverlay.classList.remove("show");
       hidePasswordErrors();
     }
@@ -783,7 +797,7 @@
       }
     }
 
-    function showPage(key){
+    function showPage(key, push = true){
       Object.values(pages).forEach(p => p.classList.remove("active"));
       pages[key].classList.add("active");
       closeDrawer();
@@ -807,7 +821,7 @@
         fabWrap.style.display = "none";
       }
 
-      history.pushState({ page: key }, "");
+      if(push) history.pushState({ page: key }, "");
     }
 
     function formatTime(ts){
@@ -816,7 +830,16 @@
 
     function filteredNotes(){
       const q = searchInput.value.trim().toLowerCase();
-      let notes = [...state.notes].sort((a,b)=> ((b.pinned?1:0)-(a.pinned?1:0)) || ((b.updatedAt||b.createdAt)-(a.updatedAt||a.createdAt)));
+      let notes = [...state.notes];
+
+      if(state.sortMode === "newest"){
+        notes.sort((a,b)=>(b.updatedAt||b.createdAt)-(a.updatedAt||a.createdAt));
+      }else if(state.sortMode === "oldest"){
+        notes.sort((a,b)=>(a.updatedAt||a.createdAt)-(b.updatedAt||b.createdAt));
+      }else{
+        notes.sort((a,b)=>((b.pinned?1:0)-(a.pinned?1:0)) || ((b.updatedAt||b.createdAt)-(a.updatedAt||a.createdAt)));
+      }
+
       return !q ? notes : notes.filter(n =>
         (n.name||"").toLowerCase().includes(q) ||
         (n.text||"").toLowerCase().includes(q) ||
@@ -842,15 +865,21 @@
 
       notesContainer.innerHTML = `
         <div class="notes-grid">
-          ${list.map(note => `
-            <div class="note-card ${note.pinned ? "pinned" : ""}" data-id="${note.id}" onclick="window.openNoteById('${note.id}')">
-              <div class="note-name">${escapeHtml(note.name)}</div>
-              <div class="note-meta">${formatTime(note.updatedAt || note.createdAt)}</div>
-              <div class="note-text">${escapeHtml((note.text || "").slice(0,120))}</div>
-              ${note.image ? `<img class="note-preview-img" src="${note.image}" alt="img" />` : ""}
-              ${note.drawing ? `<img class="note-preview-img" src="${note.drawing}" alt="drawing" />` : ""}
-            </div>
-          `).join("")}
+          ${list.map(note => {
+            const noteColor = note.noteColor && note.noteColor !== "default" ? note.noteColor : "";
+            const style = noteColor
+              ? `border-color:${noteColor}; box-shadow:0 0 0 1px ${noteColor}, 0 20px 40px rgba(0,0,0,.35);`
+              : ``;
+            return `
+              <div class="note-card ${note.pinned ? "pinned" : ""}" style="${style}" data-id="${note.id}" onclick="window.openNoteById('${note.id}')">
+                <div class="note-name">${escapeHtml(note.name)}</div>
+                <div class="note-meta">${formatTime(note.updatedAt || note.createdAt)}</div>
+                <div class="note-text">${escapeHtml((note.text || "").slice(0,120))}</div>
+                ${note.image ? `<img class="note-preview-img" src="${note.image}" alt="img" />` : ""}
+                ${note.drawing ? `<img class="note-preview-img" src="${note.drawing}" alt="drawing" />` : ""}
+              </div>
+            `;
+          }).join("")}
         </div>`;
       attachLongPress();
     }
@@ -892,12 +921,17 @@
       textEditor.style.display = "none";
       imageEditor.style.display = "none";
       drawingEditor.style.display = "none";
-      clearCanvas();
+      clearCanvas(true);
       stopVoice();
+
       state.textBold = false;
       state.textItalic = false;
+      state.textColor = document.body.classList.contains("light") ? "#0f172a" : "#ffffff";
       document.getElementById("textSizeSelect").value = "16";
       applyTextStyleUI();
+
+      state.noteColor = "default";
+      document.querySelectorAll("[data-note-color]").forEach(btn => btn.classList.toggle("active", btn.dataset.noteColor === "default"));
     }
 
     function setMode(mode){
@@ -906,7 +940,7 @@
       imageEditor.style.display = mode === "image" ? "block" : "none";
       drawingEditor.style.display = mode === "drawing" ? "block" : "none";
       modeBadge.textContent = mode.charAt(0).toUpperCase() + mode.slice(1) + " Note";
-      if(mode === "drawing") setTimeout(resizeCanvas, 60);
+      if(mode === "drawing") setTimeout(() => resizeCanvas(true), 60);
     }
 
     function openNewEditor(mode){
@@ -973,8 +1007,16 @@
     function applySavedTextStyle(note){
       state.textBold = !!note.textBold;
       state.textItalic = !!note.textItalic;
+      state.textColor = note.textColor || (document.body.classList.contains("light") ? "#0f172a" : "#ffffff");
       document.getElementById("textSizeSelect").value = String(note.textSize || 16);
       applyTextStyleUI();
+    }
+
+    function applySavedNoteColor(note){
+      state.noteColor = note.noteColor || "default";
+      document.querySelectorAll("[data-note-color]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.noteColor === state.noteColor);
+      });
     }
 
     function openNoteById(id){
@@ -986,6 +1028,7 @@
       state.editingId = id;
       setMode(note.type);
       noteNameField.value = note.name || "";
+      applySavedNoteColor(note);
 
       if(note.type === "text"){
         textInput.value = note.text || "";
@@ -1000,18 +1043,7 @@
       }else if(note.type === "drawing"){
         drawingTextInput.value = note.text || "";
         setTimeout(() => {
-          resizeCanvas();
-          if(note.drawing){
-            const img = new Image();
-            img.onload = () => {
-              const rect = canvas.getBoundingClientRect();
-              ctx.clearRect(0,0,canvas.width,canvas.height);
-              ctx.fillStyle = "#fff";
-              ctx.fillRect(0,0,rect.width,rect.height);
-              ctx.drawImage(img,0,0,rect.width,rect.height);
-            };
-            img.src = note.drawing;
-          }
+          resizeCanvas(true, note.drawing || null);
         }, 70);
       }
 
@@ -1043,7 +1075,9 @@
         drawing: "",
         textSize: Number(document.getElementById("textSizeSelect").value),
         textBold: state.textBold,
-        textItalic: state.textItalic
+        textItalic: state.textItalic,
+        textColor: state.textColor,
+        noteColor: state.noteColor || "default"
       };
 
       if(state.mode === "text"){
@@ -1185,7 +1219,26 @@
       reader.readAsDataURL(file);
     }
 
-    function resizeCanvas(){
+    function saveCanvasState(){
+      try{
+        state.canvasHistory.push(canvas.toDataURL("image/png"));
+        if(state.canvasHistory.length > 40) state.canvasHistory.shift();
+        state.canvasRedo = [];
+      }catch(e){}
+    }
+
+    function restoreCanvasFromData(dataUrl){
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0,0,rect.width,rect.height);
+      if(!dataUrl) return;
+      const img = new Image();
+      img.onload = () => ctx.drawImage(img,0,0,rect.width,rect.height);
+      img.src = dataUrl;
+    }
+
+    function resizeCanvas(resetHistory = false, dataUrl = null){
       const rect = canvas.getBoundingClientRect();
       const ratio = window.devicePixelRatio || 1;
       canvas.width = rect.width * ratio;
@@ -1195,14 +1248,27 @@
       ctx.lineJoin = "round";
       ctx.fillStyle = "#fff";
       ctx.fillRect(0,0,rect.width,rect.height);
+
+      if(dataUrl){
+        const img = new Image();
+        img.onload = () => ctx.drawImage(img,0,0,rect.width,rect.height);
+        img.src = dataUrl;
+      }
+
+      if(resetHistory){
+        state.canvasHistory = [];
+        state.canvasRedo = [];
+      }
     }
 
-    function clearCanvas(){
+    function clearCanvas(silent = false){
       const rect = canvas.getBoundingClientRect();
       ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.setTransform(window.devicePixelRatio || 1,0,0,window.devicePixelRatio || 1,0,0);
       ctx.fillStyle = "#fff";
       ctx.fillRect(0,0,rect.width,rect.height);
+      if(!silent){
+        state.canvasRedo = [];
+      }
     }
 
     function getPos(e){
@@ -1212,15 +1278,75 @@
     }
 
     function startDraw(e){
+      saveCanvasState();
       state.drawing = true;
       const p = getPos(e);
       state.x = p.x;
       state.y = p.y;
       state.startX = p.x;
       state.startY = p.y;
+      state.shapeBaseImage = canvas.toDataURL("image/png");
+
+      if(state.brushMode === "bucket"){
+        fillCanvasBucket();
+        state.drawing = false;
+      }
     }
 
-    function strokeCurrentMode(fromX, fromY, toX, toY){
+    function fillCanvasBucket(){
+      const rect = canvas.getBoundingClientRect();
+      ctx.fillStyle = document.getElementById("brushColor").value;
+      ctx.fillRect(0,0,rect.width,rect.height);
+    }
+
+    function drawShapePreview(type, toX, toY){
+      restoreCanvasFromData(state.shapeBaseImage);
+      const color = document.getElementById("brushColor").value;
+      const brushSize = Number(document.getElementById("brushSize").value);
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = brushSize;
+
+      if(type === "line"){
+        ctx.beginPath();
+        ctx.moveTo(state.startX, state.startY);
+        ctx.lineTo(toX, toY);
+        ctx.stroke();
+        return;
+      }
+
+      if(type === "rect"){
+        ctx.strokeRect(state.startX, state.startY, toX - state.startX, toY - state.startY);
+        return;
+      }
+
+      if(type === "square"){
+        const size = Math.max(Math.abs(toX - state.startX), Math.abs(toY - state.startY));
+        const w = size * (toX >= state.startX ? 1 : -1);
+        const h = size * (toY >= state.startY ? 1 : -1);
+        ctx.strokeRect(state.startX, state.startY, w, h);
+        return;
+      }
+
+      if(type === "circle"){
+        const r = Math.hypot(toX - state.startX, toY - state.startY);
+        ctx.beginPath();
+        ctx.arc(state.startX, state.startY, r, 0, Math.PI * 2);
+        ctx.stroke();
+        return;
+      }
+
+      if(type === "triangle"){
+        ctx.beginPath();
+        ctx.moveTo(state.startX, state.startY);
+        ctx.lineTo(toX, toY);
+        ctx.lineTo(state.startX - (toX - state.startX), toY);
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
+
+    function drawStroke(fromX, fromY, toX, toY){
       const color = document.getElementById("brushColor").value;
       const brushSize = Number(document.getElementById("brushSize").value);
       const eraserSize = Number(document.getElementById("eraserSize").value);
@@ -1232,36 +1358,6 @@
         ctx.beginPath();
         ctx.moveTo(fromX, fromY);
         ctx.lineTo(toX, toY);
-        ctx.stroke();
-        return;
-      }
-
-      if(state.shapeMode === "line"){
-        ctx.globalAlpha = 1;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = brushSize;
-        ctx.beginPath();
-        ctx.moveTo(state.startX, state.startY);
-        ctx.lineTo(toX, toY);
-        ctx.stroke();
-        return;
-      }
-
-      if(state.shapeMode === "rect"){
-        ctx.globalAlpha = 1;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = brushSize;
-        ctx.strokeRect(state.startX, state.startY, toX - state.startX, toY - state.startY);
-        return;
-      }
-
-      if(state.shapeMode === "circle"){
-        ctx.globalAlpha = 1;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = brushSize;
-        const r = Math.hypot(toX - state.startX, toY - state.startY);
-        ctx.beginPath();
-        ctx.arc(state.startX, state.startY, r, 0, Math.PI * 2);
         ctx.stroke();
         return;
       }
@@ -1302,28 +1398,33 @@
       e.preventDefault();
       const p = getPos(e);
 
-      if(["line","rect","circle"].includes(state.shapeMode)){
-        const currentRect = canvas.getBoundingClientRect();
-        const saved = canvas.toDataURL("image/png");
-        const img = new Image();
-        img.onload = () => {
-          ctx.clearRect(0,0,canvas.width,canvas.height);
-          ctx.fillStyle = "#fff";
-          ctx.fillRect(0,0,currentRect.width,currentRect.height);
-          ctx.drawImage(img,0,0,currentRect.width,currentRect.height);
-          strokeCurrentMode(state.x, state.y, p.x, p.y);
-        };
-        img.src = saved;
+      if(state.shapeMode){
+        drawShapePreview(state.shapeMode, p.x, p.y);
         return;
       }
 
-      strokeCurrentMode(state.x, state.y, p.x, p.y);
+      drawStroke(state.x, state.y, p.x, p.y);
       state.x = p.x;
       state.y = p.y;
     }
 
     function stopDraw(){
       state.drawing = false;
+      state.shapeBaseImage = null;
+    }
+
+    function undoCanvas(){
+      if(!state.canvasHistory.length) return;
+      state.canvasRedo.push(canvas.toDataURL("image/png"));
+      const prev = state.canvasHistory.pop();
+      restoreCanvasFromData(prev);
+    }
+
+    function redoCanvas(){
+      if(!state.canvasRedo.length) return;
+      state.canvasHistory.push(canvas.toDataURL("image/png"));
+      const next = state.canvasRedo.pop();
+      restoreCanvasFromData(next);
     }
 
     function initVoice(){
@@ -1380,6 +1481,8 @@
       textInput.style.fontSize = document.getElementById("textSizeSelect").value + "px";
       textInput.style.fontWeight = state.textBold ? "700" : "400";
       textInput.style.fontStyle = state.textItalic ? "italic" : "normal";
+      textInput.style.color = state.textColor;
+      document.getElementById("textColorInput").value = state.textColor;
       document.getElementById("boldBtn").classList.toggle("active", state.textBold);
       document.getElementById("italicBtn").classList.toggle("active", state.textItalic);
     }
@@ -1481,6 +1584,18 @@
       textInput.value = textInput.value.toLowerCase();
     });
     document.getElementById("textSizeSelect").addEventListener("change", applyTextStyleUI);
+    document.getElementById("textColorInput").addEventListener("input", (e) => {
+      state.textColor = e.target.value;
+      applyTextStyleUI();
+    });
+
+    document.querySelectorAll("[data-note-color]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.noteColor = btn.dataset.noteColor;
+        document.querySelectorAll("[data-note-color]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
 
     document.getElementById("menuBtn").addEventListener("click", openDrawer);
     drawerOverlay.addEventListener("click", closeDrawer);
@@ -1571,7 +1686,6 @@
         oldErr.classList.add("show");
         return;
       }
-
       if(!validatePassword(newPass)) return alert("New password must be at least 4 characters");
 
       localStorage.setItem(PASS_KEY, newPass);
@@ -1636,30 +1750,56 @@
     galleryInput.addEventListener("change", e => handleImage(e.target.files[0]));
     cameraInput.addEventListener("change", e => handleImage(e.target.files[0]));
 
-    const shapeButtons = {
-      brushBtn:["brush",null],
-      eraserBtn:["eraser",null],
-      markerBtn:["marker",null],
-      sprayBtn:["spray",null],
-      lineBtn:["brush","line"],
-      rectBtn:["brush","rect"],
-      circleBtn:["brush","circle"]
+    const toolMap = {
+      brushBtn: ["brush", null],
+      eraserBtn: ["eraser", null],
+      markerBtn: ["marker", null],
+      sprayBtn: ["spray", null],
+      bucketBtn: ["bucket", null],
+      lineBtn: ["brush", "line"],
+      rectBtn: ["brush", "rect"],
+      squareBtn: ["brush", "square"],
+      circleBtn: ["brush", "circle"],
+      triangleBtn: ["brush", "triangle"]
     };
 
-    Object.entries(shapeButtons).forEach(([id,vals]) => {
+    Object.entries(toolMap).forEach(([id, vals]) => {
       document.getElementById(id).addEventListener("click", () => {
         state.brushMode = vals[0];
         state.shapeMode = vals[1];
-        ["brushBtn","eraserBtn","markerBtn","sprayBtn","lineBtn","rectBtn","circleBtn"].forEach(btnId => {
-          document.getElementById(btnId).classList.remove("active");
-        });
+        Object.keys(toolMap).forEach(btnId => document.getElementById(btnId).classList.remove("active"));
         document.getElementById(id).classList.add("active");
       });
     });
 
-    document.getElementById("clearCanvasBtn").addEventListener("click", clearCanvas);
+    document.getElementById("undoBtn").addEventListener("click", undoCanvas);
+    document.getElementById("redoBtn").addEventListener("click", redoCanvas);
+    document.getElementById("clearCanvasBtn").addEventListener("click", () => {
+      saveCanvasState();
+      clearCanvas();
+    });
+
     document.getElementById("micBtn").addEventListener("click", toggleVoice);
     searchInput.addEventListener("input", renderNotes);
+
+    document.getElementById("sortNewestBtn").addEventListener("click", () => {
+      state.sortMode = "newest";
+      ["sortNewestBtn","sortOldestBtn","sortPinnedBtn"].forEach(id => document.getElementById(id).classList.remove("active"));
+      document.getElementById("sortNewestBtn").classList.add("active");
+      renderNotes();
+    });
+    document.getElementById("sortOldestBtn").addEventListener("click", () => {
+      state.sortMode = "oldest";
+      ["sortNewestBtn","sortOldestBtn","sortPinnedBtn"].forEach(id => document.getElementById(id).classList.remove("active"));
+      document.getElementById("sortOldestBtn").classList.add("active");
+      renderNotes();
+    });
+    document.getElementById("sortPinnedBtn").addEventListener("click", () => {
+      state.sortMode = "pinned";
+      ["sortNewestBtn","sortOldestBtn","sortPinnedBtn"].forEach(id => document.getElementById(id).classList.remove("active"));
+      document.getElementById("sortPinnedBtn").classList.add("active");
+      renderNotes();
+    });
 
     canvas.addEventListener("mousedown", startDraw);
     canvas.addEventListener("mousemove", draw);
@@ -1667,11 +1807,24 @@
     canvas.addEventListener("touchstart", startDraw, {passive:true});
     canvas.addEventListener("touchmove", draw, {passive:false});
     window.addEventListener("touchend", stopDraw);
+
     window.addEventListener("resize", () => {
-      if(state.mode === "drawing") setTimeout(resizeCanvas, 80);
+      if(state.mode === "drawing") setTimeout(() => resizeCanvas(false), 80);
     });
 
     window.addEventListener("popstate", () => {
+      if(drawer.classList.contains("show")){
+        closeDrawer();
+        return;
+      }
+      if(contextBar.classList.contains("show")){
+        closeContext();
+        return;
+      }
+      if(document.querySelector(".modal.show")){
+        closeAllModals();
+        return;
+      }
       if(
         pages.editor.classList.contains("active") ||
         pages.deleted.classList.contains("active") ||
@@ -1679,11 +1832,7 @@
         pages.support.classList.contains("active") ||
         pages.privacy.classList.contains("active")
       ){
-        Object.values(pages).forEach(p => p.classList.remove("active"));
-        pages.home.classList.add("active");
-        pageTitle.textContent = "Recent";
-        saveBtn.style.display = "none";
-        fabWrap.style.display = "block";
+        showPage("home", false);
       }
     });
 
