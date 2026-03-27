@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Smart Notes Premium Auth</title>
+  <title>Smart Notes Final</title>
   <style>
     :root{
       --bg:#070b14;--bg2:#111827;--panel:rgba(17,24,39,.82);--panel2:rgba(30,41,59,.88);--card:rgba(15,23,42,.78);
@@ -44,7 +44,7 @@
     .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.92);width:min(92vw,440px);background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:18px;box-shadow:var(--glow);z-index:110;opacity:0;pointer-events:none;transition:.22s ease}.modal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}.modal h3{margin:0 0 14px;font-size:22px}.modal p{color:var(--muted);line-height:1.5;margin-bottom:12px}.modal input,.modal select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:16px;padding:13px 48px 13px 14px;outline:none;margin-bottom:12px;box-shadow:var(--glow)}.input-wrap{position:relative}.eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:16px;background:transparent;box-shadow:none}.modal-actions,.trash-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}.modal-btn{padding:11px 14px}.modal-btn.primary,.restore{background:linear-gradient(135deg,var(--success),#059669);color:#fff;border:none}.remove{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none}.error-text{display:none;color:#ff4d4f;font-size:13px;margin:-4px 0 10px;font-weight:700}.error-text.show{display:block}
     .small{font-size:13px;color:var(--muted)} .lock-screen{position:fixed;inset:0;background:#000;z-index:300;display:none;align-items:center;justify-content:center;padding:20px}.lock-card{width:min(92vw,420px);background:linear-gradient(180deg,#0f172a,#111827);border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:22px;color:#fff;box-shadow:0 24px 50px rgba(0,0,0,.55),0 0 30px rgba(56,189,248,.10);text-align:center}.lock-card h2{margin-top:0;margin-bottom:10px;font-size:26px}.lock-card .input-wrap{margin:12px 0}.lock-card input{width:100%;padding:14px 48px 14px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.12);outline:none;background:rgba(255,255,255,.06);color:#fff}.lock-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}.lock-actions button{flex:1;min-width:120px;padding:13px;border-radius:16px;border:none;cursor:pointer;font-weight:700}.lock-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}.lock-secondary{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.14)}
     .support-links{display:grid;gap:12px;margin-top:14px}.support-link{display:block;padding:14px 16px;border-radius:18px;text-decoration:none;color:var(--text);background:var(--panel2)}.support-label{font-size:12px;color:var(--muted);margin-bottom:4px}.support-value{font-weight:700;word-break:break-word}
-    .auth-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.tab-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none} #recaptcha-container{margin-bottom:12px}
+    .auth-tabs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}.tab-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none}
   </style>
 </head>
 <body>
@@ -115,8 +115,9 @@
 </section>
 
 <section class="page" id="deletedPage"><div id="deletedContainer"></div></section>
-<section class="page" id="aboutPage"><div class="about-card"><h2>📝 Smart Notes App</h2><p><strong>Smart Notes App</strong> helps students and developers manage text, image, and drawing notes in one place.</p><h3>Features</h3><p>• Smart storage</p><p>• Auto timestamp</p><p>• Text, image and drawing notes</p><p>• Pin, rename, delete and restore</p><p>• Local privacy</p><p>• Google, Email and Phone login support</p></div></section>
+<section class="page" id="aboutPage"><div class="about-card"><h2>📝 Smart Notes App</h2><p><strong>Smart Notes App</strong> helps students and developers manage text, image, and drawing notes in one place.</p><h3>Features</h3><p>• Smart storage</p><p>• Auto timestamp</p><p>• Text, image and drawing notes</p><p>• Pin, rename, delete and restore</p><p>• Local privacy</p><p>• Google and Email login support</p></div></section>
 <section class="page" id="supportPage"><div class="support-card"><h2>💬 Help & Support</h2><p>Tap any option below to contact support.</p><div class="support-links"><a class="support-link" href="mailto:rajanuj50340@gmail.com?subject=Smart%20Notes%20Support"><div class="support-label">Email Support</div><div class="support-value">rajanuj50340@gmail.com</div></a><a class="support-link" href="https://instagram.com/anujfinx" target="_blank" rel="noopener noreferrer"><div class="support-label">Instagram</div><div class="support-value">@anujfinx</div></a><a class="support-link" href="https://wa.me/916204020450?text=Hello%20Anuj%2C%20I%20need%20support%20for%20Smart%20Notes." target="_blank" rel="noopener noreferrer"><div class="support-label">WhatsApp Support</div><div class="support-value">6204020450</div></a></div></div></section>
+<section class="page" id="privacyPage"><div class="about-card"><h2>🔐 Privacy Policy</h2><p><strong>Smart Notes</strong> values your privacy. Your notes are stored locally on your device, and if you sign in, some data may be synced with your Firebase account to help you access notes on your own account.</p><p>We do not sell your personal data. Your email, basic profile details, and note data are only used to provide login, cloud sync, and app features.</p><p>If you use guest mode, your notes stay on your device. If you use Google or Email login, your notes may be stored in your personal Firebase database for sync purposes.</p><p>You are responsible for keeping your password safe. If you use the app lock and forget the password in guest mode, your local notes may be removed during reset.</p><p>Support links such as email, Instagram, and WhatsApp are only opened when you tap them.</p><p>By using this app, you agree to this privacy policy and local/cloud storage behavior.</p></div></section>
 
 <div class="fab-wrap" id="fabWrap">
   <div class="fab-options">
@@ -138,7 +139,6 @@
   <div class="auth-tabs">
     <button class="tab-btn active" data-auth-tab="google">Google</button>
     <button class="tab-btn" data-auth-tab="email">Email</button>
-    <button class="tab-btn" data-auth-tab="phone">Phone</button>
   </div>
 
   <div id="googleAuthBox">
@@ -154,20 +154,12 @@
     <div class="small">Email recovery email Firebase bhejega.</div>
   </div>
 
-  <div id="phoneAuthBox" class="hidden">
-    <input id="phoneInput" class="editor-field" placeholder="+91XXXXXXXXXX" type="tel" />
-    <div id="recaptcha-container"></div>
-    <button class="auth-btn" id="sendOtpBtn">Send OTP</button>
-    <input id="otpInput" class="editor-field hidden" placeholder="Enter OTP" />
-    <button class="auth-btn hidden" id="verifyOtpBtn">Verify OTP</button>
-    <div class="small">Phone OTP login Firebase ke through hoga.</div>
-  </div>
-
   <button class="auth-btn" id="logoutBtn" style="display:none;">Logout</button>
   <button class="drawer-btn" id="themeBtn">Change Theme</button>
   <button class="drawer-btn" id="deletedBtn">Deleted Notes</button>
   <button class="drawer-btn" id="aboutBtn">About</button>
   <button class="drawer-btn" id="supportBtn">Help & Support</button>
+  <button class="drawer-btn" id="privacyBtn">Privacy Policy</button>
   <button class="drawer-btn" id="toggleLockBtn">Enable Lock</button>
   <button class="drawer-btn" id="changePassBtn">Set / Change Password</button>
 </aside>
@@ -193,8 +185,7 @@
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
     import {
       getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
-      createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail,
-      RecaptchaVerifier, signInWithPhoneNumber
+      createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail
     } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
@@ -213,7 +204,6 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const provider = new GoogleAuthProvider();
-    let confirmationResult = null;
     let currentUser = null;
 
     const THEME_KEY = "smart_notes_premium_theme_v2";
@@ -223,7 +213,7 @@
 
     const state = { notes: [], deleted: [], mode: null, selectedId: null, editingId: null, imageData: "", brushMode: "brush", drawing: false, x: 0, y: 0, recognition: null, listening: false };
 
-    const pages = { home: document.getElementById("homePage"), editor: document.getElementById("editorPage"), deleted: document.getElementById("deletedPage"), about: document.getElementById("aboutPage"), support: document.getElementById("supportPage") };
+    const pages = { home: document.getElementById("homePage"), editor: document.getElementById("editorPage"), deleted: document.getElementById("deletedPage"), about: document.getElementById("aboutPage"), support: document.getElementById("supportPage"), privacy: document.getElementById("privacyPage") };
     const pageTitle = document.getElementById("pageTitle"), saveBtn = document.getElementById("saveBtn"), backBtn = document.getElementById("backBtn"), fabWrap = document.getElementById("fabWrap");
     const notesContainer = document.getElementById("notesContainer"), deletedContainer = document.getElementById("deletedContainer"), searchInput = document.getElementById("searchInput"), searchInfo = document.getElementById("searchInfo");
     const drawer = document.getElementById("drawer"), drawerOverlay = document.getElementById("drawerOverlay"), contextBar = document.getElementById("contextBar"), contextOverlay = document.getElementById("contextOverlay"), modalOverlay = document.getElementById("modalOverlay");
@@ -233,8 +223,7 @@
     const canvas = document.getElementById("drawCanvas"), ctx = canvas.getContext("2d");
     const lockScreen = document.getElementById("lockScreen"), lockInput = document.getElementById("lockInput"), lockError = document.getElementById("lockError"), toggleLockBtn = document.getElementById("toggleLockBtn");
     const googleLoginBtn = document.getElementById("googleLoginBtn"), logoutBtn = document.getElementById("logoutBtn"), userPhoto = document.getElementById("userPhoto"), userName = document.getElementById("userName"), userEmail = document.getElementById("userEmail");
-
-    const emailInput = document.getElementById("emailInput"), emailPasswordInput = document.getElementById("emailPasswordInput"), phoneInput = document.getElementById("phoneInput"), otpInput = document.getElementById("otpInput"), verifyOtpBtn = document.getElementById("verifyOtpBtn");
+    const emailInput = document.getElementById("emailInput"), emailPasswordInput = document.getElementById("emailPasswordInput");
 
     function escapeHtml(str){ return String(str || "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;"); }
     function getDBKey(){ return currentUser ? `smart_notes_premium_user_${currentUser.uid}` : "smart_notes_premium_guest"; }
@@ -271,8 +260,8 @@
 
     function updateUserUI(){
       if(currentUser){
-        userName.textContent = currentUser.displayName || currentUser.phoneNumber || currentUser.email || "User";
-        userEmail.textContent = currentUser.email || currentUser.phoneNumber || "Signed in";
+        userName.textContent = currentUser.displayName || currentUser.email || "User";
+        userEmail.textContent = currentUser.email || "Signed in";
         userPhoto.src = currentUser.photoURL || "https://via.placeholder.com/48?text=U";
         googleLoginBtn.style.display = "none";
         logoutBtn.style.display = "block";
@@ -285,7 +274,7 @@
       }
     }
 
-    function showPage(key){ Object.values(pages).forEach(p => p.classList.remove("active")); pages[key].classList.add("active"); closeDrawer(); closeContext(); if(key === "home"){ pageTitle.textContent = "Recent"; saveBtn.style.display = "none"; backBtn.style.display = "none"; fabWrap.style.display = "block"; } else if(key === "editor"){ pageTitle.textContent = state.editingId ? "Edit Note" : "New Note"; saveBtn.style.display = "inline-block"; backBtn.style.display = "inline-block"; fabWrap.style.display = "none"; } else { pageTitle.textContent = key === "deleted" ? "Deleted Notes" : key === "about" ? "About" : "Help & Support"; saveBtn.style.display = "none"; backBtn.style.display = "inline-block"; fabWrap.style.display = "none"; } }
+    function showPage(key){ Object.values(pages).forEach(p => p.classList.remove("active")); pages[key].classList.add("active"); closeDrawer(); closeContext(); if(key === "home"){ pageTitle.textContent = "Recent"; saveBtn.style.display = "none"; backBtn.style.display = "none"; fabWrap.style.display = "block"; } else if(key === "editor"){ pageTitle.textContent = state.editingId ? "Edit Note" : "New Note"; saveBtn.style.display = "inline-block"; backBtn.style.display = "inline-block"; fabWrap.style.display = "none"; } else { pageTitle.textContent = key === "deleted" ? "Deleted Notes" : key === "about" ? "About" : key === "privacy" ? "Privacy Policy" : "Help & Support"; saveBtn.style.display = "none"; backBtn.style.display = "inline-block"; fabWrap.style.display = "none"; } }
     function formatTime(ts){ return new Date(ts).toLocaleString(); }
     function filteredNotes(){ const q = searchInput.value.trim().toLowerCase(); let notes = [...state.notes].sort((a,b)=> ((b.pinned?1:0)-(a.pinned?1:0)) || ((b.updatedAt||b.createdAt)-(a.updatedAt||a.createdAt))); return !q ? notes : notes.filter(n => (n.name||"").toLowerCase().includes(q) || (n.text||"").toLowerCase().includes(q) || (n.type||"").toLowerCase().includes(q)); }
     function renderNotes(){ const list = filteredNotes(); searchInfo.textContent = searchInput.value.trim() ? `${list.length} result(s) found` : `${state.notes.length} note(s)`; if(!list.length){ notesContainer.innerHTML = `<div class="empty"><div><div class="empty-icon">📝</div><div>${searchInput.value.trim() ? "No matching note found" : "No notes yet"}</div><div class="small" style="margin-top:8px;">Tap + to create a note</div></div></div>`; return; } notesContainer.innerHTML = `<div class="notes-grid">${list.map(note => `<div class="note-card ${note.pinned ? "pinned" : ""}" data-id="${note.id}" onclick="window.openNoteById('${note.id}')"><div class="note-name">${escapeHtml(note.name)}</div><div class="note-meta">${formatTime(note.updatedAt || note.createdAt)}</div><div class="note-text">${escapeHtml((note.text || "").slice(0, 120))}</div>${note.image ? `<img class="note-preview-img" src="${note.image}" alt="img" />` : ""}${note.drawing ? `<img class="note-preview-img" src="${note.drawing}" alt="drawing" />` : ""}</div>`).join("")}</div>`; attachLongPress(); }
@@ -330,9 +319,6 @@
     async function doEmailSignup(){ try{ await createUserWithEmailAndPassword(auth, emailInput.value.trim(), emailPasswordInput.value); localStorage.setItem(AUTH_TYPE_KEY, "email"); closeDrawer(); }catch(e){ alert(e.message); } }
     async function doEmailLogin(){ try{ await signInWithEmailAndPassword(auth, emailInput.value.trim(), emailPasswordInput.value); localStorage.setItem(AUTH_TYPE_KEY, "email"); closeDrawer(); }catch(e){ alert(e.message); } }
     async function doEmailReset(){ const email = emailInput.value.trim(); if(!email) return alert("Enter email first"); try{ await sendPasswordResetEmail(auth, email); alert("Reset email sent"); }catch(e){ alert(e.message); } }
-    function initRecaptcha(){ if(window.recaptchaVerifier) return; window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", { size: "normal" }); }
-    async function sendOtp(){ try{ initRecaptcha(); confirmationResult = await signInWithPhoneNumber(auth, phoneInput.value.trim(), window.recaptchaVerifier); otpInput.classList.remove("hidden"); verifyOtpBtn.classList.remove("hidden"); alert("OTP sent"); }catch(e){ alert(e.message); console.error(e); } }
-    async function verifyOtp(){ try{ await confirmationResult.confirm(otpInput.value.trim()); localStorage.setItem(AUTH_TYPE_KEY, "phone"); closeDrawer(); }catch(e){ alert("Invalid OTP"); } }
     async function doLogout(){ try{ await signOut(auth); closeDrawer(); }catch(e){ alert("Logout failed."); console.error(e); } }
 
     onAuthStateChanged(auth, async (user) => { currentUser = user || null; updateUserUI(); await loadDB(); renderNotes(); renderDeleted(); });
@@ -342,7 +328,6 @@
       btn.classList.add("active");
       document.getElementById("googleAuthBox").classList.add("hidden");
       document.getElementById("emailAuthBox").classList.add("hidden");
-      document.getElementById("phoneAuthBox").classList.add("hidden");
       document.getElementById(btn.dataset.authTab + "AuthBox").classList.remove("hidden");
     }));
 
@@ -350,8 +335,6 @@
     document.getElementById("emailSignupBtn").addEventListener("click", doEmailSignup);
     document.getElementById("emailLoginBtn").addEventListener("click", doEmailLogin);
     document.getElementById("emailResetBtn").addEventListener("click", doEmailReset);
-    document.getElementById("sendOtpBtn").addEventListener("click", sendOtp);
-    verifyOtpBtn.addEventListener("click", verifyOtp);
     logoutBtn.addEventListener("click", doLogout);
 
     document.getElementById("enableLockEyeBtn").addEventListener("click", () => toggleEye("enableLockPasswordInput", document.getElementById("enableLockEyeBtn")));
@@ -368,6 +351,7 @@
     document.getElementById("deletedBtn").addEventListener("click", () => { renderDeleted(); showPage("deleted"); });
     document.getElementById("aboutBtn").addEventListener("click", () => showPage("about"));
     document.getElementById("supportBtn").addEventListener("click", () => showPage("support"));
+    document.getElementById("privacyBtn").addEventListener("click", () => showPage("privacy"));
 
     toggleLockBtn.addEventListener("click", () => {
       if(isLockEnabled()){
@@ -389,7 +373,17 @@
       if(entered !== savedPass){ err.classList.add("show"); return; }
       localStorage.setItem(LOCK_ENABLED_KEY, "false"); updateLockButtonText(); hideModal(disableLockModal); alert("Lock disabled");
     });
-    document.getElementById("disableForgotBtn").addEventListener("click", () => { hideModal(disableLockModal); const type = localStorage.getItem(AUTH_TYPE_KEY) || "guest"; document.getElementById("forgotText").textContent = type === "guest" ? "All guest notes and deleted notes will be permanently deleted. Continue?" : type === "email" ? "Password reset email already available in Email tab. App lock reset will clear local lock only after you re-login. Continue and clear local app lock?" : type === "phone" ? "Phone user ke liye OTP login se re-login karo. Continue and clear local app lock?" : "Google user ke liye re-login required hai. Continue and clear local app lock?"; showModal(forgotConfirmModal); });
+    document.getElementById("disableForgotBtn").addEventListener("click", () => {
+      hideModal(disableLockModal);
+      const type = localStorage.getItem(AUTH_TYPE_KEY) || "guest";
+      document.getElementById("forgotText").textContent =
+        type === "guest"
+          ? "All guest notes and deleted notes will be permanently deleted. Continue?"
+          : type === "email"
+          ? "Password reset email already available in Email tab. App lock reset will clear local lock only after you re-login. Continue and clear local app lock?"
+          : "Google user ke liye re-login required hai. Continue and clear local app lock?";
+      showModal(forgotConfirmModal);
+    });
     document.getElementById("changePassBtn").addEventListener("click", () => { closeDrawer(); hidePasswordErrors(); document.getElementById("oldPasswordInput").value = ""; document.getElementById("newPasswordInput").value = ""; showModal(changePasswordModal); });
     document.getElementById("changePasswordCancelBtn").addEventListener("click", () => { hideModal(changePasswordModal); hidePasswordErrors(); });
     document.getElementById("changePasswordSaveBtn").addEventListener("click", () => {
@@ -403,7 +397,8 @@
     document.getElementById("forgotConfirmOkBtn").addEventListener("click", async () => {
       const type = localStorage.getItem(AUTH_TYPE_KEY) || "guest";
       localStorage.removeItem(PASS_KEY); localStorage.removeItem(LOCK_ENABLED_KEY); updateLockButtonText();
-      if(type === "guest") await resetEverything(); else { closeAllModals(); alert(type === "email" ? "Local app lock cleared. Email reset is in Email tab." : type === "phone" ? "Local app lock cleared. Re-login with phone OTP if needed." : "Local app lock cleared. Re-login with Google if needed."); }
+      if(type === "guest") await resetEverything();
+      else { closeAllModals(); alert(type === "email" ? "Local app lock cleared. Email reset is in Email tab." : "Local app lock cleared. Re-login with Google if needed."); }
     });
     document.getElementById("lockForgotBtn").addEventListener("click", () => { lockScreen.style.display = "none"; document.getElementById("disableForgotBtn").click(); });
     document.getElementById("lockOkBtn").addEventListener("click", () => { const entered = lockInput.value, savedPass = getSavedPassword(); hidePasswordErrors(); if(entered === savedPass) lockScreen.style.display = "none"; else lockError.classList.add("show"); });
