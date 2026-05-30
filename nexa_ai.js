@@ -1,7 +1,8 @@
 class NexaWebAssistant {
     constructor(apiKey) {
         this.apiKey = apiKey;
-        this.endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+        // Updated secure endpoint for Gemini
+        this.endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
     }
 
     speak(text) {
@@ -26,6 +27,10 @@ class NexaWebAssistant {
     }
 
     async askNexa(prompt) {
+        if (!this.apiKey) {
+            return "Error: API Key is completely missing in browser storage.";
+        }
+
         const url = `${this.endpoint}?key=${this.apiKey}`;
         const currentDate = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const currentTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -47,10 +52,24 @@ class NexaWebAssistant {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
+            
+            // Checking if server threw any key restriction or quota error
+            if (!response.ok) {
+                const errorData = await response.json();
+                if (errorData.error && errorData.error.message) {
+                    return `Google Server Error: ${errorData.error.message}`;
+                }
+                return `Server Error: Status Code ${response.status}`;
+            }
+
             const data = await response.json();
-            return data.candidates[0].content.parts[0].text;
+            if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                return data.candidates[0].content.parts[0].text;
+            }
+            return "Nexa received an empty response structure from the cloud.";
+            
         } catch (error) {
-            return "Connection Error: Server routes are busy.";
+            return "Connection Error: Unable to reach Google API servers.";
         }
     }
 }
