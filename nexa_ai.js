@@ -1,8 +1,21 @@
 class NexaWebAssistant {
     constructor(apiKey) {
         this.apiKey = apiKey;
-        // Updated secure endpoint for Gemini
         this.endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+        
+        // AUTOMATIC BYPASS: If key is fake or missing, prompt the user on the live site
+        if (this.apiKey === "abcdef123" || !this.apiKey || this.apiKey.length < 10) {
+            let savedKey = localStorage.getItem("nexa_key");
+            if (!savedKey || savedKey === "null" || savedKey.length < 10) {
+                let userKey = prompt("🔒 Please enter your FRESH Gemini API Key for Nexa:");
+                if (userKey) {
+                    localStorage.setItem("nexa_key", userKey.trim());
+                    this.apiKey = userKey.trim();
+                }
+            } else {
+                this.apiKey = savedKey;
+            }
+        }
     }
 
     speak(text) {
@@ -14,8 +27,7 @@ class NexaWebAssistant {
             
             let maleVoice = voices.find(voice => 
                 (voice.name.toLowerCase().includes('male') || 
-                 voice.name.toLowerCase().includes('google uk english male') ||
-                 voice.name.toLowerCase().includes('natural')) && 
+                 voice.name.toLowerCase().includes('google uk english male')) && 
                 voice.lang.startsWith('en')
             );
 
@@ -27,23 +39,15 @@ class NexaWebAssistant {
     }
 
     async askNexa(prompt) {
-        if (!this.apiKey) {
-            return "Error: API Key is completely missing in browser storage.";
+        if (!this.apiKey || this.apiKey === "abcdef123") {
+            return "Error: Valid API Key is required. Please refresh and enter a real key.";
         }
 
         const url = `${this.endpoint}?key=${this.apiKey}`;
         const currentDate = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const currentTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-        const smartPrompt = `
-        SYSTEM INSTRUCTIONS:
-        1. Your name is Nexa. You are an advanced personal AI male voice assistant developed by Anuj.
-        2. CORRECT CURRENT DATE & TIME: ${currentDate}, ${currentTime}. Always use this context accurately.
-        3. MULTILINGUAL: If user types in Hindi/Hinglish, reply fully in Hindi/Hinglish. If in English, reply in English.
-        4. Keep responses strictly under 2 lines for high-speed delivery.
-        
-        User Question: ${prompt}`;
-
+        const smartPrompt = `Your name is Nexa. You are a personal AI male assistant developed by Anuj. Date: ${currentDate}, Time: ${currentTime}. Keep replies strictly under 2 lines. User: ${prompt}`;
         const payload = { contents: [{ parts: [{ text: smartPrompt }] }] };
 
         try {
@@ -53,23 +57,18 @@ class NexaWebAssistant {
                 body: JSON.stringify(payload)
             });
             
-            // Checking if server threw any key restriction or quota error
             if (!response.ok) {
                 const errorData = await response.json();
                 if (errorData.error && errorData.error.message) {
-                    return `Google Server Error: ${errorData.error.message}`;
+                    return `Google Error: ${errorData.error.message}`;
                 }
-                return `Server Error: Status Code ${response.status}`;
+                return `Server Error: Code ${response.status}`;
             }
 
             const data = await response.json();
-            if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-                return data.candidates[0].content.parts[0].text;
-            }
-            return "Nexa received an empty response structure from the cloud.";
-            
+            return data.candidates[0].content.parts[0].text;
         } catch (error) {
-            return "Connection Error: Unable to reach Google API servers.";
+            return "Connection Error: Cannot reach Google servers.";
         }
     }
 }
