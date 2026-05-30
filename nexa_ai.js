@@ -1,12 +1,10 @@
 class NexaWebAssistant {
     constructor(apiKey) {
         this.apiKey = apiKey;
-        this.endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+        // USING THE ULTIMATE CURRENT 2026 STABLE GEMINI ENDPOINT
+        this.endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
         
-        
-        
-        
-        // AUTOMATIC BYPASS: If key is fake or missing, prompt the user on the live site
+        // AUTOMATIC BYPASS: If key is fake, missing, or prompt needed
         if (this.apiKey === "abcdef123" || !this.apiKey || this.apiKey.length < 10) {
             let savedKey = localStorage.getItem("nexa_key");
             if (!savedKey || savedKey === "null" || savedKey.length < 10) {
@@ -41,25 +39,37 @@ class NexaWebAssistant {
         }
     }
 
-    async askNexa(prompt) {
+    async askNexa(promptText) {
         if (!this.apiKey || this.apiKey === "abcdef123") {
             return "Error: Valid API Key is required. Please refresh and enter a real key.";
         }
 
-        const url = `${this.endpoint}?key=${this.apiKey}`;
+        let url = `${this.endpoint}?key=${this.apiKey}`;
         const currentDate = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const currentTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-        const smartPrompt = `Your name is Nexa. You are a personal AI male assistant developed by Anuj. Date: ${currentDate}, Time: ${currentTime}. Keep replies strictly under 2 lines. User: ${prompt}`;
+        const smartPrompt = `Your name is Nexa. You are a personal AI male assistant developed by Anuj. Date: ${currentDate}, Time: ${currentTime}. Keep replies strictly under 2 lines. User: ${promptText}`;
         const payload = { contents: [{ parts: [{ text: smartPrompt }] }] };
 
         try {
-            const response = await fetch(url, {
+            let response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
             
+            // FALLBACK SYSTEM: If gemini-2.5 fails, try gemini-1.5 automatically
+            if (!response.ok && this.endpoint.includes("gemini-2.5-flash")) {
+                console.log("Switching to fallback model...");
+                this.endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+                url = `${this.endpoint}?key=${this.apiKey}`;
+                response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+            }
+
             if (!response.ok) {
                 const errorData = await response.json();
                 if (errorData.error && errorData.error.message) {
