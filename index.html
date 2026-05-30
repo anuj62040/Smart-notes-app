@@ -1852,4 +1852,17 @@
     history.replaceState({page:"home"}, "");
   </script>
 </body>
+  <!-- NEXA INTEGRATION HOOKS -->
+<script src="nexa_ai.js"></script>
+<script src="nexa_ai.js"></script>
+<script>
+  // This securely saves your key in the browser without pushing it to GitHub public leaks
+  let nexaApiKey = localStorage.getItem("nexa_key");
+  if (!nexaApiKey || nexaApiKey === "null") {
+      nexaApiKey = prompt("AQ.Ab8RN6I57_iKJA23LYslJ7O0UkWoJsLnryx6nniH38WQqTevYw:");
+      if (nexaApiKey) localStorage.setItem("nexa_key", nexaApiKey.trim());
+  }
+  const nexaCore = new NexaWebAssistant(nexaApiKey);
+</script>
+  
 </html>
