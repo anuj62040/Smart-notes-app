@@ -1851,8 +1851,89 @@
     openLockScreenIfNeeded();
     history.replaceState({page:"home"}, "");
   </script>
+  </script>
+
+  <!-- ======================================================= -->
+  <!-- NEXA PREMIUM UI FLOATING PANEL (ADDED RIGHT HERE)        -->
+  <!-- ======================================================= -->
+  <style>
+    .nexa-trigger-btn {
+      position: fixed; bottom: 24px; left: 24px; z-index: 100;
+      width: 64px; height: 64px; font-size: 30px; border-radius: 50%;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6); border: none;
+      box-shadow: 0 0 20px rgba(6,182,212,0.4); display: grid; place-items: center; cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .nexa-trigger-btn:active { transform: scale(0.95); }
+    .nexa-panel {
+      position: fixed; bottom: 100px; left: 24px; width: min(90vw, 360px);
+      background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px; padding: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); display: none; flex-direction: column; gap: 12px; z-index: 100;
+    }
+    .nexa-panel.show { display: flex; }
+    .nexa-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; color: #fff; }
+    .nexa-body { max-height: 160px; overflow-y: auto; font-size: 14px; color: #f8fafc; line-height: 1.4; white-space: pre-wrap; }
+    .nexa-footer { display: flex; gap: 8px; }
+    .nexa-input { flex: 1; background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px; color: #fff; outline: none; }
+  </style>
+
+  <button class="nexa-trigger-btn" onclick="toggleNexaPanel()">🤖</button>
+  
+  <div class="nexa-panel" id="nexaPanel">
+    <div class="nexa-header">
+      <span>🦾 Nexa AI Assistant</span>
+      <button onclick="toggleNexaPanel()" style="background:transparent; border:none; color:#ef4444; cursor:pointer; font-weight:bold; font-size:16px;">X</button>
+    </div>
+    <div class="nexa-body" id="nexaBody">Hello Anuj! Ask me anything, I can instantly type notes into your editor page.</div>
+    <div class="nexa-footer">
+      <input type="text" class="nexa-input" id="nexaInput" placeholder="Ask Nexa..." onkeypress="handleNexaKey(event)" />
+      <button onclick="triggerNexaQuery()" style="background:#6366f1; border:none; border-radius:12px; padding:0 12px; color:#fff; cursor:pointer; font-weight:bold;">Send</button>
+    </div>
+  </div>
+
+  <script>
+    function toggleNexaPanel() {
+        const panel = document.getElementById("nexaPanel");
+        panel.classList.toggle("show");
+    }
+
+    async function handleNexaKey(event) {
+        if (event.key === 'Enter') {
+            await triggerNexaQuery();
+        }
+    }
+
+    async function triggerNexaQuery() {
+        const inputField = document.getElementById("nexaInput");
+        const bodyPanel = document.getElementById("nexaBody");
+        const query = inputField.value.trim();
+
+        if (!query) return;
+
+        bodyPanel.innerText = "⚡ Nexa is thinking...";
+        inputField.value = "";
+
+        const aiReply = await nexaCore.askNexa(query);
+        bodyPanel.innerText = aiReply;
+        
+        nexaCore.speak(aiReply);
+
+        const textInputArea = document.getElementById("textInput");
+        const titleField = document.getElementById("noteNameField");
+        
+        if (textInputArea) {
+            if (!titleField.value) {
+                titleField.value = "AI Note: " + query;
+            }
+            textInputArea.value += (textInputArea.value ? "\n\n" : "") + aiReply;
+            bodyPanel.innerText += "\n\n💾 [Synced]: Added directly to your active text field!";
+        }
+    }
+  </script>
+
 </body>
-  <!-- NEXA INTEGRATION HOOKS -->
+
+<!-- NEXA INTEGRATION HOOKS -->
 <script src="nexa_ai.js"></script>
 <script>
   let nexaApiKey = localStorage.getItem("nexa_key");
