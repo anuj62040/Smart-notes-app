@@ -1936,12 +1936,23 @@
 <!-- NEXA INTEGRATION HOOKS -->
 <script src="nexa_ai.js"></script>
 <script>
+  // =======================================================
+  // ⚡ ANUJ'S SMART NEXA API AUTO-HOOK (GITHUB SAFE)
+  // =======================================================
   let nexaApiKey = localStorage.getItem("nexa_key");
+  
+  // Agar browser mein key save nahi hai, toh yeh aapse maangega
   if (!nexaApiKey || nexaApiKey === "null" || nexaApiKey.length < 10) {
-      nexaApiKey = prompt("AQ.Ab8RN6LewfR6RHVa5vaBtSqYYHo8V3QQRNpDroME4Qtg43EOCw");
-      if (nexaApiKey) localStorage.setItem("nexa_key", nexaApiKey.trim());
+      // Yahan aap apni NAYI API key seedhe box mein daal dena jab site khulegi
+      nexaApiKey = prompt("AQ.Ab8RN6LdGHUt1PQ_th5EypwtOR5nDCSISrLvZFvNgQzwhSRmNg");
+      if (nexaApiKey) {
+          localStorage.setItem("nexa_key", nexaApiKey.trim());
+      }
   }
+  
+  // Nexa engine initialization
   const nexaCore = new NexaWebAssistant(nexaApiKey);
 </script>
-  
+
 </html>
+
