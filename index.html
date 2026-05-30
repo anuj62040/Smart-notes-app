@@ -155,7 +155,7 @@
     }
 
     .mode-badge{
-      display:inline-block;padding:8px 12px;border-radius999px;
+      display:inline-block;padding:8px 12px;border-radius:999px;
       background:rgba(255,255,255,.08);border:1px solid var(--border);
       margin-bottom:12px;font-size:13px
     }
@@ -277,24 +277,6 @@
     }
     .support-label{font-size:12px;color:var(--muted);margin-bottom:4px}
     .support-value{font-weight:700;word-break:break-word}
-
-    /* NEXA PREMIUM UI FLOATING PANEL STYLES */
-    .nexa-trigger-btn {
-      position: fixed; bottom: 24px; left: 24px; z-index: 100;
-      width: 64px; height: 64px; font-size: 30px; border-radius: 50%;
-      background: linear-gradient(135deg, #06b6d4, #3b82f6); border: none;
-      box-shadow: 0 0 20px rgba(6,182,212,0.4); display: grid; place-items: center; cursor: pointer;
-    }
-    .nexa-panel {
-      position: fixed; bottom: 100px; left: 24px; width: min(90vw, 360px);
-      background: var(--panel2); backdrop-filter: blur(20px); border: 1px solid var(--border);
-      border-radius: 24px; padding: 16px; box-shadow: var(--glow); display: none; flex-direction: column; gap: 12px; z-index: 100;
-    }
-    .nexa-panel.show { display: flex; }
-    .nexa-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-    .nexa-body { max-height: 160px; overflow-y: auto; font-size: 14px; color: var(--text); line-height: 1.4; white-space: pre-wrap; }
-    .nexa-footer { display: flex; gap: 8px; }
-    .nexa-input { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px; color: var(--text); outline: none; }
   </style>
 </head>
 <body>
@@ -451,70 +433,4 @@
       <div class="about-card">
         <h2>🔐 Privacy Policy</h2>
         <p><strong>Smart Notes</strong> stores notes locally on your device. If you sign in with Google, notes can also sync to your own Firebase account for your use.</p>
-      </div>
-    </section>
-  </div>
-
-  <!-- NEXA ROBOT FLOATING UI PANEL -->
-  <button class="nexa-trigger-btn" onclick="toggleNexaPanel()">🤖</button>
-  <div class="nexa-panel" id="nexaPanel">
-    <div class="nexa-header">
-      <span>🦾 Nexa AI Assistant</span>
-      <button onclick="toggleNexaPanel()" style="background:transparent; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">X</button>
-    </div>
-    <div class="nexa-body" id="nexaBody">Hello Anuj! Tap below to ask me anything. I can automatically generate notes for you.</div>
-    <div class="nexa-footer">
-      <input type="text" class="nexa-input" id="nexaInput" placeholder="Ask Nexa..." onkeypress="handleNexaKey(event)" />
-      <button onclick="triggerNexaQuery()" style="background:var(--accent2); border:none; border-radius:12px; padding:0 12px; color:#fff; cursor:pointer;">Send</button>
-    </div>
-  </div>
-
-  <!-- CONNECTING NEXA AI JAVASCRIPT ARCHITECTURE -->
-  <script src="nexa_ai.js"></script>
-  <script>
-    // Security Guard: Requesting API Key securely on session start instead of raw hardcoding
-    const nexaApiKey = "YOUR_GEMINI_API_KEY_HERE";
-    const nexaCore = new NexaWebAssistant(nexaApiKey);
-
-    function toggleNexaPanel() {
-        const panel = document.getElementById("nexaPanel");
-        panel.classList.toggle("show");
-    }
-
-    async function handleNexaKey(event) {
-        if (event.key === 'Enter') {
-            await triggerNexaQuery();
-        }
-    }
-
-    async function triggerNexaQuery() {
-        const inputField = document.getElementById("nexaInput");
-        const bodyPanel = document.getElementById("nexaBody");
-        const query = inputField.value.trim();
-
-        if (!query) return;
-
-        bodyPanel.innerText = "⚡ Nexa is thinking...";
-        inputField.value = "";
-
-        const aiReply = await nexaCore.askNexa(query);
-        bodyPanel.innerText = aiReply;
-        
-        // Native Speech engine delivery
-        nexaCore.speak(aiReply);
-
-        // SMART INTEGRATION: If user is inside the editor, auto-fill the response into the text area!
-        const textInputArea = document.getElementById("textInput");
-        const titleField = document.getElementById("noteNameField");
-        
-        if (textInputArea) {
-            if (!titleField.value) {
-                titleField.value = "AI Note: " + query;
-            }
-            textInputArea.value += (textInputArea.value ? "\n\n" : "") + aiReply;
-            bodyPanel.innerText += "\n\n💾 [Synced]: Added directly to your editor! Click 'Save' top button to secure it.";
-        }
-    }
-  </script>
-</body>
-</html>
+        <p>We d
