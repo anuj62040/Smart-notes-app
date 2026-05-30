@@ -2,7 +2,7 @@ class NexaWebAssistant {
     constructor(apiKey) {
         this.apiKey = apiKey;
         // USING THE ULTIMATE CURRENT 2026 STABLE GEMINI ENDPOINT
-        this.endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+        this.endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
         
         // AUTOMATIC BYPASS: If key is fake, missing, or prompt needed
         if (this.apiKey === "abcdef123" || !this.apiKey || this.apiKey.length < 10) {
