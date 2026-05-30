@@ -1933,19 +1933,16 @@
 
 </body>
 
-<!-- NEXA INTEGRATION HOOKS -->
+<!-- =======================================================
+     ⚡ NEXA INTEGRATION HOOKS (CLEAN GITHUB METHOD)
+     ======================================================= -->
 <script src="nexa_ai.js"></script>
 <script>
-  let nexaApiKey = localStorage.getItem("nexa_key");
+  // GitHub will safely accept this fake key placeholder
+  let nexaApiKey = "abcdef123"; 
   
-  if (!nexaApiKey || nexaApiKey === "null" || nexaApiKey.length < 10) {
-      // Is line ko aise hi rehne dena hai, isme apni key mat chipkana bhai
-      nexaApiKey = "AQ.Ab8RN6LbZ1PXxzJJwf8cTF5SFVg9syb_WCliDCIkU27zeJFAZA";
-      if (nexaApiKey) {
-          localStorage.setItem("nexa_key", nexaApiKey.trim());
-      }
-  }
-  
+  // Initializing the Nexa AI core engine
   const nexaCore = new NexaWebAssistant(nexaApiKey);
 </script>
+  
   
