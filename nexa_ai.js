@@ -1,7 +1,8 @@
 class NexaWebAssistant {
     constructor(apiKey) {
         this.apiKey = apiKey;
-        this.endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+        this.endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";
+        
         
         // AUTOMATIC BYPASS: If key is fake or missing, prompt the user on the live site
         if (this.apiKey === "abcdef123" || !this.apiKey || this.apiKey.length < 10) {
